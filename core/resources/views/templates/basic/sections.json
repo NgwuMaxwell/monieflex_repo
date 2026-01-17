@@ -170,6 +170,11 @@
         "no_selection":true,
         "name":"KYC Information",
         "content":{
+           "images":{
+               "image":{
+                   "size":"800x600"
+               }
+           },
            "verification_content":"textarea",
            "pending_content":"textarea"
         }

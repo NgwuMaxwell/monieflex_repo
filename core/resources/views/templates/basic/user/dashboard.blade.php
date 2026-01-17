@@ -160,6 +160,9 @@
                 <!-- <div class="modal-close" data-dismiss="modal"></div> -->
                 <div class="heads">Announcement</div>
                 <div class="body">
+                    @if($kycInfo->data_values->image)
+                        <img src="{{ getImage('assets/images/frontend/kyc_info/' . $kycInfo->data_values->image) }}" class="w-100 mb-3" style="max-height: 300px; object-fit: cover;">
+                    @endif
                     <p>{{ __($kycInfo->data_values->verification_content) }}</p>
                     <div class="text-center"><button class="btn btn-view" onclick="" data-dismiss="modal">Close</button></div>
                 </div>
