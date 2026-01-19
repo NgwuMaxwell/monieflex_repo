@@ -47,9 +47,10 @@
                                             <div class="form-group col-lg-6">
                                                 <label>{{ __(@$param->title) }}</label>
                                                 <div class="input-group">
-                                                    <input type="text" class="form-control" value="{{ route($param->value) }}" readonly/>
+                                                    <input type="text" class="form-control" value="{{ $param->value }}" readonly/>
                                                     <button type="button" class="copyInput input-group-text" title="@lang('Copy')"><i class="fa fa-copy"></i></button>
                                                 </div>
++++++++ REPLACE</parameter>
 
                                             </div>
                                         @endforeach
