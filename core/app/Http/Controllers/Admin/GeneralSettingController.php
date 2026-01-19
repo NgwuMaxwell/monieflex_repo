@@ -32,6 +32,8 @@ class GeneralSettingController extends Controller
             'bt_percent' => 'required|gte:0',
             'default_plan' => 'required',
             'timezone' => 'required',
+            'footer_text' => 'nullable|string|max:255',
+            'footer_copyright' => 'nullable|string|max:255',
         ]);
 
         $defaultPlan = $request->default_plan;
@@ -50,6 +52,8 @@ class GeneralSettingController extends Controller
         $general->bt_fixed = $request->bt_fixed;
         $general->bt_percent = $request->bt_percent;
         $general->default_plan = $defaultPlan;
+        $general->footer_text = $request->footer_text;
+        $general->footer_copyright = $request->footer_copyright;
         $general->save();
 
         $timezoneFile = config_path('timezone.php');

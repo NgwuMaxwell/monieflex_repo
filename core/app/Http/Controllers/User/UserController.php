@@ -232,19 +232,26 @@ class UserController extends Controller
     public function buyPlan(Request $request)
     {
         $request->validate([
-            'id' => 'required'
+            'id' => 'required|integer'
         ]);
 
         $plan = Plan::where('status', 1)->findOrFail($request->id);
         $user = auth()->user();
 
-        if ($plan->price > $user->balance) {
-            $notify[] = ['error', 'Oops! You\'ve no sufficient balance'];
+        // Refresh user data from database to get latest balance
+        $user->refresh();
+
+        // Convert both to float for accurate comparison
+        $userBalance = floatval($user->balance);
+        $planPrice = floatval($plan->price);
+
+        if ($planPrice > $userBalance) {
+            $notify[] = ['error', 'Oops! You have insufficient balance. Your balance: ' . showAmount($userBalance) . ' ' . gs()->cur_text . ', Plan price: ' . showAmount($planPrice) . ' ' . gs()->cur_text];
             return back()->withNotify($notify);
         }
 
         if ($user->runningPlan && $user->plan_id == $plan->id) {
-            $notify[] = ['error', 'You couldn\'t subscribe current package till expired'];
+            $notify[] = ['error', 'You couldn\'t subscribe to the current package until it expires'];
             return back()->withNotify($notify);
         }
 
@@ -268,7 +275,6 @@ class UserController extends Controller
 
         levelCommission($user, $plan->price, 'plan_subscribe_commission', $trx);
 
-
         notify($user, 'BUY_PLAN', [
             'plan_name' => $plan->name,
             'amount' => showAmount($plan->price),
@@ -276,7 +282,7 @@ class UserController extends Controller
             'post_balance' => showAmount($user->balance)
         ]);
 
-        $notify[] = ['success', 'You have subscribed to the plan successfully'];
+        $notify[] = ['success', 'You have subscribed to the ' . $plan->name . ' plan successfully!'];
         return back()->withNotify($notify);
     }
 
@@ -313,6 +319,107 @@ class UserController extends Controller
         $refUsers = User::where('ref_by', auth()->user()->id)->with('plan')->paginate(getPaginate());
         $user = auth()->user();
         return view($this->activeTemplate . 'user.referred', compact('pageTitle', 'refUsers', 'user'));
+    }
+
+    public function myPlans()
+    {
+        $pageTitle = "My Plans";
+        $user = auth()->user();
+        
+        // Get all plan subscription transactions for the user
+        $planTransactions = Transaction::where('user_id', $user->id)
+            ->where('remark', 'subscribe_plan')
+            ->orderBy('created_at', 'desc')
+            ->paginate(getPaginate());
+
+        // Process the plan history with detailed information
+        $planHistory = $planTransactions->map(function ($transaction) use ($user) {
+            // Extract plan name from transaction details
+            preg_match('/Subscribe\s+(.+?)\s+Plan/', $transaction->details, $matches);
+            $planName = $matches[1] ?? 'Plan';
+            
+            // Get plan details from the transaction time
+            // We need to find the plan by its name
+            $plan = Plan::where('name', $planName)->first();
+            
+            if (!$plan) {
+                // If plan not found, use default values
+                $validity = 30;
+                $dailyLimit = 0;
+            } else {
+                $validity = $plan->validity;
+                $dailyLimit = $plan->daily_limit;
+            }
+            
+            // Calculate expiry date based on purchase date
+            $expireDate = \Carbon\Carbon::parse($transaction->created_at)->addDays($validity);
+            $isActive = now() < $expireDate;
+            
+            // Determine status
+            if ($isActive) {
+                $statusText = 'Active';
+                $statusClass = 'active';
+            } else {
+                $statusText = 'Completed';
+                $statusClass = 'completed';
+            }
+            
+            return (object) [
+                'plan_name' => $planName,
+                'amount' => $transaction->amount,
+                'created_at' => $transaction->created_at,
+                'expire_date' => $expireDate,
+                'validity' => $validity,
+                'daily_limit' => $dailyLimit,
+                'trx' => $transaction->trx,
+                'is_active' => $isActive,
+                'status_text' => $statusText,
+                'status_class' => $statusClass,
+            ];
+        });
+        
+        // Wrap in paginator manually to maintain pagination
+        $planHistory = $planTransactions;
+        $planHistory->setCollection($planHistory->map(function ($transaction) use ($user) {
+            preg_match('/Subscribe\s+(.+?)\s+Plan/', $transaction->details, $matches);
+            $planName = $matches[1] ?? 'Plan';
+            
+            $plan = Plan::where('name', $planName)->first();
+            
+            if (!$plan) {
+                $validity = 30;
+                $dailyLimit = 0;
+            } else {
+                $validity = $plan->validity;
+                $dailyLimit = $plan->daily_limit;
+            }
+            
+            $expireDate = \Carbon\Carbon::parse($transaction->created_at)->addDays($validity);
+            $isActive = now() < $expireDate;
+            
+            if ($isActive) {
+                $statusText = 'Active';
+                $statusClass = 'active';
+            } else {
+                $statusText = 'Completed';
+                $statusClass = 'completed';
+            }
+            
+            return (object) [
+                'plan_name' => $planName,
+                'amount' => $transaction->amount,
+                'created_at' => $transaction->created_at,
+                'expire_date' => $expireDate,
+                'validity' => $validity,
+                'daily_limit' => $dailyLimit,
+                'trx' => $transaction->trx,
+                'is_active' => $isActive,
+                'status_text' => $statusText,
+                'status_class' => $statusClass,
+            ];
+        }));
+
+        return view($this->activeTemplate . 'user.my_plans', compact('pageTitle', 'planHistory'));
     }
 
     public function transfer()
@@ -404,6 +511,81 @@ class UserController extends Controller
 
 
         $notify[] = ['success', 'Balance transferred successfully'];
+        return back()->withNotify($notify);
+    }
+
+    public function profileComplete()
+    {
+        $pageTitle = 'Complete Profile';
+        $user = auth()->user();
+        return view($this->activeTemplate . 'user.profile_complete', compact('pageTitle', 'user'));
+    }
+
+    public function profileUpdate(Request $request)
+    {
+        $request->validate([
+            'firstname' => 'required|string|max:50',
+            'lastname' => 'required|string|max:50',
+            'mobile' => 'required|string|max:50',
+            'address' => 'required|string|max:255',
+            'city' => 'required|string|max:50',
+            'state' => 'required|string|max:50',
+            'zip' => 'required|string|max:50',
+            'country' => 'required|string|max:50',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+        ]);
+
+        $user = auth()->user();
+        
+        $user->firstname = $request->firstname;
+        $user->lastname = $request->lastname;
+        $user->mobile = $request->mobile;
+        
+        $user->address = [
+            'address' => $request->address,
+            'city' => $request->city,
+            'state' => $request->state,
+            'zip' => $request->zip,
+            'country' => $request->country,
+        ];
+
+        // Handle profile image upload
+        if ($request->hasFile('image')) {
+            try {
+                $path = getFilePath('userProfile');
+                $size = getFileSize('userProfile');
+                $filename = fileUploader($request->image, $path, $size, @$user->image);
+                $user->image = $filename;
+            } catch (\Exception $e) {
+                $notify[] = ['error', 'Image upload failed'];
+                return back()->withNotify($notify);
+            }
+        }
+
+        $user->save();
+
+        $notify[] = ['success', 'Profile updated successfully'];
+        return redirect()->route('user.home')->withNotify($notify);
+    }
+
+    public function passwordUpdate(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        $user = auth()->user();
+
+        if (!\Hash::check($request->current_password, $user->password)) {
+            $notify[] = ['error', 'Current password is incorrect'];
+            return back()->withNotify($notify);
+        }
+
+        $user->password = \Hash::make($request->password);
+        $user->save();
+
+        $notify[] = ['success', 'Password changed successfully'];
         return back()->withNotify($notify);
     }
 }

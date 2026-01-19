@@ -13,6 +13,7 @@
 
                 @yield('panel')
 
+                @include('admin.partials.footer')
 
             </div><!-- bodywrapper__inner end -->
         </div><!-- body-wrapper end -->

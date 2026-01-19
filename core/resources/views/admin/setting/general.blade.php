@@ -93,6 +93,22 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label> @lang('Footer Text')</label>
+                                    <input class="form-control" type="text" name="footer_text" value="{{$general->footer_text ?? 'Developed by Maxtek Digital'}}">
+                                    <small class="text-muted">@lang('Text shown in admin dashboard footer (e.g., Developed by Maxtek Digital)')</small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label> @lang('Footer Copyright')</label>
+                                    <input class="form-control" type="text" name="footer_copyright" value="{{$general->footer_copyright ?? $general->site_name}}">
+                                    <small class="text-muted">@lang('Copyright text shown in footer (e.g., Your Company Name)')</small>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -154,4 +170,3 @@
 
     </script>
 @endpush
-

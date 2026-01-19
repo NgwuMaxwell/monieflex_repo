@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\DashboardLink;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
@@ -13,7 +14,9 @@ class ProfileController extends Controller
     {
         $pageTitle = "Profile Setting";
         $user = auth()->user();
-        return view($this->activeTemplate. 'user.profile_setting', compact('pageTitle','user'));
+        $serviceLinks = DashboardLink::active()->service()->ordered()->get();
+        $contactLinks = DashboardLink::active()->contact()->ordered()->get();
+        return view($this->activeTemplate. 'user.profile_setting', compact('pageTitle','user', 'serviceLinks', 'contactLinks'));
     }
 
     public function submitProfile(Request $request)

@@ -153,6 +153,17 @@ Route::middleware('admin')->group(function () {
     Route::get('/plan', 'PlanController@index')->name('plan.index');
     Route::post('/plan', 'PlanController@savePlan')->name('plan.save');
     Route::get('plan/delete/{id}', 'PlanController@delete')->name('plan.delete');
+    
+    // Plan Subscriptions
+    Route::controller('PlanController')->name('plan.subscription.')->prefix('plan/subscriptions')->group(function () {
+        Route::get('/', 'subscriptions')->name('s');
+        Route::get('/active', 'activeSubscriptions')->name('active');
+        Route::get('/completed', 'completedSubscriptions')->name('completed');
+        Route::get('/details/{id}', 'subscriptionDetails')->name('details');
+        Route::post('/update/{id}', 'updateSubscription')->name('update');
+        Route::get('/deactivate/{id}', 'deactivateSubscription')->name('deactivate');
+        Route::get('/delete/{id}', 'deleteSubscription')->name('delete');
+    });
 
 
     //PTC ADS
@@ -192,6 +203,16 @@ Route::middleware('admin')->group(function () {
         Route::post('ticket/close/{id}', 'closeTicket')->name('ticket.close');
         Route::get('ticket/download/{ticket}', 'ticketDownload')->name('ticket.download');
         Route::post('ticket/delete/{id}', 'ticketDelete')->name('ticket.delete');
+    });
+
+    // Dashboard Links
+    Route::controller('DashboardLinkController')->name('dashboard.links.')->prefix('dashboard-links')->group(function () {
+        Route::get('services', 'serviceLinks')->name('service');
+        Route::get('contacts', 'contactLinks')->name('contact');
+        Route::post('store', 'store')->name('store');
+        Route::post('update/{id}', 'update')->name('update');
+        Route::get('delete/{id}', 'delete')->name('delete');
+        Route::get('toggle/{id}', 'toggleStatus')->name('toggle');
     });
 
 
@@ -286,8 +307,16 @@ Route::middleware('admin')->group(function () {
     Route::get('seo', 'FrontendController@seoEdit')->name('seo');
 
 
-    // Frontend
-    Route::name('frontend.')->prefix('frontend')->group(function () {
+// Blog Management
+Route::name('blog.')->prefix('blog')->controller('BlogManagementController')->group(function () {
+    Route::get('all-posts', 'allPosts')->name('all');
+    Route::get('delete/{id}', 'deletePost')->name('delete');
+    Route::get('comments', 'comments')->name('comments');
+    Route::get('comment/delete/{id}', 'deleteComment')->name('comment.delete');
+});
+
+// Frontend
+Route::name('frontend.')->prefix('frontend')->group(function () {
 
         Route::controller('FrontendController')->group(function () {
             Route::get('templates', 'templates')->name('templates');

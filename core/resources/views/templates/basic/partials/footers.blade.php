@@ -11,10 +11,6 @@
    </style>
 
 
-   <div class="sticky-service" onclick="window.location.href='{{ route('ticket') }} '">
-    <img src="{{asset ('assets/img/icon-service.png')}}">
-</div>
-
    <div class="footer-nav">
     <div class="footer-nav-bg"><img src="{{asset ('assets/img/footer-menubar.png')}}" class="w-100 h-100"></div>
     <div class="nav-set">
@@ -188,7 +184,3 @@
     </script>
 </body>
 </html>
-
-
-
-

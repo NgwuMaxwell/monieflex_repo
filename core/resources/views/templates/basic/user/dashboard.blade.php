@@ -223,9 +223,9 @@
                     <img src="{{asset ('assets/img/icon-invite.png')}}">
                     <span>Invite</span>
                 </div>
-                <div class="nav" onclick="window.location.href=''">
-                    <img src="{{asset ('assets/img/icon-download.png')}}">
-                    <span>Download</span>
+                <div class="nav" onclick="window.location.href='{{ route('user.my.plans') }}'">
+                    <img src="{{asset ('assets/img/icon-bill.png')}}">
+                    <span>My Plans</span>
                 </div>
             </div>
             
@@ -243,17 +243,17 @@
             
             <div class="headings">
                 <div class="title">News Notice</div>
-                <div class="right-link" onclick="window.location.href=''"> <i class="bi bi-chevron-double-right"></i></div>
+                <div class="right-link" onclick="window.location.href='{{ route('user.blog.index') }}'"> <i class="bi bi-chevron-double-right"></i></div>
             </div>
              @foreach($blogs as $blog)
             
-            <div class="news-block" onclick="window.location.href=''">
+            <div class="news-block" onclick="window.location.href='{{ route('user.blog.detail', $blog->id) }}'">
                 <div class="left-img"><img src="{{ getImage('assets/images/frontend/blog/'.$blog->data_values->image) }}" class="w-100 h-100"></div>
                
                 <div class="right">
                     <p>   {{ __($blog->data_values->title) }}  </p>
                     <h6>{{ strLimit(strip_tags($blog->data_values->description),80) }}</h6>
-                    <h6 class="mb-0">Post by admin</h6>
+                    <h6 class="mb-0">Post by admin | {{ $blog->created_at->format('M d, Y') }}</h6>
                 </div>
               
             </div>
@@ -273,40 +273,52 @@
     </script>
 
     <script>
-        function setCookie(cname, cvalue, exdays) {
-            const d = new Date();
-            d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-            let expires = "expires=" + d.toUTCString();
-            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-        }
-    
-        function getCookie(cname) {
-            let name = cname + "=";
-            let decodedCookie = decodeURIComponent(document.cookie);
-            let ca = decodedCookie.split(';');
-            for (let i = 0; i < ca.length; i++) {
-                let c = ca[i];
-                while (c.charAt(0) == ' ') {
-                    c = c.substring(1);
-                }
-                if (c.indexOf(name) == 0) {
-                    return c.substring(name.length, c.length);
-                }
-            }
-            return "";
-        }
-    
         $(document).ready(function() {
-    
-            let user = getCookie("username");
-            if (user != "") {
-    
-            } else {
-    
-                $('#homeModal').modal('toggle');
+            // Get user ID to make storage unique per user
+            const userId = '{{ auth()->id() }}';
+            const storageKey = 'kycModal_' + userId;
+            const activityKey = 'lastActivity_' + userId;
+            
+            const modalData = localStorage.getItem(storageKey);
+            const lastActivity = localStorage.getItem(activityKey);
+            const now = new Date().getTime();
+            const thirtyMinutes = 30 * 60 * 1000; // 30 minutes in milliseconds
+            
+            let shouldShowModal = false;
+            
+            // If modal has never been shown for this user
+            if (!modalData) {
+                shouldShowModal = true;
             }
-    
-    
+            // If user was inactive for 30+ minutes
+            else if (lastActivity) {
+                const timeDiff = now - parseInt(lastActivity);
+                if (timeDiff > thirtyMinutes) {
+                    shouldShowModal = true;
+                }
+            }
+            
+            // Show modal and set storage
+            if (shouldShowModal) {
+                // Set storage FIRST before showing modal
+                localStorage.setItem(storageKey, 'shown');
+                localStorage.setItem(activityKey, now.toString());
+                
+                // Small delay to ensure storage is set
+                setTimeout(function() {
+                    $('#homeModal').modal('show');
+                }, 100);
+            } else {
+                // Just update activity time
+                localStorage.setItem(activityKey, now.toString());
+            }
+        });
+        
+        // Update last activity on user interaction
+        $(document).on('click keypress scroll touchstart', function() {
+            const userId = '{{ auth()->id() }}';
+            const activityKey = 'lastActivity_' + userId;
+            localStorage.setItem(activityKey, new Date().getTime().toString());
         });
 
 

@@ -67,6 +67,12 @@ Route::middleware('auth')->name('user.')->group(function () {
 
                 //Plans
                 Route::post('plans/buy','buyPlan')->name('buyPlan');
+                Route::get('my-plans', 'myPlans')->name('my.plans');
+
+                //Profile Complete
+                Route::get('profile-complete', 'profileComplete')->name('profile.complete');
+                Route::post('profile-update', 'profileUpdate')->name('profile.update');
+                Route::post('password-update', 'passwordUpdate')->name('password.update');
 
                 //Balance Transfer
                 Route::get('transfer-balance','transfer')->name('transfer.balance');
@@ -79,6 +85,13 @@ Route::middleware('auth')->name('user.')->group(function () {
                 Route::post('profile-setting', 'submitProfile');
                 Route::get('change-password', 'changePassword')->name('change.password');
                 Route::post('change-password', 'submitPassword');
+            });
+
+            //Blog
+            Route::controller('BlogController')->group(function(){
+                Route::get('blog', 'index')->name('blog.index');
+                Route::get('blog/{id}', 'detail')->name('blog.detail');
+                Route::post('blog/comment', 'postComment')->name('blog.comment');
             });
 
 

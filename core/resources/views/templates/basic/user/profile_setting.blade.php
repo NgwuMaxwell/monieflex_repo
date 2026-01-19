@@ -90,22 +90,22 @@
 <body>
     <div class="header" id="header">
         <span id="head-txt">User</span>
-        <div class="right-icon" onclick="window.location.href='{{ route('user.change.password') }}'"><img src="{{asset ('assets/img/icon-setting.png')}}" class="w-100 h-100"></div>
+        <div class="right-icon" onclick="window.location.href='{{ route('user.profile.complete') }}'"><img src="{{asset ('assets/img/icon-setting.png')}}" class="w-100 h-100"></div>
     </div>
     <div class="page">
         <div class="banner">
             <div class="profile">
-                <div class="dp"><img src="{{ asset('assets/images/logoIcon/logo.png') }}" class="w-100 h-100"></div>
+                <div class="dp"><img src="{{ getImage(getFilePath('userProfile').'/'. @$user->image, getFileSize('userProfile')) }}" class="w-100 h-100"></div>
                 <div class="txt-right">
                     <div class="number-row">
-                        <span>Status</span>
+                        <span>{{ $user->fullname ?: 'Complete Your Profile' }}</span>
                         <div class="vip-box"> @if ($user->plan)
                             <strong>{{ __($user->plan->name) }}</strong>
                         @else
                 Unpaid Account
                         @endif</div>
                     </div>
-                    <p>ID: 17914</p>
+                    <p>{{ $user->email }}</p>
                 </div>
             </div>
             <div class="top-nav">
@@ -199,7 +199,7 @@ $pageTitle = 'wallet';
                         <p>
                                                   {{ $balance }}
                             <span>{{ $general->cur_text }}</span></p>
-                        <h6>Wallet Banalce</h6>
+                        <h6>Wallet Balance</h6>
                     </div>
                     <div class="part-one d-block">
                         <img src="{{asset ('assets/img/wallet-animation.gif')}}">
@@ -250,25 +250,40 @@ $pageTitle = 'wallet';
                 <!--    <img src="https://rethink.terrawatt.co.in/img/icon-about.png">-->
                 <!--    <span>Lucky</span>-->
                 <!--</div>-->
-                <div class="nav" onclick="window.location.href=''">
-                    <img src="{{asset ('assets/img/icon-download2.png')}}">
-                    <span>Download</span>
+                <div class="nav" onclick="window.location.href='{{ route('user.my.plans') }}'">
+                    <img src="{{asset ('assets/img/icon-bill.png')}}">
+                    <span>My Plans</span>
                 </div>
             </div>
          
             
-                 <div class="mid-link" onclick="window.location.href='{{ route('ticket') }}'">
-                <div class="icon"><img src="{{asset ('assets/img/icon-crowdfund.png')}}" class="w-100"></div>
-                <span> Services</span>
-                <i class="bi bi-chevron-right"></i>
-            </div>
+            @forelse($serviceLinks as $link)
+                <div class="mid-link" onclick="window.location.href='{{ $link->url }}'">
+                    <div class="icon"><img src="{{asset($link->icon ?: 'assets/img/icon-crowdfund.png')}}" class="w-100"></div>
+                    <span>{{ $link->title }}</span>
+                    <i class="bi bi-chevron-right"></i>
+                </div>
+            @empty
+                <div class="mid-link" onclick="window.location.href='{{ route('ticket') }}'">
+                    <div class="icon"><img src="{{asset ('assets/img/icon-crowdfund.png')}}" class="w-100"></div>
+                    <span>Services</span>
+                    <i class="bi bi-chevron-right"></i>
+                </div>
+            @endforelse
             
-            
-                 <div class="mid-link" onclick="window.location.href='https://wa.me/+923042324661'">
-                <div class="icon"><img src="{{asset ('assets/img/icon-crowdfund.png')}}" class="w-100"></div>
-                <span> Contact Developers</span>
-                <i class="bi bi-chevron-right"></i>
-            </div>
+            @forelse($contactLinks as $link)
+                <div class="mid-link" onclick="window.location.href='{{ $link->url }}'">
+                    <div class="icon"><img src="{{asset($link->icon ?: 'assets/img/icon-crowdfund.png')}}" class="w-100"></div>
+                    <span>{{ $link->title }}</span>
+                    <i class="bi bi-chevron-right"></i>
+                </div>
+            @empty
+                <div class="mid-link" onclick="window.location.href='https://wa.me/+923042324661'">
+                    <div class="icon"><img src="{{asset ('assets/img/icon-crowdfund.png')}}" class="w-100"></div>
+                    <span>Contact Developers</span>
+                    <i class="bi bi-chevron-right"></i>
+                </div>
+            @endforelse
             
             
             

@@ -31,11 +31,33 @@
                 </li>
 
 
-                <li class="sidebar-menu-item {{ request()->routeIs('admin.frontend.sections') && request()->route('key') === 'blog' ? 'active' : '' }}">
-                    <a href="{{ route('admin.frontend.sections', 'blog') }}" class="nav-link ">
-                        <i class="menu-icon las la-link"></i>
+                <li class="sidebar-menu-item sidebar-dropdown">
+                    <a href="javascript:void(0)" class="{{menuActive('admin.blog*',3)}}">
+                        <i class="menu-icon las la-newspaper"></i>
                         <span class="menu-title">@lang('Post News')</span>
                     </a>
+                    <div class="sidebar-submenu {{menuActive('admin.blog*',2)}} ">
+                        <ul>
+                            <li class="sidebar-menu-item {{ request()->routeIs('admin.frontend.sections') && request()->route('key') === 'blog' ? 'active' : '' }}">
+                                <a href="{{ route('admin.frontend.sections', 'blog') }}" class="nav-link">
+                                    <i class="menu-icon las la-dot-circle"></i>
+                                    <span class="menu-title">@lang('Create Post')</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-menu-item {{menuActive('admin.blog.all')}} ">
+                                <a href="{{route('admin.blog.all')}}" class="nav-link">
+                                    <i class="menu-icon las la-dot-circle"></i>
+                                    <span class="menu-title">@lang('All Posts')</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-menu-item {{menuActive('admin.blog.comments')}} ">
+                                <a href="{{route('admin.blog.comments')}}" class="nav-link">
+                                    <i class="menu-icon las la-dot-circle"></i>
+                                    <span class="menu-title">@lang('Comments')</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
 
                 <li class="sidebar-menu-item {{menuActive('admin.referrals.*')}}">
@@ -45,11 +67,39 @@
                     </a>
                 </li>
 
-                <li class="sidebar-menu-item {{menuActive('admin.plan.*')}}">
-                    <a href="{{route('admin.plan.index')}}" class="nav-link">
+                <li class="sidebar-menu-item sidebar-dropdown">
+                    <a href="javascript:void(0)" class="{{menuActive('admin.plan*',3)}}">
                         <i class="menu-icon las la-bars"></i>
                         <span class="menu-title">@lang('Subscription Plan')</span>
                     </a>
+                    <div class="sidebar-submenu {{menuActive('admin.plan*',2)}} ">
+                        <ul>
+                            <li class="sidebar-menu-item {{menuActive('admin.plan.index')}} ">
+                                <a href="{{route('admin.plan.index')}}" class="nav-link">
+                                    <i class="menu-icon las la-dot-circle"></i>
+                                    <span class="menu-title">@lang('Add Plan')</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-menu-item {{menuActive('admin.plan.subscription.s')}} ">
+                                <a href="{{route('admin.plan.subscription.s')}}" class="nav-link">
+                                    <i class="menu-icon las la-dot-circle"></i>
+                                    <span class="menu-title">@lang("User's Plans")</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-menu-item {{menuActive('admin.plan.subscription.active')}} ">
+                                <a href="{{route('admin.plan.subscription.active')}}" class="nav-link">
+                                    <i class="menu-icon las la-dot-circle"></i>
+                                    <span class="menu-title">@lang('Active Plans')</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-menu-item {{menuActive('admin.plan.subscription.completed')}} ">
+                                <a href="{{route('admin.plan.subscription.completed')}}" class="nav-link">
+                                    <i class="menu-icon las la-dot-circle"></i>
+                                    <span class="menu-title">@lang('Completed Plans')</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
 
                 <li class="sidebar-menu-item sidebar-dropdown">
@@ -389,6 +439,29 @@
                     </div>
                 </li>
 
+                <li class="sidebar-menu-item sidebar-dropdown">
+                    <a href="javascript:void(0)" class="{{menuActive('admin.dashboard.links*',3)}}">
+                        <i class="menu-icon la la-link"></i>
+                        <span class="menu-title">@lang('Dashboard Links')</span>
+                    </a>
+                    <div class="sidebar-submenu {{menuActive('admin.dashboard.links*',2)}} ">
+                        <ul>
+                            <li class="sidebar-menu-item {{menuActive('admin.dashboard.links.service')}} ">
+                                <a href="{{route('admin.dashboard.links.service')}}" class="nav-link">
+                                    <i class="menu-icon las la-dot-circle"></i>
+                                    <span class="menu-title">@lang('Services')</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-menu-item {{menuActive('admin.dashboard.links.contact')}} ">
+                                <a href="{{route('admin.dashboard.links.contact')}}" class="nav-link">
+                                    <i class="menu-icon las la-dot-circle"></i>
+                                    <span class="menu-title">@lang('Contact Developers')</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
 
                 <li class="sidebar-menu-item sidebar-dropdown">
                     <a href="javascript:void(0)" class="{{menuActive('admin.report*',3)}}">
@@ -632,10 +705,6 @@
                     </a>
                 </li>
             </ul>
-            <div class="text-center mb-3 text-uppercase">
-                <span class="text--primary">{{__(systemDetails()['name'])}}</span>
-                <span class="text--success">@lang('V'){{systemDetails()['version']}} </span>
-            </div>
         </div>
     </div>
 </div>
