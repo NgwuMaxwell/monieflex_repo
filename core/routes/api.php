@@ -2,6 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Gateway\Paystack\ProcessController;
+
+Route::post('/paystack/webhook', [ProcessController::class, 'ipn'])->name('paystack.webhook');
+
 /*
 |--------------------------------------------------------------------------
 | API Routes

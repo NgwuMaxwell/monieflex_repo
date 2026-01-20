@@ -1,0 +1,10 @@
+[20-Jan-2026 12:17:26 UTC] PHP Warning:  require(/home/dec2026/monieflex.site/core/vendor/autoload.php): Failed to open stream: No such file or directory in /home/dec2026/monieflex.site/index.php on line 34
+[20-Jan-2026 12:17:26 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/dec2026/monieflex.site/core/vendor/autoload.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/dec2026/monieflex.site/index.php:34
+Stack trace:
+#0 {main}
+  thrown in /home/dec2026/monieflex.site/index.php on line 34
+[20-Jan-2026 12:17:41 UTC] PHP Warning:  require(/home/dec2026/monieflex.site/core/vendor/autoload.php): Failed to open stream: No such file or directory in /home/dec2026/monieflex.site/index.php on line 34
+[20-Jan-2026 12:17:41 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/dec2026/monieflex.site/core/vendor/autoload.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/dec2026/monieflex.site/index.php:34
+Stack trace:
+#0 {main}
+  thrown in /home/dec2026/monieflex.site/index.php on line 34
