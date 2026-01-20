@@ -24,14 +24,14 @@ class PaystackGatewaySeeder extends Seeder
         $gateway->alias = 'paystack';
         $gateway->image = null;
         $gateway->status = 0; // Disabled by default
-        // Don't use json_encode - model casts will handle it
-        $gateway->gateway_parameters = [
-            'public_key' => [
+        // Use proper object structure with stdClass for nested properties
+        $gateway->gateway_parameters = (object)[
+            'public_key' => (object)[
                 'title' => 'Public Key',
                 'global' => true,
                 'value' => 'pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
             ],
-            'secret_key' => [
+            'secret_key' => (object)[
                 'title' => 'Secret Key',
                 'global' => true,
                 'value' => 'sk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'

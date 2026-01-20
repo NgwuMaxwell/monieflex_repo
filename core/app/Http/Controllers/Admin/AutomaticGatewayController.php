@@ -94,7 +94,6 @@ class AutomaticGatewayController extends Controller
 
         // gateway_parameters is already cast to object by the model, no need to json_decode
         $parameters = collect($gateway->gateway_parameters);
-+++++++ REPLACE</parameter>
 
         foreach ($parameters->where('global', true) as $key => $pram) {
             $parameters[$key]->value = $request->global[$key];
@@ -183,7 +182,6 @@ class AutomaticGatewayController extends Controller
 
         // gateway_parameters is already cast to object by the model, no need to json_decode
         $paramList = collect($gateway->gateway_parameters);
-+++++++ REPLACE</parameter>
         $supportedCurrencies = collect($gateway->supported_currencies)->flip()->implode(',');
 
         foreach ($paramList->where('global', true) as $key => $pram) {
