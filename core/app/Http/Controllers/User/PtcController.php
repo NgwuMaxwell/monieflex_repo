@@ -46,6 +46,11 @@ class PtcController extends Controller
         }
         $pageTitle = 'Show Advertisement';
         $ptc = Ptc::where('id',$id)->where('remain','>',0)->where('status',1)->firstOrFail();
+
+        // Convert YouTube URL to embed format if necessary
+        if ($ptc->ads_type == 4) {
+            $ptc->ads_body = $this->convertToEmbedUrl($ptc->ads_body);
+        }
         if ($user->id == $ptc->user_id) {
             $notify[] = ['error','You couldn\'t view your own advertisement'];
             return back()->withNotify($notify);
@@ -267,7 +272,7 @@ class PtcController extends Controller
         }elseif($request->ads_type == 3){
             $ptc->ads_body = $request->script;
         }else{
-            $ptc->ads_body = $request->youtube;
+            $ptc->ads_body = $this->convertToEmbedUrl($request->youtube);
         }
 
         $ptc->save();
@@ -301,6 +306,43 @@ class PtcController extends Controller
         }
         $ptc->save();
         return back()->withNotify($notify);
+    }
+
+    private function convertToEmbedUrl($url)
+    {
+        // If already an embed URL, ensure it has parameters
+        if (strpos($url, 'youtube.com/embed/') !== false || strpos($url, 'youtube-nocookie.com/embed/') !== false) {
+            $parsedUrl = parse_url($url);
+            $videoId = basename($parsedUrl['path']);
+            return 'https://www.youtube.com/embed/' . $videoId . '?rel=0&modestbranding=1';
+        }
+
+        // Extract video ID from various YouTube URL formats
+        $videoId = null;
+
+        // youtu.be/VIDEO_ID (with optional query parameters)
+        if (preg_match('/youtu\.be\/([a-zA-Z0-9_-]+)(?:\?|&|$)/', $url, $matches)) {
+            $videoId = $matches[1];
+        }
+        // youtube.com/watch?v=VIDEO_ID (with optional additional parameters)
+        elseif (preg_match('/youtube\.com\/watch\?.*v=([a-zA-Z0-9_-]+)/', $url, $matches)) {
+            $videoId = $matches[1];
+        }
+        // youtube.com/v/VIDEO_ID (old format)
+        elseif (preg_match('/youtube\.com\/v\/([a-zA-Z0-9_-]+)/', $url, $matches)) {
+            $videoId = $matches[1];
+        }
+        // youtube.com/embed/VIDEO_ID
+        elseif (preg_match('/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/', $url, $matches)) {
+            $videoId = $matches[1];
+        }
+
+        if ($videoId) {
+            return 'https://www.youtube-nocookie.com/embed/' . $videoId . '?rel=0&modestbranding=1&autoplay=1';
+        }
+
+        // If no video ID found, return original URL (could be invalid, but let validation handle it)
+        return $url;
     }
 
     private function userPostEnabled()

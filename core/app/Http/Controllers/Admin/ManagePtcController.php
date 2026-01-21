@@ -172,7 +172,7 @@ class ManagePtcController extends Controller
         } elseif ($request->ads_type == 3) {
             $ptc->ads_body = $request->script;
         } else {
-            $ptc->ads_body = $request->youtube;
+            $ptc->ads_body = $this->convertToEmbedUrl($request->youtube);
         }
         $ptc->save();
     }
@@ -187,6 +187,43 @@ class ManagePtcController extends Controller
         $ptc->delete();
         $notify[] = ['success', 'PTC ad deleted successfully.'];
         return back()->withNotify($notify);
+    }
+
+    private function convertToEmbedUrl($url)
+    {
+        // If already an embed URL, ensure it has parameters
+        if (strpos($url, 'youtube.com/embed/') !== false || strpos($url, 'youtube-nocookie.com/embed/') !== false) {
+            $parsedUrl = parse_url($url);
+            $videoId = basename($parsedUrl['path']);
+            return 'https://www.youtube.com/embed/' . $videoId . '?rel=0&modestbranding=1';
+        }
+
+        // Extract video ID from various YouTube URL formats
+        $videoId = null;
+
+        // youtu.be/VIDEO_ID (with optional query parameters)
+        if (preg_match('/youtu\.be\/([a-zA-Z0-9_-]+)(?:\?|&|$)/', $url, $matches)) {
+            $videoId = $matches[1];
+        }
+        // youtube.com/watch?v=VIDEO_ID (with optional additional parameters)
+        elseif (preg_match('/youtube\.com\/watch\?.*v=([a-zA-Z0-9_-]+)/', $url, $matches)) {
+            $videoId = $matches[1];
+        }
+        // youtube.com/v/VIDEO_ID (old format)
+        elseif (preg_match('/youtube\.com\/v\/([a-zA-Z0-9_-]+)/', $url, $matches)) {
+            $videoId = $matches[1];
+        }
+        // youtube.com/embed/VIDEO_ID
+        elseif (preg_match('/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/', $url, $matches)) {
+            $videoId = $matches[1];
+        }
+
+        if ($videoId) {
+            return 'https://www.youtube-nocookie.com/embed/' . $videoId . '?rel=0&modestbranding=1&autoplay=1';
+        }
+
+        // If no video ID found, return original URL (could be invalid, but let validation handle it)
+        return $url;
     }
 
     public function validation($request, $rules = [])

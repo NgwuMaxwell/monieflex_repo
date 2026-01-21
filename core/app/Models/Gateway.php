@@ -11,7 +11,8 @@ class Gateway extends Model
         'code' => 'string',
         'extra' => 'object',
         'input_form'=> 'object',
-        'supported_currencies'=>'object'
+        'supported_currencies'=>'object',
+        'gateway_parameters' => 'object'
     ];
 
     public function currencies()

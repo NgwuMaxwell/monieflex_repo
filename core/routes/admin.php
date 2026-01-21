@@ -80,8 +80,11 @@ Route::middleware('admin')->group(function () {
         // Automatic Gateway
         Route::controller('AutomaticGatewayController')->group(function () {
             Route::get('automatic', 'index')->name('automatic.index');
+            Route::get('automatic/create', 'create')->name('automatic.create');
+            Route::post('automatic/store', 'store')->name('automatic.store');
             Route::get('automatic/edit/{alias}', 'edit')->name('automatic.edit');
             Route::post('automatic/update/{code}', 'update')->name('automatic.update');
+            Route::get('automatic/delete/{code}', 'delete')->name('automatic.delete');
             Route::post('automatic/remove/{id}', 'remove')->name('automatic.remove');
             Route::post('automatic/activate/{code}', 'activate')->name('automatic.activate');
             Route::post('automatic/deactivate/{code}', 'deactivate')->name('automatic.deactivate');

@@ -17,13 +17,61 @@ class AutomaticGatewayController extends Controller
         return view('admin.gateways.automatic.list', compact('pageTitle', 'gateways'));
     }
 
+    public function create()
+    {
+        $pageTitle = 'Add New Gateway';
+        return view('admin.gateways.automatic.create', compact('pageTitle'));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'alias' => 'required|string|max:255|unique:gateways,alias',
+            'code' => 'required|integer|unique:gateways,code|max:999',
+            'supported_currencies' => 'required|array',
+        ]);
+
+        $gateway = new Gateway();
+        $gateway->name = $request->name;
+        $gateway->alias = $request->alias;
+        $gateway->code = $request->code;
+        $gateway->image = $request->image ?? null;
+        $gateway->status = 0;
+        $gateway->gateway_parameters = $request->gateway_parameters ?? '[]';
+        $gateway->supported_currencies = json_encode($request->supported_currencies);
+        $gateway->crypto = 0;
+        $gateway->description = $request->description;
+        $gateway->save();
+
+        $notify[] = ['success', 'Gateway created successfully'];
+        return redirect()->route('admin.gateway.automatic.index')->withNotify($notify);
+    }
+
+    public function delete($code)
+    {
+        $gateway = Gateway::where('code', $code)->firstOrFail();
+        
+        // Delete all associated currencies
+        $gateway->currencies()->delete();
+        
+        // Delete the gateway
+        $gateway->delete();
+
+        $notify[] = ['success', $gateway->name . ' deleted successfully'];
+        return back()->withNotify($notify);
+    }
+
     public function edit($alias)
     {
         $gateway = Gateway::automatic()->with('currencies','currencies.method')->where('alias', $alias)->firstOrFail();
         $pageTitle = 'Update Gateway';
 
         $supportedCurrencies = collect($gateway->supported_currencies)->except($gateway->currencies->pluck('currency'));
-        $parameters = collect(json_decode($gateway->gateway_parameters));
+        
+        // gateway_parameters is already cast to object by the model, no need to json_decode
+        $parameters = collect($gateway->gateway_parameters);
+        
         $globalParameters = null;
         $hasCurrencies = false;
         $currencyIndex = 1;
@@ -44,7 +92,8 @@ class AutomaticGatewayController extends Controller
         $this->gatewayValidator($request)->validate();
         $this->gatewayCurrencyValidator($request, $gateway)->validate();
 
-        $parameters = collect(json_decode($gateway->gateway_parameters));
+        // gateway_parameters is already cast to object by the model, no need to json_decode
+        $parameters = collect($gateway->gateway_parameters);
 
         foreach ($parameters->where('global', true) as $key => $pram) {
             $parameters[$key]->value = $request->global[$key];
@@ -131,7 +180,8 @@ class AutomaticGatewayController extends Controller
         $customAttributes = [];
         $validationRule = [];
 
-        $paramList = collect(json_decode($gateway->gateway_parameters));
+        // gateway_parameters is already cast to object by the model, no need to json_decode
+        $paramList = collect($gateway->gateway_parameters);
         $supportedCurrencies = collect($gateway->supported_currencies)->flip()->implode(',');
 
         foreach ($paramList->where('global', true) as $key => $pram) {
