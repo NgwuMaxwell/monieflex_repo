@@ -30,6 +30,13 @@
                     </a>
                 </li>
 
+                <li class="sidebar-menu-item {{menuActive('admin.notices*')}}">
+                    <a href="{{route('admin.notices.index')}}" class="nav-link ">
+                        <i class="menu-icon las la-bullhorn"></i>
+                        <span class="menu-title">@lang('Scrolling Notices')</span>
+                    </a>
+                </li>
+
 
                 <li class="sidebar-menu-item sidebar-dropdown">
                     <a href="javascript:void(0)" class="{{menuActive('admin.blog*',3)}}">

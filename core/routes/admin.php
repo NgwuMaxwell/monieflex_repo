@@ -311,12 +311,23 @@ Route::middleware('admin')->group(function () {
     Route::get('seo', 'FrontendController@seoEdit')->name('seo');
 
 
-// Blog Management
+    // Blog Management
 Route::name('blog.')->prefix('blog')->controller('BlogManagementController')->group(function () {
     Route::get('all-posts', 'allPosts')->name('all');
     Route::get('delete/{id}', 'deletePost')->name('delete');
     Route::get('comments', 'comments')->name('comments');
     Route::get('comment/delete/{id}', 'deleteComment')->name('comment.delete');
+});
+
+// Notices Management
+Route::controller('NoticeController')->name('notices.')->prefix('notices')->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::get('create', 'create')->name('create');
+    Route::post('store', 'store')->name('store');
+    Route::get('edit/{id}', 'edit')->name('edit');
+    Route::post('update/{id}', 'update')->name('update');
+    Route::get('delete/{id}', 'delete')->name('delete');
+    Route::get('status/{id}', 'status')->name('status');
 });
 
 // Frontend

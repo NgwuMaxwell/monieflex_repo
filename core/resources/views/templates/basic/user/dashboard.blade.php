@@ -204,8 +204,25 @@
             
             
             <div class="news-area">
-                <img src="https://rethink.terrawatt.co.in/img/icon-notice.png">
-                <marquee  > <font style="color:black;">Congratulations to user 598****661 for successfully withdrawing 8632{{ $general->cur_text }};Congratulations to user 983****124 for upgrading to VIP4, product profit increased by 1.2%;Congratulations to user 632****966 for upgrading to VIP2, product profit increased by 0.6%;Congratulations to user 856****778 for successfully withdrawing 1894{{ $general->cur_text }};</marquee></font>
+                @php
+                    $notices = \App\Models\Notice::active()->ordered()->get();
+                    $noticeImage = $notices->where('image', '!=', null)->first();
+                    $noticeTexts = $notices->pluck('content')->implode(';');
+                @endphp
+                @if($noticeImage)
+                    <img src="{{ getImage('assets/images/notice/' . $noticeImage->image) }}" style="width: 15px; height: 15px;">
+                @else
+                    <img src="https://rethink.terrawatt.co.in/img/icon-notice.png">
+                @endif
+                <marquee>
+                    <font style="color:black;">
+                        @if($noticeTexts)
+                            {{ $noticeTexts }}
+                        @else
+                            Congratulations to user 598****661 for successfully withdrawing 8632{{ $general->cur_text }};Congratulations to user 983****124 for upgrading to VIP4, product profit increased by 1.2%;Congratulations to user 632****966 for upgrading to VIP2, product profit increased by 0.6%;Congratulations to user 856****778 for successfully withdrawing 1894{{ $general->cur_text }};
+                        @endif
+                    </font>
+                </marquee>
             </div>
         </div>
         
