@@ -30,17 +30,49 @@ class AddDailyProfits extends Command
     public function handle()
     {
         $today = now()->toDateString();
+        $now = now();
 
         // Get all users with active plans
         $activeUsers = User::whereNotNull('plan_id')
-            ->where('expire_date', '>', now())
+            ->where('expire_date', '>', $now)
             ->with('plan')
             ->get();
 
         $this->info('Processing ' . $activeUsers->count() . ' active plan users');
 
         foreach ($activeUsers as $user) {
-            // Check if profit already added today for this user and plan
+            // Find the plan subscription transaction to get purchase date
+            $planTransaction = \App\Models\Transaction::where('user_id', $user->id)
+                ->where('remark', 'subscribe_plan')
+                ->where('details', 'like', '%'.$user->plan->name.'%')
+                ->orderBy('created_at', 'desc')
+                ->first();
+
+            if (!$planTransaction) {
+                $this->info("No subscription transaction found for user {$user->id}");
+                continue;
+            }
+
+            $purchaseDate = $planTransaction->created_at;
+            $hoursSincePurchase = $purchaseDate->diffInHours($now);
+
+            // Only start adding profits after 24 hours
+            if ($hoursSincePurchase < 24) {
+                $this->info("User {$user->id} plan purchased {$hoursSincePurchase} hours ago - waiting 24 hours");
+                continue;
+            }
+
+            // Calculate which day this profit represents (1-based)
+            $daysSincePurchase = $purchaseDate->diffInDays($now);
+            $profitDay = $daysSincePurchase; // Day 1 is 24 hours after purchase
+
+            // Don't add profits beyond plan validity
+            if ($profitDay > $user->plan->validity) {
+                $this->info("User {$user->id} has reached maximum profit days");
+                continue;
+            }
+
+            // Check if profit already added for this day
             $existingProfit = PlanProfit::where('user_id', $user->id)
                 ->where('plan_id', $user->plan_id)
                 ->where('profit_date', $today)
@@ -67,7 +99,7 @@ class AddDailyProfits extends Command
             $user->profit_wallet += $dailyProfit;
             $user->save();
 
-            $this->info("Added profit of {$dailyProfit} to user {$user->id}");
+            $this->info("Added profit of {$dailyProfit} to user {$user->id} for day {$profitDay}");
         }
 
         $this->info('Daily profit distribution completed');
