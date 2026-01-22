@@ -216,39 +216,42 @@ class ManageUsersController extends Controller
         $request->validate([
             'amount' => 'required|numeric|gt:0',
             'act' => 'required|in:add,sub',
+            'wallet_type' => 'required|in:balance,profit_wallet',
             'remark' => 'required|string|max:255',
         ]);
 
         $user = User::findOrFail($id);
         $amount = $request->amount;
+        $walletType = $request->wallet_type;
         $general = gs();
         $trx = getTrx();
 
         $transaction = new Transaction();
+        $walletName = $walletType === 'balance' ? 'Wallet Balance' : 'Profit Wallet';
 
         if ($request->act == 'add') {
-            $user->balance += $amount;
+            $user->{$walletType} += $amount;
 
             $transaction->trx_type = '+';
-            $transaction->remark = 'balance_add';
+            $transaction->remark = $walletType . '_add';
 
             $notifyTemplate = 'BAL_ADD';
 
-            $notify[] = ['success', $general->cur_sym . $amount . ' added successfully'];
+            $notify[] = ['success', $general->cur_sym . $amount . ' added to ' . $walletName . ' successfully'];
 
         } else {
-            if ($amount > $user->balance) {
-                $notify[] = ['error', $user->username . ' doesn\'t have sufficient balance.'];
+            if ($amount > $user->{$walletType}) {
+                $notify[] = ['error', $user->username . ' doesn\'t have sufficient balance in ' . $walletName . '.'];
                 return back()->withNotify($notify);
             }
 
-            $user->balance -= $amount;
+            $user->{$walletType} -= $amount;
 
             $transaction->trx_type = '-';
-            $transaction->remark = 'balance_subtract';
+            $transaction->remark = $walletType . '_subtract';
 
             $notifyTemplate = 'BAL_SUB';
-            $notify[] = ['success', $general->cur_sym . $amount . ' subtracted successfully'];
+            $notify[] = ['success', $general->cur_sym . $amount . ' subtracted from ' . $walletName . ' successfully'];
         }
 
         $user->save();

@@ -263,6 +263,13 @@
                     <input type="hidden" name="act">
                     <div class="modal-body">
                         <div class="form-group">
+                            <label>@lang('Select Wallet')</label>
+                            <select name="wallet_type" class="form-control" required>
+                                <option value="balance">@lang('Wallet Balance')</option>
+                                <option value="profit_wallet">@lang('Profit Wallet')</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label>@lang('Amount')</label>
                             <div class="input-group">
                                 <input type="number" step="any" name="amount" class="form-control" placeholder="@lang('Please provide positive amount')" required>
