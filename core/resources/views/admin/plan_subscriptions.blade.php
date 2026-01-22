@@ -23,7 +23,11 @@ Let me update the task progress and provide a summary of what has been implement
                                     // Extract plan name from transaction details
                                     preg_match('/Subscribe\s+(.+?)\s+Plan/', $subscription->details, $matches);
                                     $planName = $matches[1] ?? 'Plan';
-                                    
+
+                                    // Get the correct plan_id for this subscription
+                                    $plan = \App\Models\Plan::where('name', $planName)->first();
+                                    $planId = $plan ? $plan->id : 1;
+
                                     // Check if subscription is active
                                     $isActive = $subscription->user && $subscription->user->expire_date && $subscription->user->expire_date > now();
                                 @endphp
@@ -55,7 +59,7 @@ Let me update the task progress and provide a summary of what has been implement
                                                     data-url="{{ route('admin.plan.subscription.details', $subscription->id) }}">
                                                 <i class="la la-cog"></i> @lang('Manage')
                                             </button>
-                                            <a href="{{ route('admin.plan.subscription.progress', [$subscription->user_id, $subscription->user->plan_id ?? 1]) }}"
+                                            <a href="{{ route('admin.plan.subscription.progress', [$subscription->user_id, $planId]) }}"
                                                class="btn btn-sm btn-outline--success">
                                                 <i class="la la-eye"></i> @lang('View Progress')
                                             </a>
