@@ -382,9 +382,6 @@ class UserController extends Controller
             ];
         });
         
-        // Set the processed collection to maintain pagination
-        $planHistory->setCollection($planHistory);
-
         return view($this->activeTemplate . 'user.my_plans', compact('pageTitle', 'planHistory'));
     }
 
