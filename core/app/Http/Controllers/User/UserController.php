@@ -261,6 +261,22 @@ class UserController extends Controller
         $user->plan_id = $plan->id;
         $user->save();
 
+        // Calculate daily profit for ROI
+        $totalRoi = ($plan->price * $plan->roi_percentage) / 100;
+        $dailyProfit = $totalRoi / $plan->validity;
+
+        // Create first profit entry for today
+        \App\Models\PlanProfit::create([
+            'user_id' => $user->id,
+            'plan_id' => $plan->id,
+            'daily_profit' => $dailyProfit,
+            'profit_date' => now()->toDateString(),
+        ]);
+
+        // Add first day's profit to profit wallet
+        $user->profit_wallet += $dailyProfit;
+        $user->save();
+
         $trx = getTrx();
         $transaction = new Transaction();
         $transaction->user_id = $user->id;

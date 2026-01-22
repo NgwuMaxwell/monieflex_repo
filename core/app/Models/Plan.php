@@ -6,5 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Plan extends Model
 {
-
+    protected $casts = [
+        'roi_percentage' => 'decimal:2'
+    ];
 }

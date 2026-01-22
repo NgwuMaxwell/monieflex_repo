@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+Let me update the task progress and provide a summary of what has been implemented.@extends('admin.layouts.app')
 @section('panel')
     <div class="row">
         <div class="col-lg-12">
@@ -49,11 +49,17 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <button type="button" class="btn btn-sm btn-outline--primary manageBtn" 
-                                                data-id="{{ $subscription->id }}"
-                                                data-url="{{ route('admin.plan.subscription.details', $subscription->id) }}">
-                                            <i class="la la-cog"></i> @lang('Manage')
-                                        </button>
+                                        <div class="d-flex gap-1">
+                                            <button type="button" class="btn btn-sm btn-outline--primary manageBtn"
+                                                    data-id="{{ $subscription->id }}"
+                                                    data-url="{{ route('admin.plan.subscription.details', $subscription->id) }}">
+                                                <i class="la la-cog"></i> @lang('Manage')
+                                            </button>
+                                            <a href="{{ route('admin.plan.subscription.progress', [$subscription->user_id, $subscription->user->plan_id ?? 1]) }}"
+                                               class="btn btn-sm btn-outline--success">
+                                                <i class="la la-eye"></i> @lang('View Progress')
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty

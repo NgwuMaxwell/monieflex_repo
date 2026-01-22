@@ -162,6 +162,7 @@ Route::middleware('admin')->group(function () {
         Route::get('/', 'subscriptions')->name('s');
         Route::get('/active', 'activeSubscriptions')->name('active');
         Route::get('/completed', 'completedSubscriptions')->name('completed');
+        Route::get('/progress/{userId}/{planId}', 'planProgress')->name('progress');
         Route::get('/details/{id}', 'subscriptionDetails')->name('details');
         Route::post('/update/{id}', 'updateSubscription')->name('update');
         Route::get('/deactivate/{id}', 'deactivateSubscription')->name('deactivate');

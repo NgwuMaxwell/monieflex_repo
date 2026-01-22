@@ -12,6 +12,7 @@
                             <th scope="col">@lang('Price')</th>
                             <th scope="col">@lang('Limit/Day')</th>
                             <th scope="col">@lang('Validity')</th>
+                            <th scope="col">@lang('ROI %')</th>
                             <th scope="col">@lang('Referral Commission')</th>
                             <th scope="col">@lang('Status')</th>
                             <th scope="col">@lang('Action')</th>
@@ -25,6 +26,7 @@
 
                             <td data-label="@lang('Limit/Day')">{{ $plan->daily_limit}} @lang('PTC')</td>
                             <td data-label="@lang('Validity')">{{ $plan->validity}} @lang('Day')</td>
+                            <td data-label="@lang('ROI %')">{{ $plan->roi_percentage }}%</td>
                             <td data-label="@lang('Referral Commission')">@lang('up to') <span class="font-weight-bold text-primary px-3">{{ $plan->ref_level }} </span>@lang('level')</td>
                             <td data-label="@lang('Status')">
                                 @if($plan->status == 1)
@@ -36,7 +38,7 @@
                                 @endif
                             </td>
                             <td data-label="@lang('Action')">
-                                <button class="btn btn-outline--primary btn-sm planBtn" data-id="{{ $plan->id }}" data-name="{{ $plan->name }}" data-price="{{ getAmount($plan->price) }}" data-daily_limit="{{ $plan->daily_limit }}" data-validity="{{ $plan->validity }}" data-status="{{ $plan->status }}" data-ref_level="{{ $plan->ref_level}}" data-image="{{ $plan->image }}" data-act="Edit">
+                                <button class="btn btn-outline--primary btn-sm planBtn" data-id="{{ $plan->id }}" data-name="{{ $plan->name }}" data-price="{{ getAmount($plan->price) }}" data-daily_limit="{{ $plan->daily_limit }}" data-validity="{{ $plan->validity }}" data-roi_percentage="{{ $plan->roi_percentage }}" data-status="{{ $plan->status }}" data-ref_level="{{ $plan->ref_level}}" data-image="{{ $plan->image }}" data-act="Edit">
                                     <i class="la la-pencil"></i> @lang('Edit')
                                 </button>
                                 <a class="btn btn-outline--danger btn-sm" href="{{ route('admin.plan.delete', $plan->id) }}" onclick="return confirm('Are you sure you want to delete this plan?')">
@@ -93,6 +95,13 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="roi_percentage">@lang('ROI Percentage')</label>
+                        <div class="input-group">
+                            <input type="number" step="0.01" class="form-control" name="roi_percentage" placeholder="@lang('ROI Percentage')" required>
+                            <div class="input-group-text">%</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="details">@lang('Referral Commission') </label>
                         <select name="ref_level" class="form-control" required>
                             <option value="0"> @lang('NO Referral Commission')</option>
@@ -138,6 +147,7 @@
             modal.find('input[name=price]').val($(this).data('price'));
             modal.find('input[name=daily_limit]').val($(this).data('daily_limit'));
             modal.find('input[name=validity]').val($(this).data('validity'));
+            modal.find('input[name=roi_percentage]').val($(this).data('roi_percentage'));
             modal.find('input[name=status]').bootstrapToggle($(this).data('status') == 1 ? 'on' : 'off');
             modal.find('select[name=ref_level]').val($(this).data('ref_level'));
             if($(this).data('id') == 0){

@@ -26,7 +26,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'address' => 'object',
         'kyc_data' => 'object',
-        'ver_code_send_at' => 'datetime'
+        'ver_code_send_at' => 'datetime',
+        'profit_wallet' => 'decimal:2'
     ];
 
 
@@ -89,6 +90,11 @@ class User extends Authenticatable
     public function refBy()
     {
         return $this->belongsTo(User::class,'ref_by');
+    }
+
+    public function planProfits()
+    {
+        return $this->hasMany(PlanProfit::class);
     }
 
     // SCOPES
