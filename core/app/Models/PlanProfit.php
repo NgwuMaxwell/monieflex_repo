@@ -6,11 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class PlanProfit extends Model
 {
-    protected $fillable = ['user_id', 'plan_id', 'daily_profit', 'profit_date'];
+    protected $fillable = ['user_id', 'plan_subscription_id', 'amount', 'day', 'total_days'];
 
     protected $casts = [
-        'profit_date' => 'date',
-        'daily_profit' => 'decimal:2'
+        'amount' => 'decimal:2'
     ];
 
     public function user()
@@ -20,6 +19,6 @@ class PlanProfit extends Model
 
     public function plan()
     {
-        return $this->belongsTo(Plan::class);
+        return $this->belongsTo(Plan::class, 'plan_subscription_id');
     }
 }

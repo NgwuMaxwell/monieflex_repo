@@ -74,12 +74,12 @@ class AddDailyProfits extends Command
 
             // Check if profit already added for this day
             $existingProfit = PlanProfit::where('user_id', $user->id)
-                ->where('plan_id', $user->plan_id)
-                ->where('profit_date', $today)
+                ->where('plan_subscription_id', $user->plan_id)
+                ->where('day', $profitDay)
                 ->first();
 
             if ($existingProfit) {
-                $this->info("Profit already added for user {$user->id} today");
+                $this->info("Profit already added for user {$user->id} day {$profitDay}");
                 continue;
             }
 
@@ -90,9 +90,10 @@ class AddDailyProfits extends Command
             // Create profit record
             PlanProfit::create([
                 'user_id' => $user->id,
-                'plan_id' => $user->plan_id,
-                'daily_profit' => $dailyProfit,
-                'profit_date' => $today,
+                'plan_subscription_id' => $user->plan_id,
+                'amount' => $dailyProfit,
+                'day' => $profitDay,
+                'total_days' => $user->plan->validity,
             ]);
 
             // Add to profit wallet
