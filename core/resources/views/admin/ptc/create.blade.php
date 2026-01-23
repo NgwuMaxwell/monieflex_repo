@@ -51,6 +51,7 @@
                                 <option value="2" {{ old('ads_type')==2?'selected':'' }}>@lang('Banner / Image')</option>
                                 <option value="3" {{ old('ads_type')==3?'selected':'' }}>@lang('Script / Code')</option>
                                 <option value="4" {{ old('ads_type')==4?'selected':'' }}>@lang('Youtube Embeded Link')</option>
+                                <option value="5" {{ old('ads_type')==5?'selected':'' }}>@lang('Custom Video')</option>
                             </select>
                         </div>
                         <div class="form-group col-md-8" id="websiteLink">
@@ -68,6 +69,11 @@
                         <div class="form-group col-md-8 d-none" id="script">
                             <label>@lang('Script')</label>
                             <textarea  name="script" class="form-control">{{ old('script') }}</textarea>
+                        </div>
+                        <div class="form-group col-md-8 d-none" id="customVideo">
+                            <label>@lang('Video')</label>
+                            <input type="file" class="form-control" name="custom_video" accept="video/*">
+                            <small class="form-text text-muted">@lang('Supported formats: MP4, AVI, MOV, WMV. Max size: 50MB')</small>
                         </div>
                     </div>
                     <div class="form-group col-md-12 mt-3">
@@ -96,21 +102,31 @@
                 $("#bannerImage").addClass('d-none');
                 $("#script").addClass('d-none');
                 $("#youtube").addClass('d-none');
+                $("#customVideo").addClass('d-none');
             } else if (adType == 2) {
                 $("#bannerImage").removeClass('d-none');
                 $("#websiteLink").addClass('d-none');
                 $("#script").addClass('d-none');
                 $("#youtube").addClass('d-none');
+                $("#customVideo").addClass('d-none');
             } else if(adType == 3) {
                 $("#bannerImage").addClass('d-none');
                 $("#websiteLink").addClass('d-none');
                 $("#script").removeClass('d-none');
                 $("#youtube").addClass('d-none');
-            } else {
+                $("#customVideo").addClass('d-none');
+            } else if(adType == 4) {
                 $("#bannerImage").addClass('d-none');
                 $("#websiteLink").addClass('d-none');
                 $("#script").addClass('d-none');
                 $("#youtube").removeClass('d-none');
+                $("#customVideo").addClass('d-none');
+            } else if(adType == 5) {
+                $("#bannerImage").addClass('d-none');
+                $("#websiteLink").addClass('d-none');
+                $("#script").addClass('d-none');
+                $("#youtube").addClass('d-none');
+                $("#customVideo").removeClass('d-none');
             }
         }).change();
     })(jQuery);

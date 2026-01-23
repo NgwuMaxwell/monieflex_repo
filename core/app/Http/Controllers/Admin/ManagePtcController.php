@@ -71,10 +71,11 @@ class ManagePtcController extends Controller
     public function store(Request $request)
     {
         $this->validation($request, [
-            'website_link' => 'nullable|url|required_without_all:banner_image,script,youtube',
-            'banner_image' => 'nullable|mimes:jpeg,jpg,png,gif|required_without_all:website_link,script,youtube',
-            'script' => 'nullable|required_without_all:website_link,banner_image,youtube',
-            'youtube' => 'nullable|url|required_without_all:website_link,banner_image,script',
+            'website_link' => 'nullable|url|required_without_all:banner_image,script,youtube,custom_video',
+            'banner_image' => 'nullable|mimes:jpeg,jpg,png,gif|required_without_all:website_link,script,youtube,custom_video',
+            'script' => 'nullable|required_without_all:website_link,banner_image,youtube,custom_video',
+            'youtube' => 'nullable|url|required_without_all:website_link,banner_image,script,custom_video',
+            'custom_video' => 'nullable|mimes:mp4,avi,mov,wmv|max:51200|required_without_all:website_link,banner_image,script,youtube',
         ]);
 
         $ptc = new Ptc();
@@ -112,8 +113,10 @@ class ManagePtcController extends Controller
                 $price = @$general->ads_setting->ad_price->image ?? 0;
             } elseif ($ptc->ads_type == 3) {
                 $price = @$general->ads_setting->ad_price->script ?? 0;
-            } else {
+            } elseif ($ptc->ads_type == 4) {
                 $price = @$general->ads_setting->ad_price->youtube ?? 0;
+            } else {
+                $price = @$general->ads_setting->ad_price->video ?? 0;
             }
             $amount = $ptc->remain * $price;
             $user->balance += $amount;
@@ -171,8 +174,19 @@ class ManagePtcController extends Controller
             }
         } elseif ($request->ads_type == 3) {
             $ptc->ads_body = $request->script;
-        } else {
+        } elseif ($request->ads_type == 4) {
             $ptc->ads_body = $this->convertToEmbedUrl($request->youtube);
+        } elseif ($request->ads_type == 5) {
+            if ($request->hasFile('custom_video')) {
+                if ($isUpdate == 1) {
+                    $old = $ptc->ads_body;
+                    fileManager()->removeFile(getFilePath('ptc') . '/' . $old);
+                }
+                $directory = date("Y") . "/" . date("m") . "/" . date("d");
+                $path = getFilePath('ptc') . '/' . $directory;
+                $filename = $directory . '/' . fileUploader($request->custom_video, $path);
+                $ptc->ads_body = $filename;
+            }
         }
         $ptc->save();
     }
@@ -181,7 +195,7 @@ class ManagePtcController extends Controller
     public function delete($id)
     {
         $ptc = Ptc::findOrFail($id);
-        if($ptc->ads_type == 2 && $ptc->ads_body){
+        if(($ptc->ads_type == 2 || $ptc->ads_type == 5) && $ptc->ads_body){
             fileManager()->removeFile(getFilePath('ptc') . '/' . $ptc->ads_body);
         }
         $ptc->delete();

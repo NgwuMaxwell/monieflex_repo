@@ -86,11 +86,28 @@
                         <textarea  name="script" class="form-control">{{ $ptc->ads_body }}</textarea>
                     </div>
 
-                    @else
+                    @elseif($ptc->ads_type == 4)
                         <div class="form-group col-md-8">
                             <label>@lang('Youtube Embaded Link') <span class="text-danger">*</span></label>
                             <input type="text" name="youtube" class="form-control" value="{{ $ptc->ads_body }}">
                         </div>
+                    @elseif($ptc->ads_type == 5)
+
+                    <div class="form-group col-md-4 ">
+                        <label>@lang('Video')</label>
+                        <input type="file" class="form-control" name="custom_video" accept="video/*">
+                        <small class="form-text text-muted">@lang('Supported formats: MP4, AVI, MOV, WMV. Max size: 50MB')</small>
+                    </div>
+
+                       <div class="form-group col-md-4 ">
+
+                        <label>@lang('Current Video') <span class="text-danger">*</span></label>
+                        <video width="200" height="150" controls>
+                            <source src="{{ asset('assets/images/ptc/' . $ptc->ads_body) }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+
+                    </div>
                     @endif
                 </div>
                 <div class="form-group col-md-12 mt-3">
