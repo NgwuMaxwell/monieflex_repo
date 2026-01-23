@@ -79,7 +79,7 @@ class Ptc extends Model
         }elseif($this->ads_type == 4){
             $html = '<span class="badge badge--primary"><i class="fa fa-video"></i>'.trans('Youtube Link').'</span>';
         }elseif($this->ads_type == 5){
-            $html = '<span class="badge badge--info"><i class="fa fa-video"></i>'.trans('Custom Video').'</span>';
+            $html = '<span class="badge badge--primary"><i class="fa fa-video"></i>'.trans('Custom Video').'</span>';
         }else{
             $html = '<span class="badge badge--primary"><i class="fa fa-code"></i>'.trans('Unknown').'</span>';
         }
