@@ -103,9 +103,12 @@
 
                         <label>@lang('Current Video') <span class="text-danger">*</span></label>
                         <video width="200" height="150" controls>
-                            <source src="{{ getImage(getFilePath('ptc').'/'.$ptc->ads_body) }}" type="video/mp4">
+                            <source src="{{ asset('assets/images/ptc/' . $ptc->ads_body) }}" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
+                        @if(!file_exists(public_path('assets/images/ptc/' . $ptc->ads_body)))
+                            <p class="text-danger small">Video file not found at: {{ 'assets/images/ptc/' . $ptc->ads_body }}</p>
+                        @endif
 
                     </div>
                     @endif
