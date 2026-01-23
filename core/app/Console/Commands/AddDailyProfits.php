@@ -56,30 +56,38 @@ class AddDailyProfits extends Command
             $purchaseDate = $planTransaction->created_at;
             $hoursSincePurchase = $purchaseDate->diffInHours($now);
 
-            // Only start adding profits after 24 hours
-            if ($hoursSincePurchase < 24) {
-                $this->info("User {$user->id} plan purchased {$hoursSincePurchase} hours ago - waiting 24 hours");
+            // Calculate which day of profits this should be (1-based, starting after 24 hours)
+            $profitDay = floor($hoursSincePurchase / 24);
+
+            // Skip if it's Day 0 (less than 24 hours since purchase)
+            if ($profitDay < 1) {
+                $this->info("User {$user->id} plan purchased {$hoursSincePurchase} hours ago - waiting for Day 1 profits (24+ hours)");
                 continue;
             }
-
-            // Calculate which day this profit represents (1-based)
-            $daysSincePurchase = $purchaseDate->diffInDays($now);
-            $profitDay = $daysSincePurchase; // Day 1 is 24 hours after purchase
 
             // Don't add profits beyond plan validity
             if ($profitDay > $user->plan->validity) {
-                $this->info("User {$user->id} has reached maximum profit days");
+                $this->info("User {$user->id} has reached maximum profit days ({$user->plan->validity})");
                 continue;
             }
 
-            // Check if profit already added for this day
+            // Calculate the date when this profit should be earned (purchase date + profit day)
+            $profitEarnedDate = $purchaseDate->copy()->addDays($profitDay)->toDateString();
+
+            // Only add profit if we're on or past the date it should be earned
+            if ($today < $profitEarnedDate) {
+                $this->info("User {$user->id} profit for day {$profitDay} not yet due (earned on: {$profitEarnedDate})");
+                continue;
+            }
+
+            // Check if profit already added for this specific profit day
             $existingProfit = PlanProfit::where('user_id', $user->id)
                 ->where('plan_id', $user->plan_id)
-                ->where('profit_date', $today)
+                ->where('profit_date', $profitEarnedDate)
                 ->first();
 
             if ($existingProfit) {
-                $this->info("Profit already added for user {$user->id} today");
+                $this->info("Profit already added for user {$user->id} for day {$profitDay} (date: {$profitEarnedDate})");
                 continue;
             }
 
@@ -92,11 +100,18 @@ class AddDailyProfits extends Command
                 'user_id' => $user->id,
                 'plan_id' => $user->plan_id,
                 'daily_profit' => $dailyProfit,
-                'profit_date' => $today,
+                'profit_date' => $profitEarnedDate,
             ]);
 
             // Add to profit wallet
             $user->profit_wallet += $dailyProfit;
+
+            // If this is the last profit day and return_capital is enabled, add the capital back
+            if ($profitDay == $user->plan->validity && $user->plan->return_capital) {
+                $user->profit_wallet += $user->plan->price;
+                $this->info("Returned capital of {$user->plan->price} to user {$user->id} for completing plan");
+            }
+
             $user->save();
 
             $this->info("Added profit of {$dailyProfit} to user {$user->id} for day {$profitDay}");

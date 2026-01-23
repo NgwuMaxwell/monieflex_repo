@@ -68,6 +68,7 @@ Route::middleware('auth')->name('user.')->group(function () {
                 //Plans
                 Route::post('plans/buy','buyPlan')->name('buyPlan');
                 Route::get('my-plans', 'myPlans')->name('my.plans');
+                Route::get('plan-progress/{planId}', 'planProgress')->name('plan.progress');
 
                 //Profile Complete
                 Route::get('profile-complete', 'profileComplete')->name('profile.complete');

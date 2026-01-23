@@ -76,10 +76,20 @@
         <div class="container">
             @if($planHistory->count() > 0)
                 @foreach($planHistory as $history)
+                    @php
+                        // Get plan ID from plan name for the progress link
+                        $planForProgress = \App\Models\Plan::where('name', $history->plan_name)->first();
+                        $planId = $planForProgress ? $planForProgress->id : 1;
+                    @endphp
                     <div class="plan-card">
                         <div class="header-row">
                             <div class="plan-name">{{ __($history->plan_name) }}</div>
-                            <div class="status-badge {{ $history->status_class }}">{{ $history->status_text }}</div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div class="status-badge {{ $history->status_class }}">{{ $history->status_text }}</div>
+                                <a href="{{ route('user.plan.progress', $planId) }}" class="btn btn-sm" style="background: #3244a8; color: #fff; border-radius: 20px; padding: 5px 15px; font-size: 12px; font-weight: 600; text-decoration: none;">
+                                    <i class="fas fa-eye"></i> View Progress
+                                </a>
+                            </div>
                         </div>
                         
                         <div class="plan-details">

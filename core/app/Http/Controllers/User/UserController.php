@@ -391,6 +391,79 @@ class UserController extends Controller
         return view($this->activeTemplate . 'user.my_plans', compact('pageTitle', 'planHistory', 'originalPlanHistory'));
     }
 
+    public function planProgress($planId)
+    {
+        $pageTitle = 'Plan Progress';
+
+        // Get current user
+        $user = auth()->user();
+
+        // Get plan
+        $plan = \App\Models\Plan::findOrFail($planId);
+
+        // Find the most recent plan subscription transaction for this plan
+        $latestSubscription = \App\Models\Transaction::where('user_id', $user->id)
+            ->where('remark', 'subscribe_plan')
+            ->where('details', 'like', '%'.$plan->name.'%')
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        // Get profit records only for profits earned after this subscription
+        $profits = collect(); // Start with empty collection
+        if ($latestSubscription) {
+            $subscriptionDate = $latestSubscription->created_at;
+
+            // Get profits for this plan that were earned after the subscription date
+            $profits = \App\Models\PlanProfit::where('user_id', $user->id)
+                ->where('plan_id', $planId)
+                ->where('profit_date', '>=', $subscriptionDate->toDateString())
+                ->orderBy('profit_date', 'desc')
+                ->get();
+        }
+
+        // Calculate totals
+        $totalProfitsAdded = $profits->sum('daily_profit');
+        $totalExpectedProfits = ($plan->price * $plan->roi_percentage) / 100;
+        $remainingProfits = $totalExpectedProfits - $totalProfitsAdded;
+
+        // Calculate days elapsed more accurately - based on time since purchase
+        $purchaseDate = \App\Models\Transaction::where('user_id', $user->id)
+            ->where('remark', 'subscribe_plan')
+            ->where('details', 'like', '%'.$plan->name.'%')
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        $daysElapsed = 0;
+        if ($purchaseDate) {
+            $hoursSincePurchase = $purchaseDate->created_at->diffInHours(now());
+            $potentialDaysElapsed = floor($hoursSincePurchase / 24);
+            $daysElapsed = min($potentialDaysElapsed, $plan->validity);
+        }
+
+        $totalDays = $plan->validity;
+        $remainingDays = max(0, $totalDays - $daysElapsed);
+
+        // Calculate expected profits per day
+        $expectedDailyProfit = $totalExpectedProfits / $totalDays;
+
+        // Check if plan is still active
+        $isActive = $user->plan_id == $planId && $user->expire_date > now();
+
+        return view($this->activeTemplate . 'user.plan_progress', compact(
+            'pageTitle',
+            'user',
+            'plan',
+            'profits',
+            'totalProfitsAdded',
+            'totalExpectedProfits',
+            'remainingProfits',
+            'daysElapsed',
+            'totalDays',
+            'remainingDays',
+            'isActive'
+        ));
+    }
+
     public function transfer()
     {
         $pageTitle = 'Transfer Balance';

@@ -40,6 +40,7 @@ class PlanController extends Controller
         $plan->ref_level = $request->ref_level;
         $plan->validity = $request->validity;
         $plan->roi_percentage = $request->roi_percentage;
+        $plan->return_capital = isset($request->return_capital) ? 1 : 0;
         $plan->status = isset($request->status) ? 1:0;
 
         if($request->hasFile('image')){
@@ -113,19 +114,50 @@ class PlanController extends Controller
         // Get plan
         $plan = \App\Models\Plan::findOrFail($planId);
 
-        // Get all profit records for this user and plan
-        $profits = \App\Models\PlanProfit::where('user_id', $userId)
-            ->where('plan_id', $planId)
-            ->orderBy('profit_date', 'desc')
-            ->get();
+        // Find the most recent plan subscription transaction for this user and plan
+        $latestSubscription = \App\Models\Transaction::where('user_id', $userId)
+            ->where('remark', 'subscribe_plan')
+            ->where('details', 'like', '%'.$plan->name.'%')
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        // Get profit records only for profits earned after this subscription
+        $profits = collect(); // Start with empty collection
+        if ($latestSubscription) {
+            $subscriptionDate = $latestSubscription->created_at;
+
+            // Get profits for this plan that were earned after the subscription date
+            $profits = \App\Models\PlanProfit::where('user_id', $userId)
+                ->where('plan_id', $planId)
+                ->where('profit_date', '>=', $subscriptionDate->toDateString())
+                ->orderBy('profit_date', 'desc')
+                ->get();
+        }
 
         // Calculate totals
         $totalProfitsAdded = $profits->sum('daily_profit');
         $totalExpectedProfits = ($plan->price * $plan->roi_percentage) / 100;
         $remainingProfits = $totalExpectedProfits - $totalProfitsAdded;
-        $daysElapsed = $profits->count();
+
+        // Calculate days elapsed more accurately - count profits that should have been earned by now
+        $purchaseDate = \App\Models\Transaction::where('user_id', $userId)
+            ->where('remark', 'subscribe_plan')
+            ->where('details', 'like', '%'.$plan->name.'%')
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        $daysElapsed = 0;
+        if ($purchaseDate) {
+            $hoursSincePurchase = $purchaseDate->created_at->diffInHours(now());
+            $potentialDaysElapsed = floor($hoursSincePurchase / 24);
+            $daysElapsed = min($potentialDaysElapsed, $plan->validity);
+        }
+
         $totalDays = $plan->validity;
         $remainingDays = max(0, $totalDays - $daysElapsed);
+
+        // Calculate expected profits per day
+        $expectedDailyProfit = $totalExpectedProfits / $totalDays;
 
         // Check if plan is still active
         $isActive = $user->plan_id == $planId && $user->expire_date > now();
