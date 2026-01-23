@@ -103,7 +103,7 @@
 
                         <label>@lang('Current Video') <span class="text-danger">*</span></label>
                         <video width="200" height="150" controls>
-                            <source src="{{ asset('assets/images/ptc/' . $ptc->ads_body) }}" type="video/mp4">
+                            <source src="{{ getImage(getFilePath('ptc').'/'.$ptc->ads_body) }}" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
 
