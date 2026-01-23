@@ -76,11 +76,13 @@ class Ptc extends Model
             $html = '<span class="badge badge--dark"><i class="fa fa-image"></i>'.trans('Image').'</span>';
         }elseif($this->ads_type == 3){
             $html = '<span class="badge badge--primary"><i class="fa fa-code"></i>'.trans('Script').'</span>';
+        }elseif($this->ads_type == 4){
+            $html = '<span class="badge badge--primary"><i class="fa fa-video"></i>'.trans('Youtube Link').'</span>';
+        }elseif($this->ads_type == 5){
+            $html = '<span class="badge badge--info"><i class="fa fa-video"></i>'.trans('Custom Video').'</span>';
         }else{
-            $html = '<span class="badge badge--primary"><i class="fa fa-code"></i>'.trans('Youtube Link').'</span>';
+            $html = '<span class="badge badge--primary"><i class="fa fa-code"></i>'.trans('Unknown').'</span>';
         }
         return $html;
-
-
     }
 }
