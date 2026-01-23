@@ -195,6 +195,9 @@
                     confirmButton.setAttribute('type', 'submit');
                     confirmButton.className = "btn btn-success";
                     document.getElementById('confirm-form').setAttribute('action', '{{ route('user.ptc.confirm', encrypt($ptc->id . '|' . auth()->user()->id)) }}');
+
+                    // Try to unmute video when user interacts with captcha
+                    tryToUnmuteVideo();
                 } else {
                     var confirmButton = document.getElementById("confirm");
                     confirmButton.setAttribute('disabled', '');
@@ -223,7 +226,56 @@
                     }
                 }
             }
-            window.onload = move;
+
+            // Function to try unmuting video after user interaction
+            function tryToUnmuteVideo() {
+                const video = document.getElementById('ptcVideo');
+                if (video) {
+                    video.muted = false;
+                    video.volume = 1.0;
+                    // Try to play again to ensure it's unmuted
+                    video.play().catch(function(error) {
+                        console.log('Video unmute failed:', error);
+                        // If unmute fails, keep it muted but playing
+                        video.muted = true;
+                        video.play();
+                    });
+                }
+            }
+
+            // Add click event to document to try unmuting on any user interaction
+            document.addEventListener('click', function() {
+                tryToUnmuteVideo();
+            }, { once: true }); // Only trigger once
+
+            // Also try on keypress
+            document.addEventListener('keypress', function() {
+                tryToUnmuteVideo();
+            }, { once: true });
+
+            window.onload = function() {
+                move();
+
+                // Try to unmute after a short delay (browsers may allow this)
+                setTimeout(function() {
+                    tryToUnmuteVideo();
+                }, 1000);
+
+                // Ensure video plays and loops if needed
+                const video = document.getElementById('ptcVideo');
+                if (video) {
+                    video.addEventListener('ended', function() {
+                        // If video ends, restart it
+                        video.currentTime = 0;
+                        video.play();
+                    });
+
+                    // Force play on load
+                    video.play().catch(function(error) {
+                        console.log('Initial video play failed:', error);
+                    });
+                }
+            };
         })(jQuery, document);
     </script>
 
@@ -240,7 +292,7 @@
             </div>
         @elseif($ptc->ads_type == 5)
             <div class="d-flex justify-content-center align-items-center" style="position: absolute; top: 86px; left: 0; right: 0; bottom: 0; padding: 20px; box-sizing: border-box;">
-                <video controls autoplay muted style="max-width: 100%; max-height: 100%;">
+                <video id="ptcVideo" autoplay muted playsinline disablepictureinpicture controlslist="nodownload" style="max-width: 100%; max-height: 100%; pointer-events: none;">
                     <source src="{{ url('assets/images/ptc/' . $ptc->ads_body) }}" type="video/mp4">
                     <source src="{{ url('assets/images/ptc/' . $ptc->ads_body) }}" type="video/avi">
                     <source src="{{ url('assets/images/ptc/' . $ptc->ads_body) }}" type="video/mov">
