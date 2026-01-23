@@ -54,66 +54,63 @@
                 <div class="row pt-5 mt-5 border-top">
                     <div class="form-group col-md-4">
                         <label for="ads_type">@lang('Advertisement Type')</label>
-                        <input type="hidden" name="ads_type" value="{{$ptc->ads_type}}">
-                        <div class="pt-3">
-                            @php echo $ptc->typeBadge @endphp
-                        </div>
+                        <select class="form-control" id="ads_type" name="ads_type" required>
+                            <option value="1" {{ $ptc->ads_type == 1 ? 'selected' : '' }}>@lang('Link / URL')</option>
+                            <option value="2" {{ $ptc->ads_type == 2 ? 'selected' : '' }}>@lang('Banner / Image')</option>
+                            <option value="3" {{ $ptc->ads_type == 3 ? 'selected' : '' }}>@lang('Script / Code')</option>
+                            <option value="4" {{ $ptc->ads_type == 4 ? 'selected' : '' }}>@lang('Youtube Embeded Link')</option>
+                            <option value="5" {{ $ptc->ads_type == 5 ? 'selected' : '' }}>@lang('Custom Video')</option>
+                        </select>
                     </div>
-                    @if($ptc->ads_type == 1)
 
-                    <div class="form-group col-md-8">
+                    <div class="form-group col-md-8" id="websiteLink" style="{{ $ptc->ads_type == 1 ? '' : 'display: none;' }}">
                         <label>@lang('Link') <span class="text-danger">*</span></label>
-                        <input type="text" name="website_link" class="form-control" value="{{ $ptc->ads_body }}" placeholder="@lang('http://example.com')">
-                    </div>
-                    @elseif($ptc->ads_type == 2)
-
-                    <div class="form-group col-md-4 ">
-                        <label>@lang('Banner')</label>
-                        <input type="file" class="form-control"  name="banner_image">
+                        <input type="text" name="website_link" class="form-control" value="{{ $ptc->ads_type == 1 ? $ptc->ads_body : '' }}" placeholder="@lang('http://example.com')">
                     </div>
 
-                       <div class="form-group col-md-4 ">
-
-                        <label>@lang('Current Banner') <span class="text-danger">*</span></label>
-                        <img src="{{ getImage(getFilePath('ptc').'/'.$ptc->ads_body) }}" class="w-100">
-
-                    </div>
-
-                    @elseif($ptc->ads_type == 3)
-
-                    <div class="form-group col-md-8">
-                        <label>@lang('Script') <span class="text-danger">*</span></label>
-                        <textarea  name="script" class="form-control">{{ $ptc->ads_body }}</textarea>
-                    </div>
-
-                    @elseif($ptc->ads_type == 4)
-                        <div class="form-group col-md-8">
-                            <label>@lang('Youtube Embaded Link') <span class="text-danger">*</span></label>
-                            <input type="text" name="youtube" class="form-control" value="{{ $ptc->ads_body }}">
+                    <div class="form-group col-md-8" id="bannerImage" style="{{ $ptc->ads_type == 2 ? '' : 'display: none;' }}">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label>@lang('Banner')</label>
+                                <input type="file" class="form-control" name="banner_image">
+                            </div>
+                            @if($ptc->ads_type == 2)
+                            <div class="form-group col-md-6">
+                                <label>@lang('Current Banner') <span class="text-danger">*</span></label>
+                                <img src="{{ getImage(getFilePath('ptc').'/'.$ptc->ads_body) }}" class="w-100">
+                            </div>
+                            @endif
                         </div>
-                    @elseif($ptc->ads_type == 5)
-
-                    <div class="form-group col-md-4 ">
-                        <label>@lang('Video')</label>
-                        <input type="file" class="form-control" name="custom_video" accept="video/*">
-                        <small class="form-text text-muted">@lang('Supported formats: MP4, AVI, MOV, WMV. Max size: 50MB')</small>
                     </div>
 
-                       <div class="form-group col-md-4 ">
-
-                        <label>@lang('Current Video') <span class="text-danger">*</span></label>
-                        <video width="200" height="150" controls>
-                            <source src="{{ url('assets/images/ptc/' . $ptc->ads_body) }}" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                        @if(!file_exists(public_path('assets/images/ptc/' . $ptc->ads_body)))
-                            <p class="text-danger small">Video file not found at: {{ 'assets/images/ptc/' . $ptc->ads_body }}</p>
-                        @else
-                            <p class="text-success small">Video file found and accessible</p>
-                        @endif
-
+                    <div class="form-group col-md-8" id="script" style="{{ $ptc->ads_type == 3 ? '' : 'display: none;' }}">
+                        <label>@lang('Script') <span class="text-danger">*</span></label>
+                        <textarea name="script" class="form-control">{{ $ptc->ads_type == 3 ? $ptc->ads_body : '' }}</textarea>
                     </div>
-                    @endif
+
+                    <div class="form-group col-md-8" id="youtube" style="{{ $ptc->ads_type == 4 ? '' : 'display: none;' }}">
+                        <label>@lang('Youtube Embaded Link') <span class="text-danger">*</span></label>
+                        <input type="text" name="youtube" class="form-control" value="{{ $ptc->ads_type == 4 ? $ptc->ads_body : '' }}">
+                    </div>
+
+                    <div class="form-group col-md-8" id="customVideo" style="{{ $ptc->ads_type == 5 ? '' : 'display: none;' }}">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label>@lang('Video')</label>
+                                <input type="file" class="form-control" name="custom_video" accept="video/*">
+                                <small class="form-text text-muted">@lang('Supported formats: MP4, AVI, MOV, WMV. Max size: 50MB')</small>
+                            </div>
+                            @if($ptc->ads_type == 5)
+                            <div class="form-group col-md-6">
+                                <label>@lang('Current Video') <span class="text-danger">*</span></label>
+                                <video width="200" height="150" controls>
+                                    <source src="{{ url('assets/images/ptc/' . $ptc->ads_body) }}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group col-md-12 mt-3">
                     <button type="submit" class="btn btn--primary h-45 w-100">@lang('Submit')</button>
@@ -137,25 +134,35 @@
         $('#ads_type').change(function(){
             var adType = $(this).val();
             if (adType == 1) {
-                $("#websiteLink").removeClass('d-none');
-                $("#bannerImage").addClass('d-none');
-                $("#script").addClass('d-none');
-                $("#youtube").addClass('d-none');
+                $("#websiteLink").show();
+                $("#bannerImage").hide();
+                $("#script").hide();
+                $("#youtube").hide();
+                $("#customVideo").hide();
             } else if (adType == 2) {
-                $("#bannerImage").removeClass('d-none');
-                $("#websiteLink").addClass('d-none');
-                $("#script").addClass('d-none');
-                $("#youtube").addClass('d-none');
+                $("#bannerImage").show();
+                $("#websiteLink").hide();
+                $("#script").hide();
+                $("#youtube").hide();
+                $("#customVideo").hide();
             } else if(adType == 3) {
-                $("#bannerImage").addClass('d-none');
-                $("#websiteLink").addClass('d-none');
-                $("#script").removeClass('d-none');
-                $("#youtube").addClass('d-none');
-            } else {
-                $("#bannerImage").addClass('d-none');
-                $("#websiteLink").addClass('d-none');
-                $("#script").addClass('d-none');
-                $("#youtube").removeClass('d-none');
+                $("#bannerImage").hide();
+                $("#websiteLink").hide();
+                $("#script").show();
+                $("#youtube").hide();
+                $("#customVideo").hide();
+            } else if(adType == 4) {
+                $("#bannerImage").hide();
+                $("#websiteLink").hide();
+                $("#script").hide();
+                $("#youtube").show();
+                $("#customVideo").hide();
+            } else if(adType == 5) {
+                $("#bannerImage").hide();
+                $("#websiteLink").hide();
+                $("#script").hide();
+                $("#youtube").hide();
+                $("#customVideo").show();
             }
         }).change();
 
