@@ -181,31 +181,10 @@
             </div>
         </div>
     </nav>
-    <script>
+        <script>
         (function($, document) {
             "use strict";
-            $('#cap_result').on('input', function() {
-                var val1 = document.getElementById("cap_number_1").value;
-                var val2 = document.getElementById("cap_number_2").value;
-                var val3 = document.getElementById("cap_result").value;
-                var sum = parseInt(+val1 + +val2);
-                if (sum == val3) {
-                    var confirmButton = document.getElementById("confirm");
-                    confirmButton.removeAttribute('disabled');
-                    confirmButton.setAttribute('type', 'submit');
-                    confirmButton.className = "btn btn-success";
-                    document.getElementById('confirm-form').setAttribute('action', '{{ route('user.ptc.confirm', encrypt($ptc->id . '|' . auth()->user()->id)) }}');
-
-                    // Try to unmute video when user interacts with captcha
-                    tryToUnmuteVideo();
-                } else {
-                    var confirmButton = document.getElementById("confirm");
-                    confirmButton.setAttribute('disabled', '');
-                    confirmButton.className = "btn btn-danger";
-                    confirmButton.removeAttribute('href', '#');
-                }
-            });
-
+            
             function move() {
                 var elem = document.getElementById("myBar");
                 var width = 0;
@@ -214,8 +193,11 @@
                 function frame() {
                     if (width >= 100) {
                         var confirmButton = document.getElementById("confirm");
-                        confirmButton.className = "btn btn-danger mt-sm-0 mt-2";
-                        confirmButton.innerHTML = "Confirm Earn";
+                        confirmButton.className = "btn btn-success mt-sm-0 mt-2";
+                        confirmButton.innerHTML = "Complete Task";
+                        confirmButton.removeAttribute('disabled');
+                        confirmButton.setAttribute('type', 'submit');
+                        document.getElementById('confirm-form').setAttribute('action', '{{ route('user.ptc.confirm', encrypt($ptc->id . '|' . auth()->user()->id)) }}');
                         var captchaInputHidden = document.getElementById("inputcaptchahidden");
                         captchaInputHidden.classList.remove("d-none");
                         clearInterval(id);
