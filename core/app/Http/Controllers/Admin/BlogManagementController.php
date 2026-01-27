@@ -20,7 +20,7 @@ class BlogManagementController extends Controller
         $blog = Frontend::where('data_keys', 'blog.element')->findOrFail($id);
         
         // Delete image if exists
-        if($blog->data_values->image) {
+        if($blog->data_values && isset($blog->data_values->image)) {
             $imagePath = getFilePath('blog') . '/' . $blog->data_values->image;
             if(file_exists($imagePath)) {
                 @unlink($imagePath);
