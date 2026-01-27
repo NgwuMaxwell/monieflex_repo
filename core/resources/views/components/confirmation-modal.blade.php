@@ -9,6 +9,7 @@
             </div>
             <form action="" method="POST">
                 @csrf
+                @method('DELETE')
                 <div class="modal-body">
                     <p class="question"></p>
                 </div>
