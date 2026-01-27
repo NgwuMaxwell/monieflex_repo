@@ -201,7 +201,7 @@
                         <div class="input-group-prepend">
                             <div class="input-group-text">Referral Code</div>
                         </div>
-                        <input type="text" name="referral_code" class="form-control" placeholder="Enter referral code (optional)" value="{{ session()->get('ref') }}">
+                        <input type="text" name="referral_code" class="form-control" placeholder="Enter referral code (optional)" value="{{ session()->get('ref') }}" readonly>
                     </div>
                 </div>
 

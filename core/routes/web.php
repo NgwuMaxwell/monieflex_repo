@@ -16,8 +16,8 @@ Route::get('/ref/{ref}', function (Request $request, $ref) {
     // Store the value of the "ref" parameter in the session
     $request->session()->put('ref', $ref);
 
-    // Redirect the user to the desired page
-    return redirect('/');
+    // Redirect the user to the register page instead of home
+    return redirect('/user/register');
 });
 
 // User Support Ticket
