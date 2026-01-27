@@ -315,6 +315,7 @@ Route::middleware('admin')->group(function () {
 Route::name('blog.')->prefix('blog')->controller('BlogManagementController')->group(function () {
     Route::get('all-posts', 'allPosts')->name('all');
     Route::delete('delete/{id}', 'deletePost')->name('delete');
+    Route::get('delete/{id}', 'deletePost')->name('delete.get');
     Route::get('comments', 'comments')->name('comments');
     Route::get('comment/delete/{id}', 'deleteComment')->name('comment.delete');
 });
