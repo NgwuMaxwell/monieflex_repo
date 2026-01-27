@@ -17,20 +17,25 @@ class BlogManagementController extends Controller
 
     public function deletePost($id)
     {
-        $blog = Frontend::where('data_keys', 'blog.element')->findOrFail($id);
-        
-        // Delete image if exists
-        if($blog->data_values && isset($blog->data_values->image)) {
-            $imagePath = getFilePath('blog') . '/' . $blog->data_values->image;
-            if(file_exists($imagePath)) {
-                @unlink($imagePath);
+        try {
+            $blog = Frontend::where('data_keys', 'blog.element')->findOrFail($id);
+            
+            // Delete image if exists
+            if($blog->data_values && isset($blog->data_values->image)) {
+                $imagePath = getFilePath('blog') . '/' . $blog->data_values->image;
+                if(file_exists($imagePath)) {
+                    @unlink($imagePath);
+                }
             }
+            
+            $blog->delete();
+            
+            $notify[] = ['success', 'Blog post deleted successfully'];
+            return back()->withNotify($notify);
+        } catch (\Exception $e) {
+            $notify[] = ['error', 'Error deleting blog post: ' . $e->getMessage()];
+            return back()->withNotify($notify);
         }
-        
-        $blog->delete();
-        
-        $notify[] = ['success', 'Blog post deleted successfully'];
-        return back()->withNotify($notify);
     }
 
     public function comments()
