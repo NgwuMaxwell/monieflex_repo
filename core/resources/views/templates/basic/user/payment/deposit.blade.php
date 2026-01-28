@@ -190,29 +190,13 @@
                         <input type="hidden" name="selected_channel" class="selected_channel" value="">
                         <div class="title">Amount</div>
                         <div class="amt-sets">
-                            <button type="button" type="button" onclick="amountset('5000')" class="btn-amt active">
+                            <button type="button" type="button" onclick="amountset('6000')" class="btn-amt active">
                                 <div class="icon">{{__($general->cur_text)}}</div>
-                                <span>5,000</span>
+                                <span>6,000</span>
                             </button>
                             <button type="button" type="button" onclick="amountset('10000')" class="btn-amt">
                                 <div class="icon">{{__($general->cur_text)}}</div>
                                 <span>10,000</span>
-                            </button>
-                            <button type="button" type="button" onclick="amountset('20000')" class="btn-amt">
-                                <div class="icon">{{__($general->cur_text)}}</div>
-                                <span>20,000</span>
-                            </button>
-                            <button type="button" type="button" onclick="amountset('50000')" class="btn-amt">
-                                <div class="icon">{{__($general->cur_text)}}</div>
-                                <span>50,000</span>
-                            </button>
-                            <button type="button" type="button" onclick="amountset('100000')" class="btn-amt">
-                                <div class="icon">{{__($general->cur_text)}}</div>
-                                <span>100,000</span>
-                            </button>
-                            <button type="button" type="button" onclick="amountset('500000')" class="btn-amt">
-                                <div class="icon">{{__($general->cur_text)}}</div>
-                                <span>500,000</span>
                             </button>
                         </div>
                         <div class="form-group">
