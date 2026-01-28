@@ -53,6 +53,10 @@ trait FileInfo
         $data['ptc'] = [
             'path'      => 'assets/images/ptc',
         ];
+        $data['blog'] = [
+            'path'      => 'assets/images/frontend/blog',
+            'size'      => '400x200',
+        ];
         $data['userProfile'] = [
             'path'      =>'assets/images/user/profile',
             'size'      =>'350x300',

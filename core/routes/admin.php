@@ -311,11 +311,10 @@ Route::middleware('admin')->group(function () {
     Route::get('seo', 'FrontendController@seoEdit')->name('seo');
 
 
-    // Blog Management
+// Blog Management
 Route::name('blog.')->prefix('blog')->controller('BlogManagementController')->group(function () {
     Route::get('all-posts', 'allPosts')->name('all');
     Route::delete('delete/{id}', 'deletePost')->name('delete');
-    Route::get('delete/{id}', 'deletePost')->name('delete.get');
     Route::get('comments', 'comments')->name('comments');
     Route::get('comment/delete/{id}', 'deleteComment')->name('comment.delete');
 });
