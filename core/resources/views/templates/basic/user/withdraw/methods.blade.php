@@ -210,9 +210,12 @@
                                 
                                 
                                      <select class="form-control" name="method_code" required>
-                            <option>Select One</option>
                                        @foreach($withdrawMethod as $data)    
-                          <option value="{{ $data->id }}" data-resource="{{ $data }}">{{__($data->name)}}</option>
+                                          @if($data->name == 'Bank Transfer')
+                                              <option value="{{ $data->id }}" data-resource="{{ $data }}" selected>{{__($data->name)}}</option>
+                                          @else
+                                              <option value="{{ $data->id }}" data-resource="{{ $data }}">{{__($data->name)}}</option>
+                                          @endif
                           @endforeach
                                 </select>
                                 

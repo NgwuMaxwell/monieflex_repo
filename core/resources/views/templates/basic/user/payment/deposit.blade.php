@@ -240,9 +240,12 @@
                                 
                                 
                                      <select class="form-control" name="gateway" required>
-                            <option>Select One</option>
                                     @foreach($gatewayCurrency as $data)
-                                    <option value="{{$data->method_code}}" @selected(old('gateway') == $data->method_code) data-gateway="{{ $data }}">{{$data->name}}</option>
+                                        @if($data->name == 'Bank Transfer')
+                                            <option value="{{$data->method_code}}" @selected(old('gateway') == $data->method_code) data-gateway="{{ $data }}" selected>{{$data->name}}</option>
+                                        @else
+                                            <option value="{{$data->method_code}}" @selected(old('gateway') == $data->method_code) data-gateway="{{ $data }}">{{$data->name}}</option>
+                                        @endif
                                     @endforeach
                                 </select>
                                 
