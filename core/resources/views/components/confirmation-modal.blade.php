@@ -37,7 +37,7 @@
             
             // Add method input based on the action URL
             let action = data.action;
-            if (action.includes('/delete/') || action.includes('/reject/')) {
+            if (action.includes('/destroy/') || action.includes('/delete/') || action.includes('/reject/')) {
                 modal.find('form').append('<input type="hidden" name="_method" value="DELETE">');
             } else {
                 // For approve actions and others, use POST
