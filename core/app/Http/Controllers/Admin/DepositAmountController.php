@@ -68,6 +68,11 @@ class DepositAmountController extends Controller
 
     public function status($id)
     {
-        return DepositAmount::changeStatus($id);
+        $depositAmount = DepositAmount::findOrFail($id);
+        $depositAmount->status = !$depositAmount->status;
+        $depositAmount->save();
+
+        $notify[] = ['success', 'Deposit amount status updated successfully'];
+        return back()->withNotify($notify);
     }
 }
