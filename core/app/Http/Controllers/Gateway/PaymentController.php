@@ -18,8 +18,11 @@ class PaymentController extends Controller
         $gatewayCurrency = GatewayCurrency::whereHas('method', function ($gate) {
             $gate->where('status', 1);
         })->with('method')->orderby('method_code')->get();
+        
+        $depositAmounts = \App\Models\DepositAmount::active()->orderBy('amount')->get();
+        
         $pageTitle = 'Deposit Methods';
-        return view($this->activeTemplate . 'user.payment.deposit', compact('gatewayCurrency', 'pageTitle'));
+        return view($this->activeTemplate . 'user.payment.deposit', compact('gatewayCurrency', 'pageTitle', 'depositAmounts'));
     }
 
     public function depositInsert(Request $request)

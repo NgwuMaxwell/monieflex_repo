@@ -74,6 +74,17 @@ Route::middleware('admin')->group(function () {
         Route::get('notification-log/{id}', 'notificationLog')->name('notification.log');
     });
 
+    // Deposit Amounts
+    Route::controller('DepositAmountController')->name('deposit.amounts.')->prefix('deposit-amounts')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('create', 'create')->name('create');
+        Route::post('store', 'store')->name('store');
+        Route::get('edit/{id}', 'edit')->name('edit');
+        Route::put('update/{id}', 'update')->name('update');
+        Route::delete('destroy/{id}', 'destroy')->name('destroy');
+        Route::post('status/{id}', 'status')->name('status');
+    });
+
     // Deposit Gateway
     Route::name('gateway.')->prefix('gateway')->group(function () {
 

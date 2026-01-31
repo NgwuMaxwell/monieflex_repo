@@ -190,14 +190,12 @@
                         <input type="hidden" name="selected_channel" class="selected_channel" value="">
                         <div class="title">Amount</div>
                         <div class="amt-sets">
-                            <button type="button" type="button" onclick="amountset('6000')" class="btn-amt active">
-                                <div class="icon">{{__($general->cur_text)}}</div>
-                                <span>6,000</span>
-                            </button>
-                            <button type="button" type="button" onclick="amountset('10000')" class="btn-amt">
-                                <div class="icon">{{__($general->cur_text)}}</div>
-                                <span>10,000</span>
-                            </button>
+                            @foreach($depositAmounts as $amount)
+                                <button type="button" type="button" onclick="amountset('{{ $amount->amount }}')" class="btn-amt {{ $loop->first ? 'active' : '' }}">
+                                    <div class="icon">{{__($general->cur_text)}}</div>
+                                    <span>{{ number_format($amount->amount) }}</span>
+                                </button>
+                            @endforeach
                         </div>
                         <div class="form-group">
                             <div class="input-group">

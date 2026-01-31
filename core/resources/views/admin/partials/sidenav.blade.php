@@ -256,6 +256,13 @@
                     </div>
                 </li>
 
+                <li class="sidebar-menu-item {{menuActive('admin.deposit.amounts*')}}">
+                    <a href="{{route('admin.deposit.amounts.index')}}" class="nav-link">
+                        <i class="menu-icon las la-coins"></i>
+                        <span class="menu-title">@lang('Deposit Amounts')</span>
+                    </a>
+                </li>
+
                 <li class="sidebar-menu-item sidebar-dropdown">
                     <a href="javascript:void(0)" class="{{menuActive('admin.gateway*',3)}}">
                         <i class="menu-icon las la-credit-card"></i>

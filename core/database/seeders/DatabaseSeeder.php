@@ -15,5 +15,8 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // \App\Models\User::factory(10)->create();
+        
+        // Seed deposit amounts
+        $this->call(DepositAmountSeeder::class);
     }
 }
