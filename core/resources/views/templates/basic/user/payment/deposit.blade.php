@@ -73,7 +73,7 @@
                     <body>
     <center class="header">
    
-     <center>   Recharge</center>
+     <center>   Deposit</center>
       
     </center>
     @php
@@ -261,10 +261,10 @@
                             
                          
                      
-                        <button class="btn btn-submit">Determine</button>
+                        <button class="btn btn-submit">Pay Now!</button>
                     </form>
                     <div class="rule-txt">
-                        <p>1. The recharge amount is the same as the payment amount.</p>
+                    <p>1. The deposit amount is the same as the payment amount.</p>
                         <p>2. For the safety of your account and property, you need to enter the rethink recharge page to obtain the latest UPI every time you recharge.</p>
                         <p>3. For recharge issues, please contact online customer service.</p>
                     </div>
@@ -346,11 +346,98 @@
     </script>
 
     <script>
+        // Reusable function to update payment details
+        function updatePaymentDetails() {
+            var amount = parseFloat($('input[name=amount]').val());
+            if (!amount || amount <= 0) {
+                $('.preview-details').addClass('d-none');
+                return false;
+            }
+            
+            var gateway = $('select[name=gateway]');
+            if (!gateway.val()) {
+                $('.preview-details').addClass('d-none');
+                return false;
+            }
+            
+            var resource = gateway.find('option:selected').data('gateway');
+            var fixed_charge = parseFloat(resource.fixed_charge);
+            var percent_charge = parseFloat(resource.percent_charge);
+            var rate = parseFloat(resource.rate);
+            
+            if(resource.method.crypto == 1){
+                var toFixedDigit = 8;
+                $('.crypto_currency').removeClass('d-none');
+            }else{
+                var toFixedDigit = 2;
+                $('.crypto_currency').addClass('d-none');
+            }
+            
+            $('.min').text(parseFloat(resource.min_amount).toFixed(2));
+            $('.max').text(parseFloat(resource.max_amount).toFixed(2));
+            
+            var charge = parseFloat(fixed_charge + (amount * percent_charge / 100)).toFixed(2);
+            $('.charge').text(charge);
+            var payable = parseFloat((parseFloat(amount) + parseFloat(charge))).toFixed(2);
+            $('.payable').text(payable);
+            var final_amo = (parseFloat((parseFloat(amount) + parseFloat(charge)))*rate).toFixed(toFixedDigit);
+            $('.final_amo').text(final_amo);
+            
+            if (resource.currency != '{{ $general->cur_text }}') {
+                var rateElement = `<span class="fw-bold">@lang('Conversion Rate')</span> <span><span  class="fw-bold">1 {{__($general->cur_text)}} = <span class="rate">${rate}</span>  <span class="base-currency">${resource.currency}</span></span></span>`;
+                $('.rate-element').html(rateElement)
+                $('.rate-element').removeClass('d-none');
+                $('.in-site-cur').removeClass('d-none');
+                $('.rate-element').addClass('d-flex');
+                $('.in-site-cur').addClass('d-flex');
+            }else{
+                $('.rate-element').html('')
+                $('.rate-element').addClass('d-none');
+                $('.in-site-cur').addClass('d-none');
+                $('.rate-element').removeClass('d-flex');
+                $('.in-site-cur').removeClass('d-flex');
+            }
+            
+            $('.base-currency').text(resource.currency);
+            $('.method_currency').text(resource.currency);
+            $('input[name=currency]').val(resource.currency);
+            $('input[name=method_code]').val(resource.method_code);
+            
+            $('.preview-details').removeClass('d-none');
+        }
+
         var focused = 'button.btn-amt';
 
         $(focused).on('click', function(){
             $(focused).removeClass('active');
             $(this).addClass('active');
+            // Get the amount from the button and set it
+            var amount = $(this).find('span').text().replace(/,/g, '');
+            $("#amount").val(amount);
+            // Update payment details immediately
+            updatePaymentDetails();
+        });
+        
+        // Trigger initial payment details update when page loads
+        $(document).ready(function() {
+            updatePaymentDetails();
+        });
+        
+        // Override the existing amountset function to use the new approach
+        window.amountset = function(pay) {
+            $("#amount").val(pay);
+            // Update payment details immediately
+            updatePaymentDetails();
+        }
+        
+        // Handle manual input changes
+        $(document).on('input', 'input[name=amount]', function() {
+            updatePaymentDetails();
+        });
+        
+        // Handle gateway changes
+        $(document).on('change', 'select[name=gateway]', function() {
+            updatePaymentDetails();
         });
     </script>
     <script>
@@ -376,6 +463,10 @@
     
         function amountset(pay) {
             $("#amount").val(pay);
+            // Trigger amount change when setting amount programmatically
+            $('input[name=amount]').trigger('input');
+            // Also trigger the gateway change to show payment details
+            $('select[name=gateway]').change();
         }
     </script>
 </body>
