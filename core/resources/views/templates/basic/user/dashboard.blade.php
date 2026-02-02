@@ -230,7 +230,7 @@
             <div class="top-nav">
                 <div class="nav" onclick="window.location.href='{{route ('user.deposit')}}'">
                     <img src="{{asset ('assets/img/icon-recharge.png')}}">
-                    <span>Recharge</span>
+                    <span>Deposit</span>
                 </div>
                 <div class="nav" onclick="window.location.href='{{route ('user.withdraw')}}'">
                     <img src="{{asset ('assets/img/icon-withdraw.png')}}">

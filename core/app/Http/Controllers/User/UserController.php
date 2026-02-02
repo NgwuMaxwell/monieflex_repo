@@ -13,6 +13,7 @@ use App\Models\Referral;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -255,23 +256,53 @@ class UserController extends Controller
             return back()->withNotify($notify);
         }
 
-        $user->balance -= $plan->price;
-        $user->daily_limit = $plan->daily_limit;
-        $user->expire_date = now()->addDays($plan->validity);
-        $user->plan_id = $plan->id;
-        $user->save();
+        // Use database transaction for atomic operations
+        DB::beginTransaction();
+        
+        try {
+            // Calculate and credit Profit Wallet immediately
+            $roi = ($plan->price * $plan->roi_percentage) / 100;
+            $totalProfit = $plan->return_capital ? ($roi + $plan->price) : $roi;
+            
+            $user->balance -= $plan->price;
+            $user->profit_wallet += $totalProfit; // Immediate credit to Profit Wallet
+            $user->daily_limit = $plan->daily_limit;
+            $user->expire_date = now()->addDays($plan->validity);
+            $user->plan_id = $plan->id;
+            $user->save();
 
-        $trx = getTrx();
-        $transaction = new Transaction();
-        $transaction->user_id = $user->id;
-        $transaction->amount = $plan->price;
-        $transaction->post_balance = $user->balance;
-        $transaction->charge = 0;
-        $transaction->trx_type = '-';
-        $transaction->details = 'Subscribe ' . $plan->name . ' Plan';
-        $transaction->trx = $trx;
-        $transaction->remark = 'subscribe_plan';
-        $transaction->save();
+            $trx = getTrx();
+            $transaction = new Transaction();
+            $transaction->user_id = $user->id;
+            $transaction->amount = $plan->price;
+            $transaction->post_balance = $user->balance;
+            $transaction->charge = 0;
+            $transaction->trx_type = '-';
+            $transaction->details = 'Subscribe ' . $plan->name . ' Plan';
+            $transaction->trx = $trx;
+            $transaction->remark = 'subscribe_plan';
+            $transaction->save();
+
+            // Record the Profit Wallet credit transaction
+            $profitTransaction = new Transaction();
+            $profitTransaction->user_id = $user->id;
+            $profitTransaction->amount = $totalProfit;
+            $profitTransaction->post_balance = $user->profit_wallet;
+            $profitTransaction->charge = 0;
+            $profitTransaction->trx_type = '+';
+            $profitTransaction->details = 'Profit Wallet credit for ' . $plan->name . ' Plan';
+            $profitTransaction->trx = $trx;
+            $profitTransaction->remark = 'plan_profit_credit';
+            $profitTransaction->save();
+
+            // Commit the transaction
+            DB::commit();
+        } catch (\Exception $e) {
+            // Rollback the transaction if any error occurs
+            DB::rollback();
+            $notify[] = ['error', 'Transaction failed. Please try again.'];
+            return back()->withNotify($notify);
+        }
 
         levelCommission($user, $plan->price, 'plan_subscribe_commission', $trx);
 

@@ -116,7 +116,7 @@
             <div class="top-nav">
                 <div class="nav" onclick="window.location.href='{{route ('user.deposit')}}'">
                     <img src="{{asset ('assets/img/icon-recharge2.png')}}">
-                    <span>Recharge</span>
+                    <span>Deposit</span>
                 </div>
                 <div class="nav" onclick="window.location.href='{{route ('user.withdraw')}}'">
                     <img src="{{asset ('assets/img/icon-withdraw2.png')}}">
@@ -230,20 +230,16 @@ $pageTitle = 'wallet';
                         <p>{{ $finalAmount }}<span>{{ $general->cur_text }}</span></p>
                     </div>
                     <div class="part-two">
-                        <h6>Total Recharge</h6>
-                        <p>{{ showAmount($user->deposits->sum('amount')) }} <span>{{ $general->cur_text }}</span></p>
+                        <h6>Total Withdrawal</h6>
+                        <p>{{ showAmount($user->withdrawals->where('status', 1)->sum('amount')) }}<span>{{ $general->cur_text }}</span></p>
                     </div>
                 </div>
-            </div>
-            <div class="top-grey-box">
-                <h6>Total Withdrawal</h6>
-                <p>{{ showAmount($user->withdrawals->where('status', 1)->sum('amount')) }}<span>{{ $general->cur_text }}</span></p>
             </div>
             <div class="mid-navs">
                 
                 <div class="nav" onclick="window.location.href='{{route ('user.deposit.history')}}'">
                     <img src="{{asset ('assets/img/icon-bankaccount.png')}}">
-                    <span>My Recharge</span>
+                    <span>My Deposits</span>
                 </div>
                 <div class="nav" onclick="window.location.href='{{route ('user.withdraw.history')}}'">
                     <img src="{{asset ('assets/img/icon-task.png')}}">

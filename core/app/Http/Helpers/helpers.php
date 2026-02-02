@@ -408,6 +408,11 @@ function levelCommission($referee, $amount, $commissionType, $trx)
         return false;
     }
 
+    // Only credit referral commission for plan subscriptions
+    if ($commissionType !== 'plan_subscribe_commission') {
+        return false;
+    }
+
     $i = 1;
     $level = Referral::where('commission_type', $commissionType)->get();
 
@@ -440,7 +445,7 @@ function levelCommission($referee, $amount, $commissionType, $trx)
 
         $com = ($amount * $commission->percent) / 100;
 
-        // ALL referral income goes to referral_bonus wallet (simplified system)
+        // Referral commission goes to referral_bonus wallet
         $referer->referral_bonus += $com;
         $referer->save();
 

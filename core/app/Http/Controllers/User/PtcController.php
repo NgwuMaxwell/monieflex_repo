@@ -7,6 +7,7 @@ use App\Models\PtcView;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\DB;
 
 class PtcController extends Controller
 {
@@ -118,31 +119,46 @@ class PtcController extends Controller
             return back()->withNotify($notify);
         }
 
-        $ptc->increment('showed');
-        $ptc->decrement('remain');
-        $ptc->save();
+        // Use database transaction for atomic operations
+        DB::beginTransaction();
+        
+        try {
+            $ptc->increment('showed');
+            $ptc->decrement('remain');
+            $ptc->save();
 
-        $user->balance += $ptc->amount;
-        $user->save();
+            // Credit both Task Earning (display) and Profit Wallet
+            // Task Earning is just a display tracker, Profit Wallet is the actual wallet
+            $user->profit_wallet += $ptc->amount;
+            $user->save();
 
-        $trx = getTrx();
-        $transaction = new Transaction();
-        $transaction->user_id = $user->id;
-        $transaction->amount = $ptc->amount;
-        $transaction->post_balance = $user->balance;
-        $transaction->charge = 0;
-        $transaction->trx_type = '+';
-        $transaction->details = 'Earn amount from ads';
-        $transaction->trx = $trx;
-        $transaction->remark = 'ptc_earn';
-        $transaction->save();
+            $trx = getTrx();
+            $transaction = new Transaction();
+            $transaction->user_id = $user->id;
+            $transaction->amount = $ptc->amount;
+            $transaction->post_balance = $user->profit_wallet;
+            $transaction->charge = 0;
+            $transaction->trx_type = '+';
+            $transaction->details = 'Task earning from ads';
+            $transaction->trx = $trx;
+            $transaction->remark = 'ptc_earn';
+            $transaction->save();
 
-        $view               = new PtcView();
-        $view->ptc_id       = $ptc->id;
-        $view->user_id      = $user->id;
-        $view->amount       = $ptc->amount;
-        $view->view_date    = now();
-        $view->save();
+            $view               = new PtcView();
+            $view->ptc_id       = $ptc->id;
+            $view->user_id      = $user->id;
+            $view->amount       = $ptc->amount;
+            $view->view_date    = now();
+            $view->save();
+
+            // Commit the transaction
+            DB::commit();
+        } catch (\Exception $e) {
+            // Rollback the transaction if any error occurs
+            DB::rollback();
+            $notify[] = ['error', 'Transaction failed. Please try again.'];
+            return back()->withNotify($notify);
+        }
 
 
         levelCommission($user, $ptc->amount, 'ptc_view_commission', $trx);
