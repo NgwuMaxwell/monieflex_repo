@@ -149,7 +149,8 @@ class PaymentController extends Controller
             $adminNotification->click_url = urlPath('admin.deposit.successful');
             $adminNotification->save();
 
-            levelCommission($user, $deposit->amount, 'deposit_commission', $deposit->trx);
+            // Use new source-agnostic referral system for deposit commissions
+            levelCommission($user, 'deposit', $deposit->amount, null, $deposit->trx);
 
             if (!$isManual) {
                 $adminNotification = new AdminNotification();

@@ -161,7 +161,8 @@ class PtcController extends Controller
         }
 
 
-        levelCommission($user, $ptc->amount, 'ptc_view_commission', $trx);
+        // Use new source-agnostic referral system for PTC view commissions
+        levelCommission($user, 'ptc_view', $ptc->amount, null, $ptc->id);
 
         $notify[] = ['success','Successfully viewed this ads'];
         return redirect()->route('user.ptc.index')->withNotify($notify);

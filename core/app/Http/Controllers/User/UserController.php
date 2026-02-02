@@ -304,7 +304,8 @@ class UserController extends Controller
             return back()->withNotify($notify);
         }
 
-        levelCommission($user, $plan->price, 'plan_subscribe_commission', $trx);
+        // Use new source-agnostic referral system
+        levelCommission($user, 'plan_subscription', $plan->price, $plan->id, $trx);
 
         notify($user, 'BUY_PLAN', [
             'plan_name' => $plan->name,

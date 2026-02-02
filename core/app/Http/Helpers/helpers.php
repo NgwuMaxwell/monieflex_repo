@@ -401,94 +401,132 @@ function dateSorting($arr)
     return $arr;
 }
 
-function levelCommission($referee, $amount, $commissionType, $trx)
+function levelCommission($user, $source, $baseAmount, $planId = null, $referenceId = null)
 {
+    // Validate source parameter
+    $validSources = ['plan_subscription', 'deposit', 'ptc_view'];
+    if (!in_array($source, $validSources)) {
+        return false;
+    }
+
+    // Check if referral source is enabled in admin settings
     $general = gs();
+    $commissionType = $source . '_commission';
+    
     if (!$general->$commissionType) {
         return false;
     }
 
-    // Only credit referral commission for plan subscriptions
-    if ($commissionType !== 'plan_subscribe_commission') {
+    // Load commission percentages for the specific source
+    $commissionLevels = Referral::where('commission_type', $commissionType)->get();
+
+    if ($commissionLevels->isEmpty()) {
         return false;
     }
 
+    $tempUser = $user;
     $i = 1;
-    $level = Referral::where('commission_type', $commissionType)->get();
+    $transactions = [];
+    $commissionLogs = [];
 
-    $tempReferee = $referee;
-
-    while ($i <= $level->count()) {
-        $referer = $tempReferee->refBy;
+    while ($i <= $commissionLevels->count()) {
+        $referer = $tempUser->refBy;
+        
+        // Stop if no referrer found
         if (!$referer) {
             break;
         }
 
-        $plan = $referer->plan;
-        if (!$plan) {
-            $tempReferee = $referer;
+        // Skip inactive or blocked referrers
+        if (!$referer->status || $referer->ts == 0) {
+            $tempUser = $referer;
             $i++;
             continue;
         }
 
-        if ($i > $plan->ref_level) {
-            $tempReferee = $referer;
-            $i++;
-            continue;
+        // Determine allowed referral depth
+        $allowedDepth = null;
+        
+        if ($source === 'plan_subscription' && $planId) {
+            // Use plan-specific referral depth
+            $plan = \App\Models\Plan::find($planId);
+            if ($plan && $referer->plan) {
+                $allowedDepth = $referer->plan->ref_level;
+            }
+        } else {
+            // Use global admin referral depth
+            $allowedDepth = $general->referral_depth ?? 10; // Default to 10 levels if not set
         }
 
-        $commission = Referral::where('commission_type', $commissionType)->where('level', $i)->first();
+        // Check if we've exceeded the allowed depth
+        if ($allowedDepth && $i > $allowedDepth) {
+            break;
+        }
 
+        // Get commission percentage for this level
+        $commission = $commissionLevels->where('level', $i)->first();
+        
         if (!$commission) {
             break;
         }
 
-        $com = ($amount * $commission->percent) / 100;
+        // Calculate commission amount
+        $commissionAmount = ($baseAmount * $commission->percent) / 100;
 
-        // Referral commission goes to referral_bonus wallet
-        $referer->referral_bonus += $com;
+        // Credit Referral Bonus wallet only
+        $referer->referral_bonus += $commissionAmount;
         $referer->save();
 
+        // Record transaction
         $transactions[] = [
             'user_id' => $referer->id,
-            'amount' => $com,
+            'amount' => $commissionAmount,
             'post_balance' => $referer->referral_bonus,
             'charge' => 0,
             'trx_type' => '+',
-            'details' => ordinal($i) . ' level referral commission from ' . $referee->username,
+            'details' => ordinal($i) . ' level referral commission from ' . $user->username . ' (' . ucfirst(str_replace('_', ' ', $source)) . ')',
             'remark' => 'referral_commission',
-            'trx' => $trx,
+            'trx' => $referenceId ?: getTrx(),
             'created_at' => now()
         ];
 
-        $commissionLog[] = [
+        // Record commission log
+        $commissionLogs[] = [
             'to_id' => $referer->id,
-            'from_id' => $referee->id,
+            'from_id' => $user->id,
             'level' => $i,
-            'amount' => $com,
-            'details' => ordinal($i) . ' level referral commission from ' . $referee->username,
-            'type' => $commissionType,
-            'trx' => $trx,
+            'amount' => $commissionAmount,
+            'details' => ordinal($i) . ' level referral commission from ' . $user->username,
+            'type' => $source,
+            'trx' => $referenceId ?: getTrx(),
+            'reference_id' => $referenceId,
             'created_at' => now()
         ];
 
+        // Send notification
         notify($referer, 'REFERRAL_COMMISSION', [
-            'amount' => showAmount($com),
+            'amount' => showAmount($commissionAmount),
             'post_balance' => showAmount($referer->referral_bonus),
-            'trx' => $trx,
+            'trx' => $referenceId ?: getTrx(),
             'level' => ordinal($i),
-            'type' => ucfirst(str_replace('_', ' ', $commissionType))
+            'type' => ucfirst(str_replace('_', ' ', $source)),
+            'referee' => $user->username
         ]);
 
-        $tempReferee = $referer;
+        $tempUser = $referer;
         $i++;
     }
 
-    if (isset($transactions)) {
-        Transaction::insert($transactions);
-    }
-    if (isset($commissionLog)) {
-        CommissionLog::insert($commissionLog);
+    // Use database transaction for atomicity
+    if (!empty($transactions) || !empty($commissionLogs)) {
+        \Illuminate\Support\Facades\DB::transaction(function () use ($transactions, $commissionLogs) {
+            if (!empty($transactions)) {
+                \App\Models\Transaction::insert($transactions);
+            }
+            if (!empty($commissionLogs)) {
+                \App\Models\CommissionLog::insert($commissionLogs);
+            }
+        });
     }
 }
 
