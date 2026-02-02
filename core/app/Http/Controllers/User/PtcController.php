@@ -151,6 +151,15 @@ class PtcController extends Controller
             $view->view_date    = now();
             $view->save();
 
+            // Record Task Earning in activity log
+            $profitActivity = new \App\Models\ProfitActivityLog();
+            $profitActivity->user_id = $user->id;
+            $profitActivity->plan_id = $user->plan_id;
+            $profitActivity->type = 'task';
+            $profitActivity->name = $ptc->title;
+            $profitActivity->amount = $ptc->amount;
+            $profitActivity->save();
+
             // Commit the transaction
             DB::commit();
         } catch (\Exception $e) {

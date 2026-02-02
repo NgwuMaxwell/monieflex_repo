@@ -128,33 +128,29 @@
                 </div>
             </div>
 
-            <!-- Daily Profit Additions -->
+            <!-- Profit Activity Log -->
             <div class="progress-card">
-                <div class="card-header">{{ __('Daily Profit Additions') }}</div>
-                @php
-                    // Filter profits to only show those that have actually been earned (not future ones)
-                    $earnedProfits = $profits->filter(function($profit) {
-                        return $profit->profit_date <= now()->toDateString();
-                    });
-                @endphp
-                @if($earnedProfits->count() > 0)
+                <div class="card-header">{{ __('Profit Activity Log') }}</div>
+                @if($profitActivities->count() > 0)
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
                                 <tr>
                                     <th>{{ __('Date') }}</th>
-                                    <th>{{ __('Daily Profit') }}</th>
+                                    <th>{{ __('Name of Profit') }}</th>
+                                    <th>{{ __('Amount') }}</th>
                                     <th>{{ __('Time Added') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($earnedProfits as $profit)
+                                @foreach($profitActivities as $activity)
                                 <tr>
-                                    <td>{{ $profit->profit_date->format('M d, Y') }}</td>
+                                    <td>{{ $activity->created_at->format('Y-m-d') }}</td>
+                                    <td>{{ $activity->name }}</td>
                                     <td class="text-success font-weight-bold">
-                                        +{{ showAmount($profit->daily_profit) }} {{ $general->cur_text }}
+                                        +{{ showAmount($activity->amount) }} {{ $general->cur_text }}
                                     </td>
-                                    <td>{{ $profit->created_at->format('M d, Y H:i') }}</td>
+                                    <td>{{ $activity->created_at->format('H:i:s') }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -163,8 +159,7 @@
                 @else
                     <div class="empty-state">
                         <i class="fas fa-chart-line" style="font-size: 80px; color: #ccc;"></i>
-                        <h5>{{ __('No Profits Yet') }}</h5>
-                        <p>{{ __('Daily profits will appear here as they are added to your account after the 24-hour waiting period.') }}</p>
+                        <h5>{{ __('No profit transactions recorded for this plan yet.') }}</h5>
                     </div>
                 @endif
             </div>

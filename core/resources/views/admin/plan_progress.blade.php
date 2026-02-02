@@ -48,10 +48,10 @@
                 </div>
             </div>
 
-            <!-- Profit History Table -->
+            <!-- Profit Activity Log -->
             <div class="card">
                 <div class="card-header">
-                    <h6 class="mb-0">@lang('Daily Profit Additions')</h6>
+                    <h6 class="mb-0">@lang('Profit Activity Log')</h6>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive--sm">
@@ -59,22 +59,24 @@
                             <thead>
                                 <tr>
                                     <th scope="col">@lang('Date')</th>
-                                    <th scope="col">@lang('Daily Profit')</th>
+                                    <th scope="col">@lang('Name of Profit')</th>
+                                    <th scope="col">@lang('Amount')</th>
                                     <th scope="col">@lang('Time Added')</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($profits as $profit)
+                                @forelse($profitActivities as $activity)
                                 <tr>
-                                    <td data-label="@lang('Date')">{{ $profit->profit_date->format('M d, Y') }}</td>
-                                    <td data-label="@lang('Daily Profit')" class="font-weight-bold text-success">
-                                        +{{ showAmount($profit->daily_profit) }} {{ $general->cur_text }}
+                                    <td data-label="@lang('Date')">{{ $activity->created_at->format('Y-m-d') }}</td>
+                                    <td data-label="@lang('Name of Profit')">{{ $activity->name }}</td>
+                                    <td data-label="@lang('Amount')" class="font-weight-bold text-success">
+                                        +{{ showAmount($activity->amount) }} {{ $general->cur_text }}
                                     </td>
-                                    <td data-label="@lang('Time Added')">{{ $profit->created_at->format('M d, Y H:i') }}</td>
+                                    <td data-label="@lang('Time Added')">{{ $activity->created_at->format('H:i:s') }}</td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td class="text-muted text-center" colspan="100%">{{ __($emptyMessage ?? 'No profits added yet') }}</td>
+                                    <td class="text-muted text-center" colspan="100%">@lang('No profit transactions recorded for this plan yet.')</td>
                                 </tr>
                                 @endforelse
                             </tbody>

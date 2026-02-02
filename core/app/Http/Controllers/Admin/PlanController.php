@@ -121,27 +121,26 @@ class PlanController extends Controller
             ->orderBy('created_at', 'desc')
             ->first();
 
-        // Get profit records only for profits earned after this subscription
-        $profits = collect(); // Start with empty collection
+        // Get profit activity records only for profits earned after this subscription
+        $profitActivities = collect(); // Start with empty collection
         if ($latestSubscription) {
             $subscriptionDate = $latestSubscription->created_at;
 
-            // Get profits for this plan that were earned after the subscription date
-            $profits = \App\Models\PlanProfit::where('user_id', $userId)
+            // Get profit activities for this plan that were recorded after the subscription date
+            $profitActivities = \App\Models\ProfitActivityLog::where('user_id', $userId)
                 ->where('plan_id', $planId)
-                ->where('profit_date', '>=', $subscriptionDate->toDateString())
-                ->orderBy('profit_date', 'asc') // Changed to ascending for proper day numbering
+                ->where('created_at', '>=', $subscriptionDate)
+                ->orderBy('created_at', 'asc')
                 ->get();
         }
 
         // Calculate totals
-        $totalProfitsAdded = $profits->sum('daily_profit');
+        $totalProfitsAdded = $profitActivities->sum('amount');
         $totalExpectedProfits = ($plan->price * $plan->roi_percentage) / 100;
         $remainingProfits = $totalExpectedProfits - $totalProfitsAdded;
 
-        // Calculate days elapsed based on actual profits added (not time-based)
-        // This gives us the actual number of profit days that have been processed
-        $daysElapsed = $profits->count();
+        // Calculate days elapsed based on actual profit activities
+        $daysElapsed = $profitActivities->count();
 
         // However, we also need to calculate potential days based on time for display purposes
         $potentialDaysElapsed = 0;
@@ -164,7 +163,7 @@ class PlanController extends Controller
             'pageTitle',
             'user',
             'plan',
-            'profits',
+            'profitActivities',
             'totalProfitsAdded',
             'totalExpectedProfits',
             'remainingProfits',

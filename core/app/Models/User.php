@@ -91,10 +91,6 @@ class User extends Authenticatable
         return $this->belongsTo(User::class,'ref_by');
     }
 
-    public function planProfits()
-    {
-        return $this->hasMany(PlanProfit::class);
-    }
 
     // SCOPES
     public function scopeActive()
