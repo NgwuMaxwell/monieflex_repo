@@ -402,15 +402,15 @@ class UserController extends Controller
 
             // Calculate expiry date based on purchase date
             $expireDate = \Carbon\Carbon::parse($transaction->created_at)->addDays($validity);
-            $isActive = now() < $expireDate;
+            $isExpired = $expireDate <= now();
 
-            // Determine status
-            if ($isActive) {
+            // Determine status based on actual expiry date
+            if (!$isExpired) {
                 $statusText = 'Active';
                 $statusClass = 'active';
             } else {
-                $statusText = 'Completed';
-                $statusClass = 'completed';
+                $statusText = 'Expired';
+                $statusClass = 'expired';
             }
 
             return (object) [
@@ -423,7 +423,7 @@ class UserController extends Controller
                 'roi_percentage' => $roiPercentage,
                 'expected_total_profits' => $expectedTotalProfits,
                 'trx' => $transaction->trx,
-                'is_active' => $isActive,
+                'is_active' => !$isExpired,
                 'status_text' => $statusText,
                 'status_class' => $statusClass,
             ];
