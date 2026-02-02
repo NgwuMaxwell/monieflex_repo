@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProfitActivityLog extends Model
 {
+    protected $table = 'profit_activity_logs';
+    
     protected $fillable = [
         'user_id',
         'plan_id',
@@ -16,7 +18,7 @@ class ProfitActivityLog extends Model
     ];
 
     protected $casts = [
-        'amount' => 'decimal:2'
+        'amount' => 'float'
     ];
 
     public function user()

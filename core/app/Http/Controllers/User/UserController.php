@@ -462,9 +462,9 @@ class UserController extends Controller
                 ->get();
         }
 
-        // Calculate totals
-        $totalProfitsAdded = $profitActivities->sum('amount');
-        $totalExpectedProfits = ($plan->price * $plan->roi_percentage) / 100;
+        // Calculate totals - Force numeric casting to prevent Brick\Math errors
+        $totalProfitsAdded = (float) $profitActivities->sum('amount');
+        $totalExpectedProfits = ((float) $plan->price * (float) $plan->roi_percentage) / 100;
         $remainingProfits = $totalExpectedProfits - $totalProfitsAdded;
 
         // Calculate days elapsed based on actual profit activities

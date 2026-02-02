@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Plan extends Model
 {
     protected $casts = [
-        'roi_percentage' => 'decimal:2',
+        'price' => 'float',
+        'roi_percentage' => 'float',
         'return_capital' => 'boolean'
     ];
 }
