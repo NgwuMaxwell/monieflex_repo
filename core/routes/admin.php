@@ -341,6 +341,22 @@ Route::controller('NoticeController')->name('notices.')->prefix('notices')->grou
     Route::get('status/{id}', 'status')->name('status');
 });
 
+// Banner Management
+Route::controller('BannerController')->name('banner.')->prefix('banner')->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::get('edit', 'edit')->name('edit');
+    Route::put('update', 'update')->name('update');
+    Route::delete('destroy/{id}', 'destroy')->name('destroy');
+    Route::post('status/{id}', 'status')->name('status');
+    Route::post('reorder', 'reorder')->name('reorder');
+});
+
+// Carousel Settings
+Route::controller('CarouselSettingController')->name('carousel.')->prefix('carousel-settings')->group(function () {
+    Route::get('/', 'index')->name('settings');
+    Route::post('update', 'update')->name('settings.update');
+});
+
 // Frontend
 Route::name('frontend.')->prefix('frontend')->group(function () {
 

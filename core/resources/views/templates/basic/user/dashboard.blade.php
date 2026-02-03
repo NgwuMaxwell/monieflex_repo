@@ -25,8 +25,12 @@
 
     .banner { width: 100%; height: fit-content; padding: 0 15px 25px; margin-bottom: 25px; position: relative; }
     .banner .bg-img { width: 100%; height: auto; position: absolute; left: 0; bottom: 0; z-index: 1; }
-    .banner .video-area { width: 100%; height: fit-content; margin: 0; position: relative; left: 0; top: 0; z-index: 2; }
-    .banner .video-area video { border-radius: 10px;}
+    .banner .carousel-area { width: 100%; height: fit-content; margin: 0; position: relative; left: 0; top: 0; z-index: 2; }
+    .banner .carousel-area .carousel-slide { position: relative; }
+    .banner .carousel-area .carousel-slide img { width: 100%; height: auto; border-radius: 10px; }
+    .banner .carousel-area .carousel-content { position: absolute; bottom: 20px; left: 20px; right: 20px; background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px; }
+    .banner .carousel-area .carousel-content h3 { font-size: 18px; font-weight: 700; color: #fff; margin: 0 0 5px 0; }
+    .banner .carousel-area .carousel-content p { font-size: 14px; font-weight: 400; color: #fff; margin: 0; }
     .banner .news-area { width: 100%; margin: 0; height: 38px; display: flex; flex-direction: row; align-items: center; justify-content: start; flex-wrap: wrap; position: relative; z-index: 2; }
     .banner .news-area img { width: 15px; height: 15px; margin-right: 5px; }
     .banner .news-area marquee { width: calc(100% - 20px); height: 38px; line-height: 38px; overflow: hidden; font-size: 14px; font-weight: 400; color: #fff; }
@@ -186,18 +190,37 @@
         
         <div class="banner">
             
-            <div class="video-area">
-                   @foreach($banners as $banner)
-                <div class="w-100">
+            <div class="carousel-area">
+                @php
+                    $bannerItems = \App\Models\BannerItem::where('status', true)->orderBy('sort_order')->get();
+                    $settings = \App\Models\BannerSetting::first();
                     
-                    <br/>
-                    <br/>
-                    
-                    <img src="{{ asset('assets/images/frontend/banner/'.$banner->data_values->image) }}" class="w-100">
-                </div>
-                 @endforeach
-            
-               
+                    // Default settings if no settings exist
+                    $animationType = $settings ? $settings->animation_type : 'slide';
+                    $slideDirection = $settings ? $settings->slide_direction : 'left';
+                    $displayDuration = $settings ? $settings->display_duration : 5;
+                @endphp
+                
+                @if($bannerItems->count() > 0)
+                    <div class="owl-carousel owl-theme banner-carousel" 
+                         data-animation="{{ $animationType }}" 
+                         data-direction="{{ $slideDirection }}" 
+                         data-duration="{{ $displayDuration }}">
+                        @foreach($bannerItems as $item)
+                            <div class="carousel-slide">
+                                <img src="{{ getImage('assets/images/frontend/banner/' . $item->image) }}" alt="Banner">
+                                <div class="carousel-content">
+                                    <h3>{{ __($item->heading) }}</h3>
+                                    <p>{{ __($item->subheading) }}</p>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="w-100">
+                        <img src="{{ asset('assets/images/frontend/banner/default.jpg') }}" class="w-100" alt="Default Banner">
+                    </div>
+                @endif
             </div>
             
           
@@ -417,6 +440,56 @@
     
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js" integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <script>
+        $(document).ready(function() {
+            $('.banner-carousel').each(function() {
+                var $carousel = $(this);
+                var animationType = $carousel.data('animation') || 'slide';
+                var slideDirection = $carousel.data('direction') || 'left';
+                var displayDuration = $carousel.data('duration') || 5;
+                
+                var options = {
+                    loop: true,
+                    margin: 0,
+                    nav: true,
+                    dots: true,
+                    autoplay: true,
+                    autoplayTimeout: displayDuration * 1000,
+                    autoplayHoverPause: true,
+                    responsive: {
+                        0: {
+                            items: 1
+                        },
+                        600: {
+                            items: 1
+                        },
+                        1000: {
+                            items: 1
+                        }
+                    }
+                };
+                
+                // Add animation effects based on type
+                if (animationType === 'fade') {
+                    options.animateOut = 'fadeOut';
+                    options.animateIn = 'fadeIn';
+                } else {
+                    // For slide animations, we can add custom CSS classes based on direction
+                    options.animateOut = slideDirection === 'left' ? 'slideOutLeft' : 
+                                        slideDirection === 'right' ? 'slideOutRight' : 
+                                        slideDirection === 'up' ? 'slideOutUp' : 'slideOutDown';
+                    options.animateIn = slideDirection === 'left' ? 'slideInRight' : 
+                                       slideDirection === 'right' ? 'slideInLeft' : 
+                                       slideDirection === 'up' ? 'slideInDown' : 'slideInUp';
+                }
+                
+                $carousel.owlCarousel(options);
+            });
+        });
+    </script>
         
         
         

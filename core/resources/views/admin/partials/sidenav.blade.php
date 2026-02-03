@@ -15,10 +15,10 @@
                 </li>
 
 
-                <li class="sidebar-menu-item {{ request()->routeIs('admin.frontend.sections') && request()->route('key') === 'banner' ? 'active' : '' }}">
-                    <a href="{{ route('admin.frontend.sections', 'banner') }}" class="nav-link ">
-                        <i class="menu-icon las la-link"></i>
-                        <span class="menu-title">@lang('Banner')</span>
+                <li class="sidebar-menu-item {{ request()->routeIs('admin.banner.*') || request()->routeIs('carousel.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.banner.index') }}" class="nav-link ">
+                        <i class="menu-icon las la-images"></i>
+                        <span class="menu-title">@lang('Banner Carousel')</span>
                     </a>
                 </li>
 

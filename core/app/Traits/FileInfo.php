@@ -57,6 +57,10 @@ trait FileInfo
             'path'      => 'assets/images/frontend/blog',
             'size'      => '400x200',
         ];
+        $data['banner'] = [
+            'path'      => 'assets/images/frontend/banner',
+            'size'      => '1920x1280',
+        ];
         $data['userProfile'] = [
             'path'      =>'assets/images/user/profile',
             'size'      =>'350x300',
