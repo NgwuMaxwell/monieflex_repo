@@ -88,7 +88,7 @@
         </div>
     </div>
     <div class="header">
-        Membership Plans
+        Subscription Plans
     </div>
     <div class="page">
         <div class="container">
@@ -119,12 +119,12 @@
                     </div>
                     <div class="text-center">
                         @if (@auth()->user()->runningPlan && @auth()->user()->plan_id == $plan->id)
-                            <button class="package-disabled">@lang('Locked')</button>
+                            <button class="package-disabled">@lang('Obtained')</button>
                         @else
                             <form method="post" action="{{ route('user.buyPlan') }}">
                                 @csrf
                                 <input type="hidden" name="id" value="{{ $plan->id }}">
-                                <button type="submit" class="btn btn-rent">Rent</button>
+                                <button type="submit" class="btn btn-rent">Buy Plan</button>
                             </form>
                         @endif
                     </div>

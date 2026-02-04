@@ -178,7 +178,7 @@
       @if(!Auth::user()->plan)
                 <div class="alert alert-warning solid alert-dismissible fade show">
                   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="btn-close"></button>
-                  <strong>Sorry!</strong> Please buy a plan first! <a href="{{route ('plans')}}" class="badge badge-sm light badge-warning ms-1">BUY PLAN</a>
+                  <strong>Sorry!</strong> Please buy a plan first! <a href="{{route ('plans')}}" class="badge badge-sm light badge-warning ms-1">Buy Plan</a>
                 </div>
                 @else
                         <input type="hidden" name="selected_channel" class="selected_channel" value="">
