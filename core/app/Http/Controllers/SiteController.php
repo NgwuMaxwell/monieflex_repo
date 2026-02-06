@@ -11,6 +11,7 @@ use App\Models\SupportTicket;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Schema;
 
 class SiteController extends Controller
 {
@@ -20,14 +21,22 @@ class SiteController extends Controller
             session()->put('reference', $reference);
         }
         $pageTitle = 'Home';
-        $sections = Page::where('tempname',$this->activeTemplate)->where('slug','/')->first();
+        if (Schema::hasTable('pages')) {
+            $sections = Page::where('tempname',$this->activeTemplate)->where('slug','/')->first();
+        } else {
+            $sections = null;
+        }
         return view($this->activeTemplate . 'home', compact('pageTitle','sections'));
     }
 
     public function blog()
     {
         $pageTitle = 'Blog';
-        $sections = Page::where('tempname',$this->activeTemplate)->where('slug','blog')->firstOrFail();
+        if (Schema::hasTable('pages')) {
+            $sections = Page::where('tempname',$this->activeTemplate)->where('slug','blog')->firstOrFail();
+        } else {
+            $sections = null;
+        }
         $blogs = Frontend::where('data_keys','blog.element')->orderBy('id','desc')->paginate(getPaginate());
         return view($this->activeTemplate.'blog.blogs', compact('pageTitle','sections','blogs'));
     }
@@ -44,9 +53,14 @@ class SiteController extends Controller
 
     public function pages($slug)
     {
-        $page = Page::where('tempname',$this->activeTemplate)->where('slug',$slug)->firstOrFail();
-        $pageTitle = $page->name;
-        $sections = $page->secs;
+        if (Schema::hasTable('pages')) {
+            $page = Page::where('tempname',$this->activeTemplate)->where('slug',$slug)->firstOrFail();
+            $pageTitle = $page->name;
+            $sections = $page->secs;
+        } else {
+            // If pages table doesn't exist, return 404 or redirect to home
+            abort(404, 'Page not found');
+        }
         return view($this->activeTemplate . 'pages', compact('pageTitle','sections'));
     }
 
@@ -57,13 +71,11 @@ class SiteController extends Controller
         return view($this->activeTemplate.'plans', compact('pageTitle','plans'));
     }
 
-
     public function contact()
     {
         $pageTitle = "Contact Us";
         return view($this->activeTemplate . 'contact',compact('pageTitle'));
     }
-
 
     public function contactSubmit(Request $request)
     {
@@ -88,7 +100,6 @@ class SiteController extends Controller
         $ticket->name = $request->name;
         $ticket->email = $request->email;
         $ticket->priority = 2;
-
 
         $ticket->ticket = $random;
         $ticket->subject = $request->subject;
@@ -132,7 +143,6 @@ class SiteController extends Controller
         $pageTitle = $blog->data_values->title;
         return view($this->activeTemplate.'blog_details',compact('blog','pageTitle'));
     }
-
 
     public function cookieAccept(){
         $general = gs();
@@ -184,5 +194,4 @@ class SiteController extends Controller
         $maintenance = Frontend::where('data_keys','maintenance.data')->first();
         return view($this->activeTemplate.'maintenance',compact('pageTitle','maintenance'));
     }
-
 }

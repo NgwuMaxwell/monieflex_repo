@@ -43,7 +43,11 @@
                     <ul class="navbar-nav main-menu ms-auto">
                         <li><a href="{{ route('home') }}">@lang('Home')</a></li>
                         @php
-                            $pages = App\Models\Page::where('tempname',$activeTemplate)->where('is_default',0)->get();
+                            if (Schema::hasTable('pages')) {
+                                $pages = App\Models\Page::where('tempname',$activeTemplate)->where('is_default',0)->get();
+                            } else {
+                                $pages = collect();
+                            }
                         @endphp
                         @foreach($pages as $page)
                             @if($page->slug != 'home' && $page->slug != 'blog' && $page->slug != 'contact')

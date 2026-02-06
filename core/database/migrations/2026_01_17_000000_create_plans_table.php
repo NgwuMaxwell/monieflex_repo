@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddImageToPlansTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class AddImageToPlansTable extends Migration
      */
     public function up()
     {
-        if (Schema::hasTable('plans')) {
-            Schema::table('plans', function (Blueprint $table) {
-                $table->string('image')->nullable();
-            });
-        }
+        Schema::create('plans', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->decimal('price', 10, 2);
+            $table->timestamps();
+        });
     }
 
     /**
@@ -27,8 +28,6 @@ class AddImageToPlansTable extends Migration
      */
     public function down()
     {
-        Schema::table('plans', function (Blueprint $table) {
-            $table->dropColumn('image');
-        });
+        Schema::dropIfExists('plans');
     }
-}
+};

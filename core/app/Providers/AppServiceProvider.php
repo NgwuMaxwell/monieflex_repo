@@ -11,6 +11,7 @@ use App\Models\SupportTicket;
 use App\Models\User;
 use App\Models\Withdrawal;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
@@ -37,7 +38,11 @@ class AppServiceProvider extends ServiceProvider
         $activeTemplate = activeTemplate();
         $viewShare['activeTemplate'] = $activeTemplate;
         $viewShare['activeTemplateTrue'] = activeTemplate(true);
-        $viewShare['language'] = Language::all();
+        if (Schema::hasTable('languages')) {
+            $viewShare['language'] = Language::all();
+        } else {
+            $viewShare['language'] = collect();
+        }
         $viewShare['emptyMessage'] = 'Data not found';
         view()->share($viewShare);
 
