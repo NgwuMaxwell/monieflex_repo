@@ -117,8 +117,8 @@
         <div class="container">
             <div class="banner">
                 <div class="txt">
-                    <p>Amount of money</p>
-                    <h3> {{__($general->cur_text)}}                      {{ $balance }}        </h3>
+                    <p id="walletLabel">Amount of money in Referral Bonus Wallet</p>
+                    <h3 id="walletBalance"> {{__($general->cur_text)}}                      {{ $balance }}        </h3>
                 </div>
             </div>
             <nav class="tab-list">
@@ -192,7 +192,7 @@
                                 <div class="input-group-prepend">
                                     <div class="input-group-text">Wallet Type</div>
                                 </div>
-                                <select name="wallet_type" class="form-control" required>
+                                <select name="wallet_type" id="wallet_type" class="form-control" required>
                                     <option value="referral_bonus" data-balance="{{ number_format(Auth::user()->referralBonus, 0, '.', '') }}" selected>Referral Bonus</option>
                                     <option value="profit_wallet" data-balance="{{ number_format(Auth::user()->profitWallet, 0, '.', '') }}">Profit Wallet</option>
                                 </select>
@@ -252,9 +252,8 @@
                         <button class="btn btn-submit">Cashout</button>
                     </form>
                     <div class="rule-txt">
-                        <p>1. The Withdraw amount is the same as the payment amount.</p>
-                        <p>2. For the safety of your account and property, you need to enter the rethink recharge page to obtain the latest UPI every time you recharge.</p>
-                        <p>3. For  issues, please contact online customer service.</p>
+                        <p>1. Please ensure you meet the minimum requirements before requesting a withdrawal. 💳💰</p>
+                    </div>
                     </div>
                 </div>
                 @endif      
@@ -316,8 +315,6 @@
                     </form>
                     <div class="rule-txt">
                         <p>1. The amount is the same as the payment amount.</p>
-                        <p>2. For the safety of your account and property, you need to enter the rethink recharge page to obtain the latest UPI every time you recharge.</p>
-                        <p>3. For  issues, please contact online customer service.</p>
                     </div>
                 </div>
             </div>
@@ -341,104 +338,39 @@
 
 
 
-<script type="text/javascript">
-    (function ($) {
-            "use strict";
-            
-            // Function to update the balance display based on selected wallet
-            function updateBalanceDisplay() {
-                var selectedWallet = $('select[name=wallet_type] option:selected');
-                var walletType = selectedWallet.val();
-                var walletName = selectedWallet.text();
-                
-                // Update the banner text to show the correct wallet name
-                $('.banner .txt p').text('Amount of money in ' + walletName + ' Wallet');
-                
-                // Get the balance from data attributes that we'll add to the select options
-                var balance = selectedWallet.data('balance');
-                
-                $('.banner .txt h3').html('{{__($general->cur_text)}} ' + balance);
-            }
-            
-            // Function to update minimum withdrawal amount display
-            function updateMinWithdrawAmount() {
-                var selectedMethod = $('select[name=method_code] option:selected');
-                if (selectedMethod.length > 0) {
-                    var resource = selectedMethod.data('resource');
-                    if (resource && resource.min_limit) {
-                        $('#min-withdraw-amount').text(parseFloat(resource.min_limit).toFixed(2));
-                    } else {
-                        $('#min-withdraw-amount').text('100');
-                    }
-                }
-            }
-            
-            $('select[name=method_code]').change(function(){
-                // Update minimum withdrawal amount when method changes
-                updateMinWithdrawAmount();
-                
-                if(!$('select[name=method_code]').val()){
-                    $('.preview-details').addClass('d-none');
-                    return false;
-                }
-                var resource = $('select[name=method_code] option:selected').data('resource');
-                var fixed_charge = parseFloat(resource.fixed_charge);
-                var percent_charge = parseFloat(resource.percent_charge);
-                var rate = parseFloat(resource.rate)
-                var toFixedDigit = 2;
-                $('.min').text(parseFloat(resource.min_limit).toFixed(2));
-                $('.max').text(parseFloat(resource.max_limit).toFixed(2));
-                var amount = parseFloat($('input[name=amount]').val());
-                if (!amount) {
-                    amount = 0;
-                }
-                if(amount <= 0){
-                    $('.preview-details').addClass('d-none');
-                    return false;
-                }
-                $('.preview-details').removeClass('d-none');
+<script>
+    // Gold Standard Solution: Expose balances to JavaScript
+    const walletBalances = {
+        referral_bonus: {{ auth()->user()->referralBonus ?? 0 }},
+        profit_wallet: {{ auth()->user()->profitWallet ?? 0 }}
+    };
+</script>
 
-                var charge = parseFloat(fixed_charge + (amount * percent_charge / 100)).toFixed(2);
-                $('.charge').text(charge);
-                if (resource.currency != '{{ $general->cur_text }}') {
-                    var rateElement = `<span>@lang('Conversion Rate')</span> <span class="fw-bold">1 {{__($general->cur_text)}} = <span class="rate">${rate}</span>  <span class="base-currency">${resource.currency}</span></span>`;
-                    $('.rate-element').html(rateElement);
-                    $('.rate-element').removeClass('d-none');
-                    $('.in-site-cur').removeClass('d-none');
-                    $('.rate-element').addClass('d-flex');
-                    $('.in-site-cur').addClass('d-flex');
-                }else{
-                    $('.rate-element').html('')
-                    $('.rate-element').addClass('d-none');
-                    $('.in-site-cur').addClass('d-none');
-                    $('.rate-element').removeClass('d-flex');
-                    $('.in-site-cur').removeClass('d-flex');
-                }
-                var receivable = parseFloat((parseFloat(amount) - parseFloat(charge))).toFixed(2);
-                $('.receivable').text(receivable);
-                var final_amo = parseFloat(parseFloat(receivable)*rate).toFixed(toFixedDigit);
-                $('.final_amo').text(final_amo);
-                $('.base-currency').text(resource.currency);
-                $('.method_currency').text(resource.currency);
-                $('input[name=amount]').on('input');
-            });
-            
-            // Initialize minimum withdrawal amount on page load
-            updateMinWithdrawAmount();
-            
-            // Initialize balance display on page load
-            updateBalanceDisplay();
-            
-            // Update balance display when wallet selection changes
-            $('select[name=wallet_type]').change(function(){
-                updateBalanceDisplay();
-            });
-            
-            $('input[name=amount]').on('input',function(){
-                var data = $('select[name=method_code]').change();
-                $('.amount').text(parseFloat($(this).val()).toFixed(2));
-            });
-        })(jQuery);
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const walletSelect = document.getElementById('wallet_type');
+    const balanceEl = document.getElementById('walletBalance');
+    const labelEl = document.getElementById('walletLabel');
+
+    function updateWalletDisplay() {
+        const selectedWallet = walletSelect.value;
+        const amount = walletBalances[selectedWallet] ?? 0;
+
+        balanceEl.innerText = '{{__($general->cur_text)}} ' + Number(amount).toLocaleString();
+
+        labelEl.innerText =
+            selectedWallet === 'profit_wallet'
+                ? 'Amount of money in Profit Wallet'
+                : 'Amount of money in Referral Bonus Wallet';
+    }
+
+    // Run on page load (default Referral Bonus)
+    updateWalletDisplay();
+
+    // Run when wallet changes
+    walletSelect.addEventListener('change', updateWalletDisplay);
+});
 </script>
 
 
