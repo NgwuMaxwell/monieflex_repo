@@ -110,11 +110,19 @@ class User extends Authenticatable
     {
         return new Attribute(
             get: function () {
-                // Calculate referral bonus from transactions table
-                return $this->transactions()
+                // Calculate net referral bonus from transactions table (positive - negative)
+                // Use direct query to avoid N+1 issues
+                $positiveTransactions = \App\Models\Transaction::where('user_id', $this->id)
                     ->where('wallet', 'referral_bonus')
                     ->where('trx_type', '+')
                     ->sum('amount');
+                
+                $negativeTransactions = \App\Models\Transaction::where('user_id', $this->id)
+                    ->where('wallet', 'referral_bonus')
+                    ->where('trx_type', '-')
+                    ->sum('amount');
+                
+                return $positiveTransactions - $negativeTransactions;
             }
         );
     }
