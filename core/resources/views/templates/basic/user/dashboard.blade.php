@@ -227,7 +227,7 @@
         </div>
         
         <div class="container">
-            <div class="top-nav">
+        <div class="top-nav">
                 <div class="nav" onclick="window.location.href='{{route ('user.deposit')}}'">
                     <img src="{{asset ('assets/img/icon-recharge.png')}}">
                     <span>Deposit</span>
@@ -243,10 +243,6 @@
                 <div class="nav" onclick="window.location.href='{{ route('user.my.plans') }}'">
                     <img src="{{asset ('assets/img/icon-bill.png')}}">
                     <span>My Plans</span>
-                </div>
-                <div class="nav" onclick="window.location.href='{{ route('user.referral.bonuses') }}'">
-                    <img src="{{asset ('assets/img/icon-share.png')}}">
-                    <span>Referral Bonus</span>
                 </div>
             </div>
             
