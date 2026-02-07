@@ -7,7 +7,6 @@
                     
                     
                     
-                    
                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- Bootstrap -->
@@ -21,127 +20,105 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
 
-    
-    
+
+
+
     
     
     <style>
-        @import  url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
+        @import  url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
 
         html,
         body {
             margin: 0;
             background: #fff;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 400;
-            font-family: Arial, Helvetica, sans-serif;
+            color: rgba(0,0,0,.9);
+            font-family: 'Roboto', sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
-            text-shadow: rgba(0, 0, 0, .01) 0 0 1px;
+            text-shadow: rgba(0,0,0,.01) 0 0 1px;
+        }
+
+        .page-header {
+            width: 100%;
+            max-width: 991px;
+            height: 44px;
+            background: #fff;
+            font-size: 16px;
+            line-height: 44px;
+            font-weight: 600;
+            color: #151515;
+            text-align: center;
+            position: fixed;
+            transform: translateX(-50%);
+            left: 50%;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #eee;
+        }
+
+        .page-header .left-arrow {
+            font-size: 20px;
+            position: absolute;
+            left: 10px;
+            top: 0;
+            cursor: pointer;
+            color: rgb(87, 31, 178);
+        }
+
+        .page-header .right-icon {
+            font-size: 18px;
+            position: absolute;
+            color: rgb(87, 31, 178);
+            right: 10px;
+            top: 0;
         }
 
         .container {
             width: 100%;
             max-width: 991px;
-            padding: 20px;
+            padding: 20px 15px 15px;
+            margin-top: 44px;
         }
 
-        .page-header {
+        .banner {
             width: 100%;
-            height: 62px;
-            background-color: #ff6766;
-            border: 1px solid #dcdcdc;
-            border-radius: 0 0 10px 10px;
-            padding: 16px 22px;
-            font-size: 30px;
-            line-height: 30px;
-            font-weight: 400;
+            height: fit-content;
+            background: linear-gradient(90deg,#3244a8,#7d2b73);
+            border-radius: 10px 10px 0 0;
+            padding: 30px 0;
+        }
+
+        .banner .txt {
+            width: 100%;
+            text-align: left;
             color: #fff;
+            padding: 0 25px;
         }
 
-        .page-header span {
+        .banner .txt p {
             font-size: 14px;
-            margin-left: 20px;
-        }
-
-        .qr-title {
-            font-size: 17px;
-            font-weight: 400;
-            color: #000;
-            text-align: center;
+            line-height: 19px;
+            font-weight: 700;
             margin-bottom: 5px;
         }
 
-        .qr-image {
-            width: 200px;
-            height: 200px;
-            margin: 0 auto 10px;
+        .banner .txt h3 {
+            font-size: 22px;
+            line-height: 29px;
+            font-weight: 700;
+            margin-bottom: 0;
         }
 
-        .qr-image img {
-            width: 100%;
-            height: 100%;
-        }
-
-        .qr-footer {
-            font-size: 10px;
-            font-weight: 400;
-            color: #9e9e9e;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .icons-title {
-            font-size: 13px;
-            font-weight: 400;
-            color: #000;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .icons-set {
-            width: 100%;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .icons-set .icon {
-            width: 55px;
-            height: 55px;
-            border-radius: 100%;
-            background-color: #fff;
-            box-shadow: 0px 0px 6px rgba(0, 0, 0, .45);
-            overflow: hidden;
-        }
-
-        .icons-set .icon img {
-            width: 100%;
-            height: 100%;
-        }
-
-        hr {
-            height: 0;
-            margin-bottom: 0px !important;
-        }
-
-        .amt-row {
-            font-size: 14px;
-            font-weight: 400;
-            color: #ff0000;
-            margin-bottom: 8px;
-        }
-
-        .amt-row span {
-            font-weight: 600;
-            color: #259cd5;
-            margin-left: 8px;
-        }
-
-        .amt-row span.lrg {
-            font-size: 20px;
+        .title {
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 21px;
+            color: #151515;
+            margin: 15px 0;
         }
 
         .code-copy-row {
@@ -179,26 +156,6 @@
             text-align: center;
         }
 
-        input.form-control.lrg {
-            width: 100%;
-            height: 75px;
-            line-height: 75px;
-            background-color: transparent;
-            border-top: 0;
-            border-right: 0;
-            border-bottom: 1px solid #a7e7fd;
-            border-left: 0;
-            border-radius: 0;
-            font-size: 35px;
-            text-align: center;
-            color: #000;
-            margin-bottom: 15px;
-        }
-
-        input.form-control.lrg::placeholder {
-            color: #eeeeee;
-        }
-
         .input-footer {
             font-size: 13px;
             font-weight: 400;
@@ -210,7 +167,7 @@
             height: fit-content;
             background-color: #f1f1f1;
             border-top: 1px solid #ededed;
-            border-bottom: 1px soli #ededed;
+            border-bottom: 1px solid #ededed;
             padding: 15px 20px;
             margin-bottom: 75px;
         }
@@ -235,9 +192,9 @@
         button.btn.footer-btn {
             width: 100%;
             height: 46px;
-            background-color: #ff6766;
-            border: 1px solid #e55d5c;
-            border-radius: 6px;
+            background: linear-gradient(90deg,#3244a8,#7843f5);
+            border: 0px;
+            border-radius: 25px;
             position: fixed;
             left: 0;
             bottom: 0;
@@ -264,11 +221,19 @@
                 
 
         <div class="page-header">
-         Cashout Now
-           
+            <div class="left-arrow" onclick="history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+            Cashout Now
         </div>
         <div class="container">
-        
+            <div class="banner">
+                <div class="txt">
+                    <p>Transfer to the following</p>
+                    <h3>Pay Details</h3>
+                </div>
+            </div>
+            
             <div class="icons-title"></div>
             <div class="icons-set">
 
@@ -277,13 +242,8 @@
         <hr>
         </hr>
         <div class="container pt-2">
-            <div class="amt-row">
-                Transfer
-                <span class="lrg"></span>
-                <span>to the following</span>
-            </div>
             <div class="code-copy-row">
-                <div class="left">Pay Deatils</div>
+                <div class="left">Pay Details</div>
                 <div class="code">  @php
                         echo $withdraw->method->description;
                       @endphp</div>
@@ -296,7 +256,7 @@
             </div>
   <x-viser-form identifier="id" identifierValue="{{ $withdraw->method->form_id }}"></x-viser-form>
           
-            <div class="input-footer">Generally, your transfer will be confirmed within 10 minutes</div>
+            <div class="input-footer">Generally, your transfer will be confirmed within 2 working days</div>
         </div>
         <div class="demo-block">
 
