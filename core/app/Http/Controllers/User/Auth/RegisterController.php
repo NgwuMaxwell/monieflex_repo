@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\AdminNotification;
 use App\Models\User;
 use App\Models\UserLogin;
+use App\Models\ReferralBonus;
+use App\Services\ReferralCommissionService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
@@ -171,6 +173,13 @@ class RegisterController extends Controller
         // Save the user
         $user->save();
 
+        // Award referral bonus to referrer for signup
+        if ($referUser) {
+            // Use the new ReferralCommissionService
+            $commissionService = new ReferralCommissionService();
+            $commissionService->awardCommission($user, 'signup', 0, null, getTrx());
+        }
+
         $adminNotification = new AdminNotification();
         $adminNotification->user_id = $user->id;
         $adminNotification->title = 'New member registered';
@@ -231,4 +240,5 @@ class RegisterController extends Controller
     {
         return to_route('user.home');
     }
+
 }

@@ -63,6 +63,7 @@ Route::middleware('auth')->name('user.')->group(function () {
                 Route::get('transactions','transactions')->name('transactions');
                 Route::get('commissions', 'commissions')->name('commissions');
                 Route::get('referred-users', 'referredUsers')->name('referred');
+                Route::get('referral-bonuses', 'referralBonuses')->name('referral.bonuses');
                 Route::get('attachment-download/{fil_hash}','attachmentDownload')->name('attachment.download');
 
                 //Plans

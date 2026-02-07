@@ -57,7 +57,10 @@ Route::controller('SiteController')->group(function () {
     Route::get('blog-details/{id}', 'SiteController@blogDetail')->name('blogDetail');
 
     Route::get('/{slug}', 'pages')->name('pages');
-    Route::get('/', 'index')->name('home');
+Route::get('/', 'index')->name('home');
 });
+
+// Test route for referral commission debugging
+Route::get('/test-referral', 'TestController@testReferralCommission')->name('test.referral');
 
 

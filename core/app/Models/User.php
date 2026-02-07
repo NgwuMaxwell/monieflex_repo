@@ -91,6 +91,21 @@ class User extends Authenticatable
         return $this->belongsTo(User::class,'ref_by');
     }
 
+    public function referrals()
+    {
+        return $this->hasMany(User::class, 'ref_by');
+    }
+
+    public function referralBonuses()
+    {
+        return $this->hasMany(ReferralBonus::class, 'user_id');
+    }
+
+    public function earnedReferralBonuses()
+    {
+        return $this->hasMany(ReferralBonus::class, 'referral_id');
+    }
+
 
     // SCOPES
     public function scopeActive()

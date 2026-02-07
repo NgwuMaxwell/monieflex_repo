@@ -12,6 +12,7 @@ use App\Models\PtcView;
 use App\Models\Referral;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Services\ReferralCommissionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -304,6 +305,16 @@ class UserController extends Controller
             $profitActivity->amount = $totalProfit;
             $profitActivity->save();
 
+            // Award referral bonus to referrer for plan subscription using admin settings
+            if ($user->ref_by) {
+                $referrer = User::find($user->ref_by);
+                if ($referrer) {
+                    // Use the new ReferralCommissionService
+                    $commissionService = new ReferralCommissionService();
+                    $commissionService->awardCommission($user, 'plan_subscription', $plan->price, $plan->id, $trx);
+                }
+            }
+
             // Commit the transaction
             DB::commit();
         } catch (\Exception $e) {
@@ -312,9 +323,6 @@ class UserController extends Controller
             $notify[] = ['error', 'Transaction failed. Please try again.'];
             return back()->withNotify($notify);
         }
-
-        // Use new source-agnostic referral system
-        levelCommission($user, 'plan_subscription', $plan->price, $plan->id, $trx);
 
         notify($user, 'BUY_PLAN', [
             'plan_name' => $plan->name,
@@ -326,6 +334,7 @@ class UserController extends Controller
         $notify[] = ['success', 'You have subscribed to the ' . $plan->name . ' plan successfully!'];
         return back()->withNotify($notify);
     }
+
 
 
     public function commissions(Request $request)
@@ -360,6 +369,19 @@ class UserController extends Controller
         $refUsers = User::where('ref_by', auth()->user()->id)->with('plan')->paginate(getPaginate());
         $user = auth()->user();
         return view($this->activeTemplate . 'user.referred', compact('pageTitle', 'refUsers', 'user'));
+    }
+
+    public function referralBonuses(Request $request)
+    {
+        $pageTitle = "Referral Bonuses";
+        $user = auth()->user();
+        
+        $bonuses = \App\Models\ReferralBonus::where('user_id', $user->id)
+            ->with('referral')
+            ->orderBy('created_at', 'desc')
+            ->paginate(getPaginate());
+
+        return view($this->activeTemplate . 'user.referral_bonuses', compact('pageTitle', 'bonuses', 'user'));
     }
 
     public function myPlans()

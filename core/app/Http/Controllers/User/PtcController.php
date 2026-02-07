@@ -7,6 +7,7 @@ use App\Models\PtcView;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
+use App\Services\ReferralCommissionService;
 use Illuminate\Support\Facades\DB;
 
 class PtcController extends Controller
@@ -170,8 +171,14 @@ class PtcController extends Controller
         }
 
 
-        // Use new source-agnostic referral system for PTC view commissions
-        levelCommission($user, 'ptc_view', $ptc->amount, null, $ptc->id);
+        // Use new ReferralCommissionService for PTC view commissions
+        if ($user->ref_by) {
+            $referrer = \App\Models\User::find($user->ref_by);
+            if ($referrer) {
+                $commissionService = new ReferralCommissionService();
+                $commissionService->awardCommission($user, 'ptc_view', $ptc->amount, null, $ptc->id);
+            }
+        }
 
         $notify[] = ['success','Successfully viewed this ads'];
         return redirect()->route('user.ptc.index')->withNotify($notify);

@@ -244,6 +244,10 @@
                     <img src="{{asset ('assets/img/icon-bill.png')}}">
                     <span>My Plans</span>
                 </div>
+                <div class="nav" onclick="window.location.href='{{ route('user.referral.bonuses') }}'">
+                    <img src="{{asset ('assets/img/icon-share.png')}}">
+                    <span>Referral Bonus</span>
+                </div>
             </div>
             
             

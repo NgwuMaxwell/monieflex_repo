@@ -9,6 +9,7 @@ use App\Models\Deposit;
 use App\Models\GatewayCurrency;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Services\ReferralCommissionService;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
@@ -149,8 +150,15 @@ class PaymentController extends Controller
             $adminNotification->click_url = urlPath('admin.deposit.successful');
             $adminNotification->save();
 
-            // Use new source-agnostic referral system for deposit commissions
-            levelCommission($user, 'deposit', $deposit->amount, null, $deposit->trx);
+            // Award referral bonus to referrer for deposit using admin settings
+            if ($user->ref_by) {
+                $referrer = User::find($user->ref_by);
+                if ($referrer) {
+                    // Use the new ReferralCommissionService
+                    $commissionService = new ReferralCommissionService();
+                    $commissionService->awardCommission($user, 'deposit', $deposit->amount, null, $deposit->trx);
+                }
+            }
 
             if (!$isManual) {
                 $adminNotification = new AdminNotification();
@@ -174,6 +182,7 @@ class PaymentController extends Controller
 
         }
     }
+
 
     public function manualDepositConfirm()
     {
