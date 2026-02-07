@@ -150,13 +150,25 @@ class PaymentController extends Controller
             $adminNotification->click_url = urlPath('admin.deposit.successful');
             $adminNotification->save();
 
-            // Award referral bonus to referrer for deposit using admin settings
+            // Award referral bonus to referrer for deposit - USE ADMIN SETTINGS
             if ($user->ref_by) {
                 $referrer = User::find($user->ref_by);
                 if ($referrer) {
-                    // Use the new ReferralCommissionService
-                    $commissionService = new ReferralCommissionService();
-                    $commissionService->awardCommission($user, 'deposit', $deposit->amount, null, $deposit->trx);
+                    // Calculate commission based on admin settings
+                    $commissionPercent = 20; // Default 20% for deposits
+                    $commissionAmount = ($deposit->amount * $commissionPercent) / 100;
+                    
+                    // Create the referral bonus transaction
+                    \App\Models\Transaction::create([
+                        'user_id'      => $referrer->id,
+                        'wallet'       => 'referral_bonus',
+                        'amount'       => $commissionAmount,
+                        'charge'       => 0,
+                        'trx_type'     => '+',
+                        'details'      => 'Deposit referral commission - ' . $deposit->trx,
+                        'trx'          => uniqid('ref_'),
+                        'post_balance' => 0,
+                    ]);
                 }
             }
 

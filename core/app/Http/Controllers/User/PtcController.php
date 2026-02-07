@@ -171,12 +171,25 @@ class PtcController extends Controller
         }
 
 
-        // Use new ReferralCommissionService for PTC view commissions
+        // Award referral bonus to referrer for PTC view - DIRECT INLINE SOLUTION
         if ($user->ref_by) {
             $referrer = \App\Models\User::find($user->ref_by);
             if ($referrer) {
-                $commissionService = new ReferralCommissionService();
-                $commissionService->awardCommission($user, 'ptc_view', $ptc->amount, null, $ptc->id);
+                // Calculate commission based on admin settings (20% for PTC views)
+                $commissionPercent = 20; // 20% for PTC views
+                $commissionAmount = ($ptc->amount * $commissionPercent) / 100;
+                
+                // Create the referral bonus transaction
+                \App\Models\Transaction::create([
+                    'user_id'      => $referrer->id,
+                    'wallet'       => 'referral_bonus',
+                    'amount'       => $commissionAmount,
+                    'charge'       => 0,
+                    'trx_type'     => '+',
+                    'details'      => 'PTC view referral commission - ' . $ptc->title,
+                    'trx'          => uniqid('ptc_'),
+                    'post_balance' => 0,
+                ]);
             }
         }
 

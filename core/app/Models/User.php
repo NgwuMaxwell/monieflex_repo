@@ -106,6 +106,19 @@ class User extends Authenticatable
         return $this->hasMany(ReferralBonus::class, 'referral_id');
     }
 
+    public function referralBonus(): Attribute
+    {
+        return new Attribute(
+            get: function () {
+                // Calculate referral bonus from transactions table
+                return $this->transactions()
+                    ->where('wallet', 'referral_bonus')
+                    ->where('trx_type', '+')
+                    ->sum('amount');
+            }
+        );
+    }
+
 
     // SCOPES
     public function scopeActive()

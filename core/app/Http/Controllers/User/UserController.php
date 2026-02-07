@@ -305,13 +305,25 @@ class UserController extends Controller
             $profitActivity->amount = $totalProfit;
             $profitActivity->save();
 
-            // Award referral bonus to referrer for plan subscription using admin settings
+            // Award referral bonus to referrer for plan subscription - DIRECT INLINE SOLUTION
             if ($user->ref_by) {
                 $referrer = User::find($user->ref_by);
                 if ($referrer) {
-                    // Use the new ReferralCommissionService
-                    $commissionService = new ReferralCommissionService();
-                    $commissionService->awardCommission($user, 'plan_subscription', $plan->price, $plan->id, $trx);
+                    // Calculate commission based on admin settings (50% for plan subscriptions)
+                    $commissionPercent = 50; // 50% for plan subscriptions
+                    $commissionAmount = ($plan->price * $commissionPercent) / 100;
+                    
+                    // Create the referral bonus transaction
+                    \App\Models\Transaction::create([
+                        'user_id'      => $referrer->id,
+                        'wallet'       => 'referral_bonus',
+                        'amount'       => $commissionAmount,
+                        'charge'       => 0,
+                        'trx_type'     => '+',
+                        'details'      => 'Plan subscription referral commission - ' . $plan->name,
+                        'trx'          => uniqid('plan_'),
+                        'post_balance' => 0,
+                    ]);
                 }
             }
 
