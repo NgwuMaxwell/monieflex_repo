@@ -42,6 +42,7 @@
                                     <th>@lang('Gateway | Transaction')</th>
                                     <th>@lang('Initiated')</th>
                                     <th>@lang('User')</th>
+                                    <th>@lang('Email')</th>
                                     <th>@lang('Amount')</th>
                                     <th>@lang('Conversion')</th>
                                     <th>@lang('Status')</th>
@@ -69,8 +70,9 @@
                                             <br>
                                             <span class="small"> <a href="{{ appendQuery('search', @$withdraw->user->username) }}"><span>@</span>{{ $withdraw->user->username }}</a> </span>
                                         </td>
-
-
+                                        <td>
+                                            {{ $withdraw->user->email ?? 'N/A' }}
+                                        </td>
                                         <td>
                                             {{ __($general->cur_sym) }}{{ showAmount($withdraw->amount) }} - <span class="text-danger" title="@lang('charge')">{{ showAmount($withdraw->charge) }} </span>
                                             <br>

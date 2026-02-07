@@ -51,6 +51,7 @@
                                     <th>@lang('Gateway | Transaction')</th>
                                     <th>@lang('Initiated')</th>
                                     <th>@lang('User')</th>
+                                    <th>@lang('Email')</th>
                                     <th>@lang('Amount')</th>
                                     <th>@lang('Conversion')</th>
                                     <th>@lang('Status')</th>
@@ -78,6 +79,9 @@
                                             <span class="small">
                                                 <a href="{{ appendQuery('search', @$deposit->user->username) }}"><span>@</span>{{ $deposit->user->username }}</a>
                                             </span>
+                                        </td>
+                                        <td>
+                                            {{ $deposit->user->email ?? 'N/A' }}
                                         </td>
                                         <td>
                                             {{ __($general->cur_sym) }}{{ showAmount($deposit->amount) }} + <span class="text-danger" title="@lang('charge')">{{ showAmount($deposit->charge) }} </span>
