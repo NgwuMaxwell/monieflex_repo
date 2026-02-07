@@ -63,6 +63,14 @@
                                         </td>
                                         <td>
                                             {{ showDateTime($withdraw->created_at) }} <br> {{ diffForHumans($withdraw->created_at) }}
+                                            <br>
+                                            <small class="text-muted">
+                                                @if($withdraw->wallet_type == 'referral_bonus')
+                                                    From Referral Bonus Wallet
+                                                @else
+                                                    From Profit Wallet
+                                                @endif
+                                            </small>
                                         </td>
 
                                         <td>

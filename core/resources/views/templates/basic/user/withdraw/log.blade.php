@@ -175,6 +175,13 @@
                     <div class="league-name">Withdraw: {{ __($general->cur_sym) }}{{ showAmount($withdraw->amount ) }}</div>
                     <div class=""> {{ showDateTime($withdraw->created_at) }}</div>
                 </div>
+                <div style="text-align: right; margin-top: 5px; font-size: 12px; color: #666;">
+                    @if($withdraw->wallet_type == 'referral_bonus')
+                        From Referral Bonus Wallet
+                    @else
+                        From Profit Wallet
+                    @endif
+                </div>
 
                 <div class="teams">
                                         <span class="badge badge-">@php echo $withdraw->statusBadge @endphp</span>
