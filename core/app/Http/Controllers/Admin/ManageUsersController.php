@@ -246,8 +246,13 @@ class ManageUsersController extends Controller
                 $notifyTemplate = 'BAL_ADD';
                 $notify[] = ['success', $general->cur_sym . $amount . ' added to ' . $walletName . ' successfully'];
             } else {
-                // For balance and profit_wallet, update the user column directly
-                $user->{$walletType} += $amount;
+                // For balance and profit_wallet, use transaction-based approach
+                if ($walletType === 'profit_wallet') {
+                    $transaction->wallet = 'main_balance';
+                } else {
+                    $transaction->wallet = 'main_balance'; // For regular balance
+                }
+                
                 $transaction->trx_type = '+';
                 $transaction->remark = $walletType . '_add';
                 $transaction->user_id = $user->id;
@@ -255,7 +260,7 @@ class ManageUsersController extends Controller
                 $transaction->charge = 0;
                 $transaction->trx = $trx;
                 $transaction->details = $request->remark;
-                $transaction->post_balance = $user->balance;
+                $transaction->post_balance = 0; // Not used for dynamic calculation
                 $transaction->save();
                 
                 $notifyTemplate = 'BAL_ADD';
@@ -291,13 +296,36 @@ class ManageUsersController extends Controller
                 $notifyTemplate = 'BAL_SUB';
                 $notify[] = ['success', $general->cur_sym . $amount . ' subtracted from ' . $walletName . ' successfully'];
             } else {
-                // For balance and profit_wallet, check and update user column directly
-                if ($amount > $user->{$walletType}) {
-                    $notify[] = ['error', $user->username . ' doesn\'t have sufficient balance in ' . $walletName . '.'];
-                    return back()->withNotify($notify);
-                }
+                // For balance and profit_wallet, use transaction-based approach
+                if ($walletType === 'profit_wallet') {
+                    // Check if user has sufficient profit wallet balance
+                    $currentProfitBalance = $user->transactions()
+                        ->where('wallet', 'main_balance')
+                        ->sum(\Illuminate\Support\Facades\DB::raw("
+                            CASE 
+                                WHEN trx_type = '+' THEN amount
+                                WHEN trx_type = '-' THEN -amount
+                            END
+                        "));
+                    
+                    if ($amount > $currentProfitBalance) {
+                        $notify[] = ['error', $user->username . ' doesn\'t have sufficient balance in ' . $walletName . '.'];
+                        return back()->withNotify($notify);
+                    }
 
-                $user->{$walletType} -= $amount;
+                    // Create negative transaction for profit wallet
+                    $transaction->wallet = 'main_balance';
+                } else {
+                    // For regular balance, check current balance
+                    if ($amount > $user->{$walletType}) {
+                        $notify[] = ['error', $user->username . ' doesn\'t have sufficient balance in ' . $walletName . '.'];
+                        return back()->withNotify($notify);
+                    }
+
+                    $user->{$walletType} -= $amount;
+                    $transaction->wallet = 'main_balance';
+                }
+                
                 $transaction->trx_type = '-';
                 $transaction->remark = $walletType . '_subtract';
                 $transaction->user_id = $user->id;
@@ -305,7 +333,7 @@ class ManageUsersController extends Controller
                 $transaction->charge = 0;
                 $transaction->trx = $trx;
                 $transaction->details = $request->remark;
-                $transaction->post_balance = $user->balance;
+                $transaction->post_balance = 0; // Not used for dynamic calculation
                 $transaction->save();
                 
                 $notifyTemplate = 'BAL_SUB';
@@ -313,8 +341,8 @@ class ManageUsersController extends Controller
             }
         }
 
-        // Save user only if we modified balance or profit_wallet
-        if ($walletType !== 'referral_wallet') {
+        // Save user only if we modified the regular balance column
+        if ($walletType === 'balance') {
             $user->save();
         }
 

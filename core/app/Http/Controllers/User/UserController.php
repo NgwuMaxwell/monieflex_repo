@@ -32,8 +32,21 @@ class UserController extends Controller
         })->sort()->reverse()->take(7)->toArray();
 
         $user = auth()->user();
+        
+        // Calculate wallet balances from transactions ledger
+        $profitWallet = \App\Models\Transaction::where('user_id', $user->id)
+            ->where('wallet', 'main_balance')
+            ->sum(DB::raw("
+                CASE 
+                    WHEN trx_type = '+' THEN amount
+                    WHEN trx_type = '-' THEN -amount
+                END
+            "));
+        
+        // Use the User model's referral bonus attribute for consistency
+        $referralWallet = $user->referralBonus;
 
-        return view($this->activeTemplate . 'user.dashboard', compact('pageTitle', 'chart', 'user'));
+        return view($this->activeTemplate . 'user.dashboard', compact('pageTitle', 'chart', 'user', 'profitWallet', 'referralWallet'));
     }
 
     public function depositHistory(Request $request)

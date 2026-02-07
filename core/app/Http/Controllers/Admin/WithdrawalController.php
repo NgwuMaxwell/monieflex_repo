@@ -124,6 +124,85 @@ class WithdrawalController extends Controller
     {
         $request->validate(['id' => 'required|integer']);
         $withdraw = Withdrawal::where('id',$request->id)->where('status',2)->with('user')->firstOrFail();
+        
+        $user = $withdraw->user;
+        $walletType = $withdraw->wallet_type;
+        
+        // Calculate current balance for the selected wallet
+        $currentBalance = 0;
+        if ($walletType === 'profit_wallet') {
+            // Calculate profit wallet balance from transactions
+            $currentBalance = \App\Models\Transaction::where('user_id', $user->id)
+                ->where('wallet', 'main_balance')
+                ->sum(\Illuminate\Support\Facades\DB::raw("
+                    CASE 
+                        WHEN trx_type = '+' THEN amount
+                        WHEN trx_type = '-' THEN -amount
+                    END
+                "));
+        } elseif ($walletType === 'referral_bonus') {
+            // Calculate referral bonus balance from transactions
+            $currentBalance = \App\Models\Transaction::where('user_id', $user->id)
+                ->where('wallet', 'referral_bonus')
+                ->sum(\Illuminate\Support\Facades\DB::raw("
+                    CASE 
+                        WHEN trx_type = '+' THEN amount
+                        WHEN trx_type = '-' THEN -amount
+                    END
+                "));
+        }
+        
+        // Validate sufficient balance and prevent negative balance
+        if ($withdraw->amount > $currentBalance) {
+            $notify[] = ['error', 'Insufficient balance in ' . ($walletType === 'profit_wallet' ? 'Profit Wallet' : 'Referral Bonus Wallet') . '. Current balance: ' . showAmount($currentBalance)];
+            return back()->withNotify($notify);
+        }
+        
+        // Additional safety check: ensure withdrawal amount doesn't make balance negative
+        $newBalance = $currentBalance - $withdraw->amount;
+        if ($newBalance < 0) {
+            $notify[] = ['error', 'Withdrawal would result in negative balance. Please reduce the withdrawal amount.'];
+            return back()->withNotify($notify);
+        }
+        
+        // Create debit transaction based on selected wallet type
+        if ($walletType === 'profit_wallet') {
+            // Debit profit wallet via transaction
+            \App\Models\Transaction::create([
+                'user_id'      => $user->id,
+                'wallet'       => 'main_balance',
+                'amount'       => $withdraw->amount,
+                'charge'       => $withdraw->charge,
+                'trx_type'     => '-',
+                'details'      => 'Withdrawal approved: ' . $withdraw->trx,
+                'trx'          => $withdraw->trx,
+                'post_balance' => 0, // Not used for dynamic calculation
+            ]);
+        } elseif ($walletType === 'referral_bonus') {
+            // Debit referral bonus wallet via transaction
+            \App\Models\Transaction::create([
+                'user_id'      => $user->id,
+                'wallet'       => 'referral_bonus',
+                'amount'       => $withdraw->amount,
+                'charge'       => $withdraw->charge,
+                'trx_type'     => '-',
+                'details'      => 'Withdrawal approved: ' . $withdraw->trx,
+                'trx'          => $withdraw->trx,
+                'post_balance' => 0, // Not used for dynamic calculation
+            ]);
+        }
+        
+        // DEBUG: Log the transaction creation
+        \Log::info('Withdrawal approved', [
+            'withdrawal_id' => $withdraw->id,
+            'user_id' => $user->id,
+            'wallet_type' => $walletType,
+            'amount' => $withdraw->amount,
+            'current_balance' => $currentBalance,
+            'new_balance' => $currentBalance - $withdraw->amount,
+            'status_before' => $withdraw->status
+        ]);
+        
         $withdraw->status = 1;
         $withdraw->admin_feedback = $request->details;
         $withdraw->save();
@@ -155,24 +234,43 @@ class WithdrawalController extends Controller
         $withdraw->save();
 
         $user = $withdraw->user;
-        $user->balance += $withdraw->amount;
-        $user->save();
-
-
-
-        $transaction = new Transaction();
-        $transaction->user_id = $withdraw->user_id;
-        $transaction->amount = $withdraw->amount;
-        $transaction->post_balance = $user->balance;
-        $transaction->charge = 0;
-        $transaction->trx_type = '+';
-        $transaction->remark = 'withdraw_reject';
-        $transaction->details = showAmount($withdraw->amount) . ' ' . $general->cur_text . ' Refunded from withdrawal rejection';
-        $transaction->trx = $withdraw->trx;
-        $transaction->save();
-
-
-
+        $walletType = $withdraw->wallet_type;
+        
+        // DEBUG: Log the rejection
+        \Log::info('Withdrawal rejected', [
+            'withdrawal_id' => $withdraw->id,
+            'user_id' => $user->id,
+            'wallet_type' => $walletType,
+            'amount' => $withdraw->amount,
+            'status_before' => $withdraw->status
+        ]);
+        
+        // Refund to the correct wallet via transaction
+        if ($walletType === 'profit_wallet') {
+            // Credit profit wallet via transaction
+            \App\Models\Transaction::create([
+                'user_id'      => $user->id,
+                'wallet'       => 'main_balance',
+                'amount'       => $withdraw->amount,
+                'charge'       => 0,
+                'trx_type'     => '+',
+                'details'      => 'Withdrawal rejected: ' . $withdraw->trx,
+                'trx'          => $withdraw->trx,
+                'post_balance' => 0, // Not used for dynamic calculation
+            ]);
+        } elseif ($walletType === 'referral_bonus') {
+            // Credit referral bonus wallet via transaction
+            \App\Models\Transaction::create([
+                'user_id'      => $user->id,
+                'wallet'       => 'referral_bonus',
+                'amount'       => $withdraw->amount,
+                'charge'       => 0,
+                'trx_type'     => '+',
+                'details'      => 'Withdrawal rejected: ' . $withdraw->trx,
+                'trx'          => $withdraw->trx,
+                'post_balance' => 0, // Not used for dynamic calculation
+            ]);
+        }
 
         notify($user, 'WITHDRAW_REJECT', [
             'method_name' => $withdraw->method->name,
@@ -182,7 +280,6 @@ class WithdrawalController extends Controller
             'charge' => showAmount($withdraw->charge),
             'rate' => showAmount($withdraw->rate),
             'trx' => $withdraw->trx,
-            'post_balance' => showAmount($user->balance),
             'admin_details' => $request->details
         ]);
 

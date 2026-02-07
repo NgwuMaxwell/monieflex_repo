@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Http\Helpers;
+
 use App\Models\CommissionLog;
 use App\Models\Referral;
 use App\Models\Transaction;
@@ -109,6 +111,7 @@ function directReferralCommission($userId, $source, $amount, $planId = null, $re
         $transaction->post_balance = $referrer->referral_bonus;
         $transaction->charge = 0;
         $transaction->trx_type = '+';
+        $transaction->wallet = 'referral_bonus'; // Add wallet field
         $transaction->details = 'Referral commission from ' . $user->username . ' (' . ucfirst(str_replace('_', ' ', $source)) . ')';
         $transaction->remark = 'referral_commission';
         $transaction->trx = $referenceId ?: strtoupper(uniqid('RC'));

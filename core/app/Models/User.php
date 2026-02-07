@@ -106,25 +106,38 @@ class User extends Authenticatable
         return $this->hasMany(ReferralBonus::class, 'referral_id');
     }
 
-    public function referralBonus(): Attribute
+    /**
+     * Get the user's profit wallet balance from transactions
+     * 
+     * @return float
+     */
+    public function getProfitWalletAttribute()
     {
-        return new Attribute(
-            get: function () {
-                // Calculate net referral bonus from transactions table (positive - negative)
-                // Use direct query to avoid N+1 issues
-                $positiveTransactions = \App\Models\Transaction::where('user_id', $this->id)
-                    ->where('wallet', 'referral_bonus')
-                    ->where('trx_type', '+')
-                    ->sum('amount');
-                
-                $negativeTransactions = \App\Models\Transaction::where('user_id', $this->id)
-                    ->where('wallet', 'referral_bonus')
-                    ->where('trx_type', '-')
-                    ->sum('amount');
-                
-                return $positiveTransactions - $negativeTransactions;
-            }
-        );
+        return \App\Models\Transaction::where('user_id', $this->id)
+            ->where('wallet', 'main_balance')
+            ->sum(\Illuminate\Support\Facades\DB::raw("
+                CASE 
+                    WHEN trx_type = '+' THEN amount
+                    WHEN trx_type = '-' THEN -amount
+                END
+            "));
+    }
+
+    /**
+     * Get the user's referral bonus balance from transactions
+     * 
+     * @return float
+     */
+    public function getReferralBonusAttribute()
+    {
+        return \App\Models\Transaction::where('user_id', $this->id)
+            ->where('wallet', 'referral_bonus')
+            ->sum(\Illuminate\Support\Facades\DB::raw("
+                CASE 
+                    WHEN trx_type = '+' THEN amount
+                    WHEN trx_type = '-' THEN -amount
+                END
+            "));
     }
 
 

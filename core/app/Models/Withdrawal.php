@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Withdrawal extends Model
 {
     protected $casts = [
-        'withdraw_information' => 'object'
+        'withdraw_information' => 'object',
+        'wallet_type' => 'string'
     ];
 
     public function user()

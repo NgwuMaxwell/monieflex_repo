@@ -24,10 +24,22 @@ class WithdrawController extends Controller
     {
         $this->validate($request, [
             'method_code' => 'required',
-            'amount' => 'required|numeric'
+            'amount' => 'required|numeric',
+            'wallet_type' => 'required|in:profit_wallet,referral_bonus'
         ]);
         $method = WithdrawMethod::where('id', $request->method_code)->where('status', 1)->firstOrFail();
         $user = auth()->user();
+        
+        // Validate wallet type and check balance
+        $walletType = $request->wallet_type;
+        $availableBalance = 0;
+        
+        if ($walletType === 'profit_wallet') {
+            $availableBalance = $user->profit_wallet;
+        } elseif ($walletType === 'referral_bonus') {
+            $availableBalance = $user->referralBonus; // Use the calculated attribute
+        }
+        
         if ($request->amount < $method->min_limit) {
             $notify[] = ['error', 'Your requested amount is smaller than minimum amount.'];
             return back()->withNotify($notify);
@@ -37,11 +49,10 @@ class WithdrawController extends Controller
             return back()->withNotify($notify);
         }
 
-        if ($request->amount > $user->balance) {
-            $notify[] = ['error', 'You do not have sufficient balance for withdraw.'];
+        if ($request->amount > $availableBalance) {
+            $notify[] = ['error', 'You do not have sufficient balance in the selected wallet for withdraw.'];
             return back()->withNotify($notify);
         }
-
 
         $charge = $method->fixed_charge + ($request->amount * $method->percent_charge / 100);
         $afterCharge = $request->amount - $charge;
@@ -51,6 +62,7 @@ class WithdrawController extends Controller
         $withdraw->method_id = $method->id; // wallet method ID
         $withdraw->user_id = $user->id;
         $withdraw->amount = $request->amount;
+        $withdraw->wallet_type = $walletType;
         $withdraw->currency = $method->currency;
         $withdraw->rate = $method->rate;
         $withdraw->charge = $charge;
@@ -94,27 +106,27 @@ class WithdrawController extends Controller
             }
         }
 
-        if ($withdraw->amount > $user->balance) {
-            $notify[] = ['error', 'Your request amount is larger then your current balance.'];
+        // Check balance based on wallet type
+        $walletType = $withdraw->wallet_type;
+        $availableBalance = 0;
+        
+        if ($walletType === 'profit_wallet') {
+            $availableBalance = $user->profit_wallet;
+        } elseif ($walletType === 'referral_bonus') {
+            $availableBalance = $user->referralBonus; // Use the calculated attribute
+        }
+        
+        if ($withdraw->amount > $availableBalance) {
+            $notify[] = ['error', 'Your request amount is larger than your current balance in the selected wallet.'];
             return back()->withNotify($notify);
         }
 
         $withdraw->status = 2;
         $withdraw->withdraw_information = $userData;
         $withdraw->save();
-        $user->balance  -=  $withdraw->amount;
-        $user->save();
 
-        $transaction = new Transaction();
-        $transaction->user_id = $withdraw->user_id;
-        $transaction->amount = $withdraw->amount;
-        $transaction->post_balance = $user->balance;
-        $transaction->charge = $withdraw->charge;
-        $transaction->trx_type = '-';
-        $transaction->details = showAmount($withdraw->final_amount) . ' ' . $withdraw->currency . ' Withdraw Via ' . $withdraw->method->name;
-        $transaction->trx = $withdraw->trx;
-        $transaction->remark = 'withdraw';
-        $transaction->save();
+        // Note: Debit transaction will be created when admin approves the withdrawal
+        // This prevents double deduction - one when submitted, another when approved
 
         $adminNotification = new AdminNotification();
         $adminNotification->user_id = $user->id;

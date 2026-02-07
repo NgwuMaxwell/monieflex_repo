@@ -182,6 +182,20 @@
                 </div>
                 @else
                         <input type="hidden" name="selected_channel" class="selected_channel" value="">
+                        <div class="title">Select Wallet</div>
+                        
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">Wallet Type</div>
+                                </div>
+                                <select name="wallet_type" class="form-control" required>
+                                    <option value="referral_bonus" selected>Referral Bonus</option>
+                                    <option value="profit_wallet">Profit Wallet</option>
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="title">Amount</div>
 
                         <div class="form-group">

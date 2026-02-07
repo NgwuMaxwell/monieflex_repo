@@ -137,6 +137,7 @@ class CreditReferralBonuses extends Command
                     'post_balance' => $referrer->referral_bonus,
                     'charge' => 0,
                     'trx_type' => '+',
+                    'wallet' => 'referral_bonus', // Add wallet field
                     'details' => '1st level referral bonus from ' . $referee->username . ' for ' . $referee->plan->name . ' plan purchase',
                     'remark' => 'referral_bonus',
                     'trx' => $trx,
