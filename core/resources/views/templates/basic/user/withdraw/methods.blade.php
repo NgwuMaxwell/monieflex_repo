@@ -193,8 +193,8 @@
                                     <div class="input-group-text">Wallet Type</div>
                                 </div>
                                 <select name="wallet_type" class="form-control" required>
-                                    <option value="referral_bonus" selected>Referral Bonus</option>
-                                    <option value="profit_wallet">Profit Wallet</option>
+                                    <option value="referral_bonus" data-balance="{{ number_format(Auth::user()->referralBonus, 0, '.', '') }}" selected>Referral Bonus</option>
+                                    <option value="profit_wallet" data-balance="{{ number_format(Auth::user()->profitWallet, 0, '.', '') }}">Profit Wallet</option>
                                 </select>
                             </div>
                         </div>
@@ -354,16 +354,8 @@
                 // Update the banner text to show the correct wallet name
                 $('.banner .txt p').text('Amount of money in ' + walletName + ' Wallet');
                 
-                // For now, we'll use a simple approach - in a real implementation,
-                // you might want to make an AJAX call to get the actual balance
-                // But since we're using the User model attributes, we can simulate it
-                if (walletType === 'referral_bonus') {
-                    // Referral Bonus balance (this would come from the server-side calculation)
-                    var balance = '{{ number_format(Auth::user()->referralBonus, 0, ".", "") }}';
-                } else {
-                    // Profit Wallet balance
-                    var balance = '{{ number_format(Auth::user()->profitWallet, 0, ".", "") }}';
-                }
+                // Get the balance from data attributes that we'll add to the select options
+                var balance = selectedWallet.data('balance');
                 
                 $('.banner .txt h3').html('{{__($general->cur_text)}} ' + balance);
             }
