@@ -275,7 +275,7 @@
                             <select name="wallet_type" class="form-control" required>
                                 <option value="balance">@lang('Wallet Balance')</option>
                                 <option value="profit_wallet">@lang('Profit Wallet')</option>
-                                <option value="referral_wallet">@lang('Referral Wallet')</option>
+                                <option value="referral_wallet">@lang('Referral Bonus Wallet')</option>
                             </select>
                         </div>
                         <div class="form-group">
