@@ -66,7 +66,10 @@
 
 @php
   $authUser = Auth::user();
-  $balance = number_format($authUser->profit_wallet, 0, '.', '');
+  // Default to referral bonus since it's the default selection
+  $balance = number_format($authUser->referralBonus, 0, '.', '');
+  $walletType = 'referral_bonus';
+  $walletName = 'Referral Bonus';
 @endphp
 
 
@@ -342,6 +345,29 @@
     (function ($) {
             "use strict";
             
+            // Function to update the balance display based on selected wallet
+            function updateBalanceDisplay() {
+                var selectedWallet = $('select[name=wallet_type] option:selected');
+                var walletType = selectedWallet.val();
+                var walletName = selectedWallet.text();
+                
+                // Update the banner text to show the correct wallet name
+                $('.banner .txt p').text('Amount of money in ' + walletName + ' Wallet');
+                
+                // For now, we'll use a simple approach - in a real implementation,
+                // you might want to make an AJAX call to get the actual balance
+                // But since we're using the User model attributes, we can simulate it
+                if (walletType === 'referral_bonus') {
+                    // Referral Bonus balance (this would come from the server-side calculation)
+                    var balance = '{{ number_format(Auth::user()->referralBonus, 0, ".", "") }}';
+                } else {
+                    // Profit Wallet balance
+                    var balance = '{{ number_format(Auth::user()->profitWallet, 0, ".", "") }}';
+                }
+                
+                $('.banner .txt h3').html('{{__($general->cur_text)}} ' + balance);
+            }
+            
             // Function to update minimum withdrawal amount display
             function updateMinWithdrawAmount() {
                 var selectedMethod = $('select[name=method_code] option:selected');
@@ -407,6 +433,14 @@
             
             // Initialize minimum withdrawal amount on page load
             updateMinWithdrawAmount();
+            
+            // Initialize balance display on page load
+            updateBalanceDisplay();
+            
+            // Update balance display when wallet selection changes
+            $('select[name=wallet_type]').change(function(){
+                updateBalanceDisplay();
+            });
             
             $('input[name=amount]').on('input',function(){
                 var data = $('select[name=method_code]').change();
