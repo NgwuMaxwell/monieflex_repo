@@ -29,6 +29,81 @@ Route::controller('TicketController')->prefix('ticket')->group(function () {
 
 Route::get('app/deposit/confirm/{hash}', 'Gateway\PaymentController@appDepositConfirm')->name('deposit.app.confirm');
 
+// Serve website index.html as root
+Route::get('/', function () {
+    return file_get_contents('website/index.html');
+})->name('home');
+
+// Serve website CSS files
+Route::get('/css/{file}', function ($file) {
+    $filePath = 'website/css/' . $file;
+    if (file_exists($filePath)) {
+        $mimeType = 'text/css';
+        if (pathinfo($filePath, PATHINFO_EXTENSION) === 'js') {
+            $mimeType = 'application/javascript';
+        } elseif (in_array(pathinfo($filePath, PATHINFO_EXTENSION), ['png', 'jpg', 'jpeg', 'gif', 'svg'])) {
+            $mimeType = 'image/' . pathinfo($filePath, PATHINFO_EXTENSION);
+        }
+        return response()->file($filePath, ['Content-Type' => $mimeType]);
+    }
+    return abort(404);
+});
+
+// Serve website JS files
+Route::get('/js/{file}', function ($file) {
+    $filePath = 'website/js/' . $file;
+    if (file_exists($filePath)) {
+        return response()->file($filePath, ['Content-Type' => 'application/javascript']);
+    }
+    return abort(404);
+});
+
+// Serve website images
+Route::get('/images/{file}', function ($file) {
+    $filePath = 'website/images/' . $file;
+    if (file_exists($filePath)) {
+        $extension = pathinfo($filePath, PATHINFO_EXTENSION);
+        $mimeType = 'image/' . $extension;
+        return response()->file($filePath, ['Content-Type' => $mimeType]);
+    }
+    return abort(404);
+})->where('file', '.*');
+
+// Serve website fonts
+Route::get('/fonts/{file}', function ($file) {
+    $filePath = 'website/fonts/' . $file;
+    if (file_exists($filePath)) {
+        $extension = pathinfo($filePath, PATHINFO_EXTENSION);
+        $mimeType = 'font/' . $extension;
+        if ($extension === 'woff') {
+            $mimeType = 'font/woff';
+        } elseif ($extension === 'woff2') {
+            $mimeType = 'font/woff2';
+        }
+        return response()->file($filePath, ['Content-Type' => $mimeType]);
+    }
+    return abort(404);
+})->where('file', '.*');
+
+// Serve other website pages
+Route::get('/{any}', function ($any) {
+    $filePath = 'website/' . $any;
+    $fileWithHtml = $filePath . '.html';
+    
+    // Check if the file exists with .html extension
+    if (file_exists($fileWithHtml)) {
+        return file_get_contents($fileWithHtml);
+    }
+    
+    // Check if the file exists without extension
+    if (file_exists($filePath)) {
+        return file_get_contents($filePath);
+    }
+    
+    // For other routes, fall back to Laravel
+    return abort(404);
+})->where('any', '.*')->name('website.pages');
+
 Route::controller('SiteController')->group(function () {
     Route::get('/contact', 'contact')->name('contact');
     Route::post('/contact', 'contactSubmit');
@@ -52,7 +127,6 @@ Route::controller('SiteController')->group(function () {
     Route::get('blog-details/{id}', 'SiteController@blogDetail')->name('blogDetail');
 
     Route::get('/{slug}', 'pages')->name('pages');
-Route::get('/', 'index')->name('home');
 });
 
 // Test route for referral commission debugging

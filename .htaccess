@@ -19,6 +19,48 @@ AddHandler x-httpd-php81 .php
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
+    # Serve website folder as root for main domain
+    # Skip website folder for Laravel routes
+    RewriteCond %{REQUEST_URI} !^/user/ [NC]
+    RewriteCond %{REQUEST_URI} !^/admin/ [NC]
+    RewriteCond %{REQUEST_URI} !^/api/ [NC]
+    RewriteCond %{REQUEST_URI} !^/core/ [NC]
+    RewriteCond %{REQUEST_URI} !^/assets/ [NC]
+    RewriteCond %{REQUEST_URI} !^/test- [NC]
+    RewriteCond %{REQUEST_URI} !^/check- [NC]
+    RewriteCond %{REQUEST_URI} !^/debug- [NC]
+    RewriteCond %{REQUEST_URI} !^/force- [NC]
+    RewriteCond %{REQUEST_URI} !^/direct- [NC]
+    RewriteCond %{REQUEST_URI} !^/simple- [NC]
+    RewriteCond %{REQUEST_URI} !^/test$ [NC]
+    RewriteCond %{REQUEST_URI} !^/clear$ [NC]
+    RewriteCond %{REQUEST_URI} !^/ref/ [NC]
+    RewriteCond %{REQUEST_URI} !^/ticket/ [NC]
+    RewriteCond %{REQUEST_URI} !^/app/ [NC]
+    RewriteCond %{REQUEST_URI} !^/contact$ [NC]
+    RewriteCond %{REQUEST_URI} !^/change/ [NC]
+    RewriteCond %{REQUEST_URI} !^/cookie-policy$ [NC]
+    RewriteCond %{REQUEST_URI} !^/cookie/ [NC]
+    RewriteCond %{REQUEST_URI} !^/blog/ [NC]
+    RewriteCond %{REQUEST_URI} !^/policy/ [NC]
+    RewriteCond %{REQUEST_URI} !^/placeholder-image/ [NC]
+    RewriteCond %{REQUEST_URI} !^/company-policy/ [NC]
+    RewriteCond %{REQUEST_URI} !^/plans$ [NC]
+    RewriteCond %{REQUEST_URI} !^/blog-details/ [NC]
+    RewriteCond %{REQUEST_URI} !^/test-referral$ [NC]
+    RewriteCond %{REQUEST_URI} !^/test-referral-credit$ [NC]
+    RewriteCond %{REQUEST_URI} !^/check-referral-state$ [NC]
+    RewriteCond %{REQUEST_URI} !^/test-commission$ [NC]
+    RewriteCond %{REQUEST_URI} !^/check-state$ [NC]
+    RewriteCond %{REQUEST_URI} !^/$ [NC]
+    
+    # If request is for website files, serve them directly
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{DOCUMENT_ROOT}/website%{REQUEST_URI} -f [OR]
+    RewriteCond %{DOCUMENT_ROOT}/website%{REQUEST_URI} -d
+    RewriteRule ^ website%{REQUEST_URI} [L]
+
     # Send Requests To Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
