@@ -18,6 +18,8 @@ Route::post('/paystack/webhook', [ProcessController::class, 'ipn'])->name('payst
 */
 
 Route::namespace('Api')->name('api.')->group(function () {
+    // Contact form submission
+    Route::post('/contact', 'ContactController@store')->name('contact.store');
 });
 
 

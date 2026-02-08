@@ -341,6 +341,15 @@ Route::controller('NoticeController')->name('notices.')->prefix('notices')->grou
     Route::get('status/{id}', 'status')->name('status');
 });
 
+// Contact Messages Management
+Route::controller('ContactMessageController')->name('contact.messages.')->prefix('contact-messages')->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::get('show/{id}', 'show')->name('show');
+    Route::put('update/{id}', 'update')->name('update');
+    Route::delete('delete/{id}', 'destroy')->name('delete');
+    Route::get('stats', 'getStats')->name('stats');
+});
+
 // Frontend
 Route::name('frontend.')->prefix('frontend')->group(function () {
 

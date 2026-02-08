@@ -477,6 +477,18 @@
                 </li>
 
 
+                <li class="sidebar-menu-item {{menuActive('admin.contact.messages*')}}">
+                    <a href="{{route('admin.contact.messages.index')}}" class="nav-link">
+                        <i class="menu-icon las la-envelope"></i>
+                        <span class="menu-title">@lang('Contact Messages')</span>
+                        @if($unreadContactMessages ?? 0 > 0)
+                            <span class="menu-badge pill bg--danger ms-auto">
+                                <i class="fa fa-exclamation"></i>
+                            </span>
+                        @endif
+                    </a>
+                </li>
+
                 <li class="sidebar-menu-item sidebar-dropdown">
                     <a href="javascript:void(0)" class="{{menuActive('admin.report*',3)}}">
                         <i class="menu-icon la la-list"></i>
