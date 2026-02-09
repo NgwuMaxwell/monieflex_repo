@@ -481,9 +481,9 @@
                     <a href="{{route('admin.contact.messages.index')}}" class="nav-link">
                         <i class="menu-icon las la-envelope"></i>
                         <span class="menu-title">@lang('Contact Messages')</span>
-                        @if($unreadContactMessages ?? 0 > 0)
+                        @if($widget['unread_contact_messages'] ?? 0 > 0)
                             <span class="menu-badge pill bg--danger ms-auto">
-                                <i class="fa fa-exclamation"></i>
+                                {{$widget['unread_contact_messages']}}
                             </span>
                         @endif
                     </a>

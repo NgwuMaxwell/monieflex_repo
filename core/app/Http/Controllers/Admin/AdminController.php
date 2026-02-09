@@ -64,6 +64,9 @@ class AdminController extends Controller
         $widget['referral_commissions'] = CommissionLog::sum('amount');
         $widget['plan_purchased'] = Transaction::where('remark','subscribe_plan')->sum('amount');
 
+        // Contact Messages
+        $widget['unread_contact_messages'] = ContactMessage::unread()->count();
+
 
         $trxReport['date'] = collect([]);
         $plusTrx = Transaction::where('trx_type','+')->where('created_at', '>=', Carbon::now()->subDays(30))
