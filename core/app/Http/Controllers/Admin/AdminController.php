@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Lib\CurlRequest;
 use App\Models\AdminNotification;
 use App\Models\CommissionLog;
+use App\Models\ContactMessage;
 use App\Models\Deposit;
 use App\Models\Ptc;
 use App\Models\PtcView;
