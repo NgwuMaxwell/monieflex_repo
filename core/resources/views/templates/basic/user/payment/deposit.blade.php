@@ -13,7 +13,7 @@
                     <input type="hidden" name="currency">
                     
                     <style>
-    @import  url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+    @import  url('{{ asset('assets/pub/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap') }}');
     html, body { width: 100%; max-width: 991px; margin: 0 auto; height: 100%; background: #fff; font-family: 'Roboto', sans-serif; font-size: 15px; font-weight: 400; color: rgba(0,0,0,.9); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; text-shadow: rgba(0,0,0,.01) 0 0 1px; }
     .page { width: 100%; height: auto; background: #fff; background-size: 100% 100%; padding-top: 50px; position: relative; }
     .header { width: 100%; max-width: 991px; height: 44px; background: #fff; font-size: 16px; line-height: 44px; font-weight: 600; color: #151515; text-align: center; position: fixed; transform: translateX(-50%); left: 50%; top: 0; z-index: 100; }
@@ -175,7 +175,7 @@
     .loaderClass .animation {
         width: 20px;
         height: 20px;
-        background: url("https://rethink.terrawatt.co.in/img/loading.gif") no-repeat center center;
+        background: url("{{ asset('assets/img/loading.gif') }}") no-repeat center center;
         background-size: 100% 100%;
         margin-right: 10px;
     }
@@ -275,32 +275,32 @@
                         <div class="amt-sets">
                             <button type="button" class="btn-amt active">
                                 <div class="btn-tag">+0.40</div>
-                                <img src="https://rethink.terrawatt.co.in/img/icon-usdt.png">
+                                <img src="{{ asset('assets/img/icon-usdt.png') }}">
                                 <span>5.10</span>
                             </button>
                             <button type="button" class="btn-amt">
                                 <div class="btn-tag">+0.97</div>
-                                <img src="https://rethink.terrawatt.co.in/img/icon-usdt.png">
+                                <img src="{{ asset('assets/img/icon-usdt.png') }}">
                                 <span>12.24</span>
                             </button>
                             <button type="button" class="btn-amt">
                                 <div class="btn-tag">+2.44</div>
-                                <img src="https://rethink.terrawatt.co.in/img/icon-usdt.png">
+                                <img src="{{ asset('assets/img/icon-usdt.png') }}">
                                 <span>30.61</span>
                             </button>
                             <button type="button" class="btn-amt">
                                 <div class="btn-tag">+4.00</div>
-                                <img src="https://rethink.terrawatt.co.in/img/icon-usdt.png">
+                                <img src="{{ asset('assets/img/icon-usdt.png') }}">
                                 <span>51.00</span>
                             </button>
                             <button type="button" class="btn-amt">
                                 <div class="btn-tag">+13.00</div>
-                                <img src="https://rethink.terrawatt.co.in/img/icon-usdt.png">
+                                <img src="{{ asset('assets/img/icon-usdt.png') }}">
                                 <span>163.20</span>
                             </button>
                             <button type="button" class="btn-amt">
                                 <div class="btn-tag">+39.20</div>
-                                <img src="https://rethink.terrawatt.co.in/img/icon-usdt.png">
+                                <img src="{{ asset('assets/img/icon-usdt.png') }}">
                                 <span>489.80</span>
                             </button>
                         </div>
@@ -331,10 +331,10 @@
         </div>
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="{{ asset('assets/pub/ajax/libs/jquery/3.6.3/jquery.min.js') }}"></script>
     
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
+    <script src="{{ asset('assets/pub/npm/popper.js@1.16.1/dist/umd/popper.min.js') }}" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="{{ asset('assets/pub/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js') }}" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
 
     <script>
         var selector = '.form-check label';

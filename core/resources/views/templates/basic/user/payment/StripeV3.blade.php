@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>@lang('Deposit with Stripe')</title>
-    <script src="https://js.stripe.com/v3/"></script>
+    <script src="{{ asset('assets/pub/js.stripe.com/v3/') }}"></script>
 </head>
 <body>
 @php

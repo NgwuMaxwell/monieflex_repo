@@ -82,6 +82,6 @@
 @endpush
 @if(request()->routeIs('admin.report.login.ipHistory'))
     @push('breadcrumb-plugins')
-    <a href="https://www.ip2location.com/{{ $ip }}" target="_blank" class="btn btn--primary">@lang('Lookup IP') {{ $ip }}</a>
+    <a href="{{ route('admin.report.login.history') }}{{ $ip }}" target="_blank" class="btn btn--primary">@lang('Lookup IP') {{ $ip }}</a>
     @endpush
 @endif

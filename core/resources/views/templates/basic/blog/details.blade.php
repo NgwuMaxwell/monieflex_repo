@@ -20,9 +20,9 @@
             <div class="blog-details__footer">
               <h4 class="caption">@lang('Share This Post')</h4>
               <ul class="social__links">
-                <li><a href="https://www.facebook.com/sharer/sharer.php?u={{urlencode(url()->current()) }}"><i class="fab fa-facebook-f"></i></a></li>
+                <li><a href="{{ route('blog.details', $blog->id) }}{{urlencode(url()->current()) }}"><i class="fab fa-facebook-f"></i></a></li>
                 <li><a href="https://twitter.com/intent/tweet?text=my share text&amp;url={{urlencode(url()->current()) }}"><i class="fab fa-twitter"></i></a></li>
-                <li><a href="https://pinterest.com/pin/create/bookmarklet/?media={{ asset('assets/images/frontend/blog').'/'.$blog->data_values->image }}&url={{urlencode(url()->current()) }}&is_video=[is_video]&description={{$blog->data_values->title}}"><i class="fab fa-pinterest-p"></i></a></li>
+                <li><a href="{{ route('blog.details', $blog->id) }}{{ asset('assets/images/frontend/blog').'/'.$blog->data_values->image }}&url={{urlencode(url()->current()) }}&is_video=[is_video]&description={{$blog->data_values->title}}"><i class="fab fa-pinterest-p"></i></a></li>
                 <li><a href="http://www.linkedin.com/shareArticle?mini=true&amp;url={{urlencode(url()->current()) }}"><i class="fab fa-linkedin-in"></i></a></li>
               </ul>
             </div><!-- blog-details__footer end -->

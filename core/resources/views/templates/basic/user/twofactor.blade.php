@@ -29,7 +29,7 @@
                         </div>
 
                         <label><i class="fa fa-info-circle"></i> @lang('Help')</label>
-                        <p>@lang('Google Authenticator is a multifactor app for mobile devices. It generates timed codes used during the 2-step verification process. To use Google Authenticator, install the Google Authenticator application on your mobile device.') <a class="text--base" href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en" target="_blank">@lang('Download')</a></p>
+                        <p>@lang('Google Authenticator is a multifactor app for mobile devices. It generates timed codes used during the 2-step verification process. To use Google Authenticator, install the Google Authenticator application on your mobile device.') <a class="text--base" href="{{ route('user.support') }}" target="_blank">@lang('Download')</a></p>
                     </div>
                 </div>
             </div>

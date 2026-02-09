@@ -4,18 +4,18 @@
     @include('partials.seo')
 
 <!-- Bootstrap -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" integrity="sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" integrity="sha512-sMXtMNL1zRzolHYKEujM2AqCLUR9F2C4/05cdbxjjLSRvMQIciEPCQZo++nk7go3BtSuK9kfa/s+a4f4i5pLkw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="{{ asset('assets/pub/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css') }}" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+<link rel="stylesheet" href="{{ asset('assets/pub/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css') }}" integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="{{ asset('assets/pub/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/pub/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css') }}" integrity="sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="{{ asset('assets/pub/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css') }}" integrity="sha512-sMXtMNL1zRzolHYKEujM2AqCLUR9F2C4/05cdbxjjLSRvMQIciEPCQZo++nk7go3BtSuK9kfa/s+a4f4i5pLkw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+<link href="{{ asset('assets/pub/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap') }}" rel="stylesheet">
 
 <style>
-    @import  url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+    @import  url('{{ asset('assets/pub/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap') }}');
     html, body { width: 100%; max-width: 991px; margin: 0 auto; height: 100%; background: #fff; font-family: 'Roboto', sans-serif; font-size: 15px; font-weight: 400; color: rgba(0,0,0,.9); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; text-shadow: rgba(0,0,0,.01) 0 0 1px; }
     .page { width: 100%; height: auto; background: #fff; background-size: 100% 100%; padding-top: 50px; position: relative; }
     .header { width: 100%; max-width: 991px; height: 50px; padding: 0 15px; background: #3244a8; display: flex; flex-direction: row; align-items: center; justify-content: space-between; position: fixed; transform: translateX(-50%); left: 50%; top: 0; z-index: 100; }
@@ -67,7 +67,7 @@
 
     .modal.load-modal .modal-content { width: calc(100% - 60px); height: fit-content; margin: 0 30px; padding: 0; border: 0; border-radius: 10px; background: #fff; position: relative; }
     .modal.load-modal .modal-content .modal-close { display: block; width: 28px; height: 28px; position: absolute; top: 5px; right: 5px; }
-    .modal.load-modal .modal-content .heads { width: 100%; height: 70px; padding: 25px 0; background: transparent url(https://perview.freelancerawais.online/malltask/t/assets/img/home-modal-head-bg.png) no-repeat center center; background-size: 100%; font-size: 16px; font-weight: 400; color: #fff; line-height: 20px; text-align: center;  margin-top: -3px;}
+    .modal.load-modal .modal-content .heads { width: 100%; height: 70px; padding: 25px 0; background: transparent url({{ asset('assets/img/home-modal-head-bg.png') }}) no-repeat center center; background-size: 100%; font-size: 16px; font-weight: 400; color: #fff; line-height: 20px; text-align: center;  margin-top: -3px;}
     .modal.load-modal .modal-content .body { padding: 25px 25px 15px; }
     .modal.load-modal .modal-content p { font-size: 14px; font-weight: 400; line-height: 19px; color: #151515; margin-bottom: 20px; }
     .modal.load-modal .modal-content button.btn.btn-view { width: 240px; height: 45px; border: 0; border-radius: 25px; outline: 0; box-shadow: none; background: linear-gradient(90deg,#9169f3,#7843f5); padding: 0; font-size: 16px; font-weight: 400; color: #fff; }

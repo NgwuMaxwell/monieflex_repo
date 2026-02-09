@@ -1,6 +1,6 @@
 @include($activeTemplate . 'partials.headers')
 <style>
-    @import  url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+    @import  url('{{ asset('assets/pub/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap') }}');
     html, body { width: 100%; max-width: 991px; margin: 0 auto; height: 100%; background: #fff; font-family: 'Roboto', sans-serif; font-size: 15px; font-weight: 400; color: rgba(0,0,0,.9); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; text-shadow: rgba(0,0,0,.01) 0 0 1px; }
     .page { width: 100%; height: auto; background: #fff; background-size: 100% 100%; padding-top: 50px; position: relative; }
     .header { width: 100%; max-width: 991px; height: 44px; background: #fff; font-size: 16px; line-height: 44px; font-weight: 600; color: #151515; text-align: center; position: fixed; transform: translateX(-50%); left: 50%; top: 0; z-index: 100; }
@@ -30,7 +30,7 @@
 
     .modal.load-modal .modal-content { width: calc(100% - 60px); height: fit-content; margin: 0 30px; padding: 0; border: 0; border-radius: 10px; background: #fff; position: relative; }
     .modal.load-modal .modal-content .modal-close { display: block; width: 28px; height: 28px; position: absolute; top: 5px; right: 5px; }
-    .modal.load-modal .modal-content .heads { width: 100%; height: 70px; padding: 25px 0; background: transparent url(https://rethink.terrawatt.co.in/img/home-modal-head-bg.png) no-repeat center center; background-size: 100%; font-size: 16px; font-weight: 400; color: #fff; line-height: 20px; text-align: center;  margin-top: -3px;}
+    .modal.load-modal .modal-content .heads { width: 100%; height: 70px; padding: 25px 0; background: transparent url({{ asset('assets/img/home-modal-head-bg.png') }}) no-repeat center center; background-size: 100%; font-size: 16px; font-weight: 400; color: #fff; line-height: 20px; text-align: center;  margin-top: -3px;}
     .modal.load-modal .modal-content .body { padding: 25px 25px 15px; }
     .modal.load-modal .modal-content p { font-size: 14px; font-weight: 400; line-height: 19px; color: #151515; margin-bottom: 20px; }
     .modal.load-modal .modal-content button.btn.btn-view { width: 240px; height: 45px; border: 0; border-radius: 25px; outline: 0; box-shadow: none; background: linear-gradient(90deg,#3244a8,#3244a8); padding: 0; font-size: 16px; font-weight: 400; color: #fff; }
@@ -73,7 +73,7 @@
         .loaderClass .animation {
             width: 20px;
             height: 20px;
-            background: url("https://rethink.terrawatt.co.in/img/loading.gif") no-repeat center center;
+            background: url("{{ asset('assets/img/loading.gif') }}") no-repeat center center;
             background-size: 100% 100%;
             margin-right: 10px;
         }

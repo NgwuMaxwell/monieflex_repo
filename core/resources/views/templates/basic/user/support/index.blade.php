@@ -3,7 +3,7 @@
 
 
 <style>
-    @import  url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+    @import  url('{{ asset('assets/pub/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap') }}');
     html, body { width: 100%; max-width: 991px; margin: 0 auto; height: 100%; background: #fff; font-family: 'Roboto', sans-serif; font-size: 15px; font-weight: 400; color: rgba(0,0,0,.9); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; text-shadow: rgba(0,0,0,.01) 0 0 1px; }
     .page { width: 100%; height: 100%; background: #f0f3f7; background-size: 100% 100%; position: relative; }
     .header { width: 100%; max-width: 991px; height: 50px; background: linear-gradient( 270deg, #3244a8,#3244a8); font-size: 16px; line-height: 50px; font-weight: 400; color: #fff; text-align: center; position: fixed; transform: translateX(-50%); left: 50%; top: 0; z-index: 100; }
@@ -27,17 +27,17 @@
 <body>
     <div class="page">
         <div class="header">
-            <div class="left-arrow" onclick="history.back()"><img src="https://rethink.terrawatt.co.in/img/left-arrow.png" class="w-100"></div>
+            <div class="left-arrow" onclick="history.back()"><img src="{{ asset('assets/img/left-arrow.png') }}" class="w-100"></div>
             Customer Service
         </div>
         <div class="container">
             <div class="white-block">
                 
-                <a href="https://t.me/webdeveloper_sun" class="list-link">
+                <a href="{{ route('user.support') }}" class="list-link">
                     <img src="{{asset ('assets/img/icon-telegram.png')}}">
                     <span>Telegram Customer Service</span>
                 </a>
-                <a href="https://t.me/webdeveloper_sun" class="list-link">
+                <a href="{{ route('user.support') }}" class="list-link">
                     <img src="{{asset ('assets/img/icon-telegram.png')}}">
                     <span>Telegram Channel</span>
                 </a>

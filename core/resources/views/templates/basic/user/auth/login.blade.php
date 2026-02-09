@@ -283,7 +283,7 @@
             margin-right: 10px;
         }
     </style>
-    <script src="https://perview.freelancerawais.online/malltask/assets/pub/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="{{ asset('assets/pub/ajax/libs/jquery/3.6.3/jquery.min.js') }}"></script>
 
 </body>
 </html>

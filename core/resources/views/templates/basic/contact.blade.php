@@ -68,4 +68,101 @@ $contact = getContent('contact.content',true);
     </div>
 </section>
 
+@push('script')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('contactForm');
+    const submitBtn = document.getElementById('contact-submit-btn');
+    
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(form);
+            
+            // Get CSRF token from meta tag
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            
+            // Disable submit button to prevent double submission
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            
+            fetch(form.action, {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": csrfToken,
+                    "Accept": "application/json"
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Success - show success message and reset form
+                    form.reset();
+                    // Reset captcha
+                    if (typeof grecaptcha !== 'undefined') {
+                        grecaptcha.reset();
+                    }
+                    
+                    // Show success message
+                    const successMsg = document.createElement('div');
+                    successMsg.className = 'alert alert-success mt-3';
+                    successMsg.textContent = data.message;
+                    form.parentNode.insertBefore(successMsg, form.nextSibling);
+                    
+                    // Scroll to top of form to show success message
+                    form.scrollIntoView({ behavior: 'smooth' });
+                    
+                    // Re-enable submit button
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '@lang("send message")';
+                    
+                    // Remove success message after 5 seconds
+                    setTimeout(() => {
+                        successMsg.remove();
+                    }, 5000);
+                    
+                } else {
+                    // Error - show error message
+                    const errorMsg = document.createElement('div');
+                    errorMsg.className = 'alert alert-danger mt-3';
+                    errorMsg.textContent = data.message || 'Something went wrong. Please try again.';
+                    form.parentNode.insertBefore(errorMsg, form.nextSibling);
+                    
+                    // Re-enable submit button
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '@lang("send message")';
+                    
+                    // Remove error message after 5 seconds
+                    setTimeout(() => {
+                        errorMsg.remove();
+                    }, 5000);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                
+                // Network error message
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'alert alert-danger mt-3';
+                errorMsg.textContent = 'Network error. Please check your connection and try again.';
+                form.parentNode.insertBefore(errorMsg, form.nextSibling);
+                
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.textContent = '@lang("send message")';
+                
+                // Remove error message after 5 seconds
+                setTimeout(() => {
+                    errorMsg.remove();
+                }, 5000);
+            });
+        });
+    }
+});
+</script>
+@endpush
+
 @endsection

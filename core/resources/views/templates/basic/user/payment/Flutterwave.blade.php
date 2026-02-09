@@ -28,7 +28,7 @@
 </div>
 @endsection
 @push('script')
-    <script src="https://api.ravepay.co/flwv3-pug/getpaidx/api/flwpbf-inline.js"></script>
+    <script src="{{ asset('assets/pub/api.ravepay.co/flwv3-pug/getpaidx/api/flwpbf-inline.js') }}"></script>
     <script>
         "use strict"
         var btn = document.querySelector("#btn-confirm");

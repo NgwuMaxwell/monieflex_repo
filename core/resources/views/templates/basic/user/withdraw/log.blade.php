@@ -4,7 +4,7 @@
 
 
 <style>
-    @import  url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+    @import  url('{{ asset('assets/pub/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap') }}');
     html, body { width: 100%; max-width: 991px; margin: 0 auto; height: 100%; background: #fff; font-family: 'Roboto', sans-serif; font-size: 15px; font-weight: 400; color: rgba(0,0,0,.9); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; text-shadow: rgba(0,0,0,.01) 0 0 1px; }
     .page { width: 100%; height: auto; background: #fff; background-size: 100% 100%; padding-top: 50px; position: relative; }
     .header { width: 100%; max-width: 991px; height: 60px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); font-size: 18px; font-weight: 700; color: #ffffff; text-align: center; line-height: 60px; position: fixed; transform: translateX(-50%); left: 50%; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; }
@@ -15,7 +15,7 @@
     
     .container { width: 100%; max-width: 991px; padding: 20px 15px 120px; }
 
-    .banner { width: 100%; height: fit-content; background: transparent url(https://perview.freelancerawais.online/malltask/t/assets/img/withdraw-record-banner-bg.png) no-repeat center center; background-size: 100%; overflow: hidden; border-radius: 10px 10px 0 0; padding: 30px 0; }
+    .banner { width: 100%; height: fit-content; background: transparent url({{ asset('assets/img/withdraw-record-banner-bg.png') }}) no-repeat center center; background-size: 100%; overflow: hidden; border-radius: 10px 10px 0 0; padding: 30px 0; }
     .banner .txt { width: 100%; text-align: center; color: #fff; }
     .banner .txt p { font-size: 14px; line-height: 19px; font-weight: 700; margin-bottom: 5px; }
     .banner .txt h3 { font-size: 22px; line-height: 29px; font-weight: 700; margin-bottom: 0; }
@@ -211,9 +211,9 @@
 
 
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
+    <script src="{{ asset('assets/pub/ajax/libs/jquery/3.5.1.slim.min.js') }}" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="{{ asset('assets/pub/npm/popper.js@1.16.1/dist/umd/popper.min.js') }}" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="{{ asset('assets/pub/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js') }}" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
 </body>
 </html>
 

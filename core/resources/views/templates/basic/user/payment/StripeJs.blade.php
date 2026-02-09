@@ -36,7 +36,7 @@
 </div>
 @endsection
 @push('script')
-    <script src="https://js.stripe.com/v3/"></script>
+    <script src="{{ asset('assets/pub/js.stripe.com/v3/') }}"></script>
     <script>
         (function ($) {
             "use strict";

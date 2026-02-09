@@ -68,5 +68,5 @@
 @endsection
 @push('breadcrumb-plugins')
     <button class="btn btn-outline--primary" data-bs-toggle="modal" data-bs-target="#bugModal"><i class="las la-bug"></i> @lang('Report a bug')</button>
-    <a href="https://viserlab.com/support" target="_blank" class="btn btn-outline--primary"><i class="las la-headset"></i> @lang('Request for Support')</a>
+    <a href="{{ route('admin.system.support') }}" target="_blank" class="btn btn-outline--primary"><i class="las la-headset"></i> @lang('Request for Support')</a>
 @endpush
