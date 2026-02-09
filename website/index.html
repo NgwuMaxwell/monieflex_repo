@@ -960,6 +960,10 @@
                         type: 'POST',
                         data: formData,
                         dataType: 'json',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        },
                         success: function(response) {
                             if (response.success) {
                                 showMessage(response.message, 'success');

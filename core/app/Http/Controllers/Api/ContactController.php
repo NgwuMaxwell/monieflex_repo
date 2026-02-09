@@ -10,6 +10,16 @@ use Illuminate\Support\Facades\Validator;
 class ContactController extends Controller
 {
     /**
+     * Handle preflight OPTIONS requests for CORS
+     */
+    public function options()
+    {
+        return response()->json([], 200)
+            ->header('Access-Control-Allow-Origin', '*')
+            ->header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT, DELETE')
+            ->header('Access-Control-Allow-Headers', 'Content-Type, X-Requested-With, Authorization');
+    }
+    /**
      * Store a newly created contact message in storage.
      *
      * @param  \Illuminate\Http\Request  $request
