@@ -26,24 +26,39 @@ $contact = getContent('contact.content',true);
           <div class="contact-form-wrapper pl-5">
             <h3 class="title">{{ __($contact->data_values->heading) }}</h3>
             <p>{{ __($contact->data_values->subheading) }}</p>
-            <form action="" class="contact-form verify-gcaptcha mt-50" id="contact_form_submit" method="post">
+            
+            <!-- Flash message for success -->
+            @if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+            
+            <!-- Anchor for scroll position preservation -->
+            <a id="contact-form"></a>
+            
+            <meta name="csrf-token" content="{{ csrf_token() }}">
+            <form action="{{ route('contact.submit') }}" class="contact-form verify-gcaptcha mt-50" id="contactForm" method="post">
               @csrf
               <div class="row">
                 <div class="form-group col-lg-6">
-                  <input type="text" name="name" class="form-control" id="contact-name" placeholder="@lang('Name')">
+                  <input type="text" name="first_name" class="form-control" id="contact-first-name" placeholder="@lang('First Name')">
                 </div>
                 <div class="form-group col-lg-6">
+                  <input type="text" name="last_name" class="form-control" id="contact-last-name" placeholder="@lang('Last Name')">
+                </div>
+                <div class="form-group col-lg-12">
                   <input type="email" name="email" class="form-control" id="contact-email" placeholder="@lang('Email')">
                 </div>
                 <div class="form-group col-lg-12">
-                  <input type="text" name="subject" class="form-control" id="contact-email" placeholder="@lang('Subject')">
+                  <input type="text" name="subject" class="form-control" id="contact-subject" placeholder="@lang('Subject')">
                 </div>
                 <div class="form-group col-lg-12">
                   <textarea name="message" id="contact-message" class="form-control" placeholder="@lang('Write message')"></textarea>
                 </div>
                 <x-captcha></x-captcha>
                 <div class="col-lg-12">
-                  <button type="submit" class="btn btn--base w-100">@lang('send message')</button>
+                  <button type="submit" class="btn btn--base w-100" id="contact-submit-btn">@lang('send message')</button>
                 </div>
               </div>
             </form>
@@ -52,4 +67,5 @@ $contact = getContent('contact.content',true);
       </div>
     </div>
 </section>
+
 @endsection

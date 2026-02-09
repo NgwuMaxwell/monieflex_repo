@@ -106,7 +106,10 @@ Route::get('/{any}', function ($any) {
 
 Route::controller('SiteController')->group(function () {
     Route::get('/contact', 'contact')->name('contact');
-    Route::post('/contact', 'contactSubmit');
+    Route::post('/contact', 'contactSubmit')->name('contact.submit');
+    
+    // API-style contact endpoint for AJAX requests
+    Route::post('/api/contact-submit', 'contactSubmit')->name('api.contact.submit');
     Route::get('/change/{lang?}', 'changeLanguage')->name('lang');
 
     Route::get('cookie-policy', 'cookiePolicy')->name('cookie.policy');

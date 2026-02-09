@@ -80,47 +80,44 @@ class SiteController extends Controller
     public function contactSubmit(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required',
-            'email' => 'required',
-            'subject' => 'required|string|max:255',
-            'message' => 'required',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'message' => 'required|string',
         ]);
 
         if(!verifyCaptcha()){
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Invalid captcha provided'
+                ], 422);
+            }
             $notify[] = ['error','Invalid captcha provided'];
             return back()->withNotify($notify);
         }
 
         $request->session()->regenerateToken();
 
-        $random = getNumber();
+        // Store contact message in contact_messages table
+        $contactMessage = new \App\Models\ContactMessage();
+        $contactMessage->first_name = $request->first_name;
+        $contactMessage->last_name = $request->last_name;
+        $contactMessage->email = $request->email;
+        $contactMessage->message = $request->message;
+        $contactMessage->status = 'unread'; // Use string value to match model
+        $contactMessage->save();
 
-        $ticket = new SupportTicket();
-        $ticket->user_id = auth()->id() ?? 0;
-        $ticket->name = $request->name;
-        $ticket->email = $request->email;
-        $ticket->priority = 2;
+        // Check if this is an AJAX request
+        if ($request->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Thank you for your message! We will get back to you soon.'
+            ]);
+        }
 
-        $ticket->ticket = $random;
-        $ticket->subject = $request->subject;
-        $ticket->last_reply = Carbon::now();
-        $ticket->status = 0;
-        $ticket->save();
-
-        $adminNotification = new AdminNotification();
-        $adminNotification->user_id = auth()->user() ? auth()->user()->id : 0;
-        $adminNotification->title = 'A new support ticket has opened ';
-        $adminNotification->click_url = urlPath('admin.ticket.view',$ticket->id);
-        $adminNotification->save();
-
-        $message = new SupportMessage();
-        $message->support_ticket_id = $ticket->id;
-        $message->message = $request->message;
-        $message->save();
-
-        $notify[] = ['success', 'Ticket created successfully!'];
-
-        return to_route('ticket.view', [$ticket->ticket])->withNotify($notify);
+        // For non-AJAX requests, redirect back with success message
+        return redirect()->route('contact')->with('success', 'Thank you for your message! We will get back to you soon.');
     }
 
     public function policyPages($slug,$id)

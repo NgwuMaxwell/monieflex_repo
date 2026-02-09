@@ -58,7 +58,21 @@ class AppServiceProvider extends ServiceProvider
                 'pendingDepositsCount'    => Deposit::pending()->count(),
                 'pendingWithdrawCount'    => Withdrawal::pending()->count(),
                 'pendingPtcCount'    => Ptc::pending()->count(),
+                'unreadContactCount'    => Schema::hasTable('contact_messages') ? \App\Models\ContactMessage::where('status', 'unread')->count() : 0,
             ]);
+        });
+
+        // Add unread contact count to admin views only (safer approach)
+        view()->composer('admin.*', function ($view) {
+            if (Schema::hasTable('contact_messages')) {
+                try {
+                    $unreadCount = \App\Models\ContactMessage::where('status', 'unread')->count();
+                    $view->with('unreadContactCount', $unreadCount);
+                } catch (\Exception $e) {
+                    // If query fails for any reason, set count to 0
+                    $view->with('unreadContactCount', 0);
+                }
+            }
         });
 
         view()->composer('admin.partials.topnav', function ($view) {

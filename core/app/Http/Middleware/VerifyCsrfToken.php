@@ -14,6 +14,7 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         'user/deposit',
         'ipn*',
-        'api/contact'
+        'api/contact',
+        'contact'
     ];
 }

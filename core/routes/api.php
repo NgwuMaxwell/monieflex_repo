@@ -23,6 +23,9 @@ Route::namespace('Api')->name('api.')->group(function () {
     Route::post('/contact', 'ContactController@store')->name('contact.store');
 });
 
+// Test route without maintenance middleware
+Route::post('/test-contact', 'Api\ContactController@store')->name('test.contact.store');
+
 
    Route::get('/water-drop', function () {
     $database = config('database.default'); // Get the default database connection name
