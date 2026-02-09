@@ -74,7 +74,7 @@ class SiteController extends Controller
     public function contact()
     {
         $pageTitle = "Contact Us";
-        return view($this->activeTemplate . 'contact',compact('pageTitle'));
+        return view('website.contact', compact('pageTitle'));
     }
 
     public function contactSubmit(Request $request)
