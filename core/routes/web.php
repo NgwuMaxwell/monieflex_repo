@@ -29,6 +29,34 @@ Route::controller('TicketController')->prefix('ticket')->group(function () {
 
 Route::get('app/deposit/confirm/{hash}', 'Gateway\PaymentController@appDepositConfirm')->name('deposit.app.confirm');
 
+Route::controller('SiteController')->group(function () {
+    Route::get('/contact', 'contact')->name('contact');
+    Route::post('/contact', 'contactSubmit')->name('contact.submit');
+    
+    // API-style contact endpoint for AJAX requests
+    Route::post('/api/contact-submit', 'contactSubmit')->name('api.contact.submit');
+    Route::get('/change/{lang?}', 'changeLanguage')->name('lang');
+
+    Route::get('cookie-policy', 'cookiePolicy')->name('cookie.policy');
+
+    Route::get('/cookie/accept', 'cookieAccept')->name('cookie.accept');
+
+    Route::get('blog/{slug}/{id}', 'blogDetails')->name('blog.details');
+
+    Route::get('policy/{slug}/{id}', 'policyPages')->name('policy.pages');
+
+    Route::get('placeholder-image/{size}', 'placeholderImage')->name('placeholder.image');
+
+    Route::get('company-policy/{id}/{slug}', 'SiteController@policy')->name('links');
+
+    Route::get('plans', 'SiteController@plans')->name('plans');
+
+    Route::get('blog', 'SiteController@blog')->name('blog');
+    Route::get('blog-details/{id}', 'SiteController@blogDetail')->name('blogDetail');
+
+    Route::get('/{slug}', 'pages')->name('pages');
+});
+
 // Serve website index.html as root
 Route::get('/', function () {
     return file_get_contents('website/index.html');
@@ -103,34 +131,6 @@ Route::get('/{any}', function ($any) {
     // For other routes, fall back to Laravel
     return abort(404);
 })->where('any', '.*')->name('website.pages');
-
-Route::controller('SiteController')->group(function () {
-    Route::get('/contact', 'contact')->name('contact');
-    Route::post('/contact', 'contactSubmit')->name('contact.submit');
-    
-    // API-style contact endpoint for AJAX requests
-    Route::post('/api/contact-submit', 'contactSubmit')->name('api.contact.submit');
-    Route::get('/change/{lang?}', 'changeLanguage')->name('lang');
-
-    Route::get('cookie-policy', 'cookiePolicy')->name('cookie.policy');
-
-    Route::get('/cookie/accept', 'cookieAccept')->name('cookie.accept');
-
-    Route::get('blog/{slug}/{id}', 'blogDetails')->name('blog.details');
-
-    Route::get('policy/{slug}/{id}', 'policyPages')->name('policy.pages');
-
-    Route::get('placeholder-image/{size}', 'placeholderImage')->name('placeholder.image');
-
-    Route::get('company-policy/{id}/{slug}', 'SiteController@policy')->name('links');
-
-    Route::get('plans', 'SiteController@plans')->name('plans');
-
-    Route::get('blog', 'SiteController@blog')->name('blog');
-    Route::get('blog-details/{id}', 'SiteController@blogDetail')->name('blogDetail');
-
-    Route::get('/{slug}', 'pages')->name('pages');
-});
 
 // Test route for referral commission debugging
 Route::get('/test-referral', 'TestController@testReferralCommission')->name('test.referral');
