@@ -11,6 +11,42 @@
         
         <!-- CSRF Token for AJAX requests -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        
+        <!-- Dynamic Base URL Configuration -->
+        <script>
+            // Determine the base URL based on the current environment
+            function getBaseUrl() {
+                const currentUrl = window.location.origin;
+                // If we're on localhost, use localhost URL, otherwise use production URL
+                if (currentUrl.includes('localhost') || currentUrl.includes('127.0.0.1')) {
+                    return currentUrl + '/app1';
+                } else {
+                    return 'https://monieflex.site';
+                }
+            }
+            
+            // Make base URL available globally
+            window.APP_BASE_URL = getBaseUrl();
+            
+            // Update all relative links to use the correct base URL
+            document.addEventListener('DOMContentLoaded', function() {
+                // Update all links that start with /user/ or /contact
+                const links = document.querySelectorAll('a[href^="/user/"], a[href^="/contact"], a[href^="/"]');
+                
+                links.forEach(function(link) {
+                    const href = link.getAttribute('href');
+                    if (href && href.startsWith('/')) {
+                        // Skip if it's just "/" (homepage)
+                        if (href === '/') {
+                            return;
+                        }
+                        
+                        // Update the href to use the correct base URL
+                        link.setAttribute('href', window.APP_BASE_URL + href);
+                    }
+                });
+            });
+        </script>
 
         <!-- CSS FILES -->        
         <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -108,10 +144,10 @@
                         </li>
 
                         <li class="nav-item ms-3">
-                            <a class="nav-link custom-btn custom-border-btn btn" href="http://localhost/app1/user/login">Login</a>
+                            <a class="nav-link custom-btn custom-border-btn btn" href="/user/login">Login</a>
                         </li>
                         <li class="nav-item ms-3">
-                            <a class="nav-link custom-btn custom-border-btn btn" href="http://localhost/app1/user/register">Register</a>
+                            <a class="nav-link custom-btn custom-border-btn btn" href="/user/register">Register</a>
                         </li>
                     </ul>
                 </div>
@@ -187,7 +223,7 @@
 
                         <div class="col-lg-3 col-md-6 col-12 mb-4 mb-lg-0">
                             <div class="featured-block d-flex justify-content-center align-items-center">
-                                <a href="http://localhost/app1/user/register" class="d-block">
+                                <a href="/user/register" class="d-block">
                                     <img src="images/icons/1.png" class="featured-block-image img-fluid" alt="">
 
                                     <p class="featured-block-text">Create an <strong>Account</strong></p>
@@ -197,7 +233,7 @@
 
                         <div class="col-lg-3 col-md-6 col-12 mb-4 mb-lg-0 mb-md-4">
                             <div class="featured-block d-flex justify-content-center align-items-center">
-                                <a href="http://localhost/app1/user/register" class="d-block">
+                                <a href="/user/register" class="d-block">
                                     <img src="images/icons/2.png" class="featured-block-image img-fluid" alt="">
 
                                     <p class="featured-block-text"><strong>Deposit</strong> Capital</p>
@@ -207,7 +243,7 @@
 
                         <div class="col-lg-3 col-md-6 col-12 mb-4 mb-lg-0 mb-md-4">
                             <div class="featured-block d-flex justify-content-center align-items-center">
-                                <a href="http://localhost/app1/user/register" class="d-block">
+                                <a href="/user/register" class="d-block">
                                     <img src="images/icons/3.png" class="featured-block-image img-fluid" alt="">
 
                                     <p class="featured-block-text">Buy a <strong>Plan</strong></p>
@@ -217,7 +253,7 @@
 
                         <div class="col-lg-3 col-md-6 col-12 mb-4 mb-lg-0">
                             <div class="featured-block d-flex justify-content-center align-items-center">
-                                <a href="http://localhost/app1/user/register" class="d-block">
+                                <a href="/user/register" class="d-block">
                                     <img src="images/icons/4.png" class="featured-block-image img-fluid" alt="">
 
                                     <p class="featured-block-text"><strong>Earn</strong> every<strong> Day</strong></p>
@@ -357,9 +393,9 @@
                         </div>
 
                         <div class="col-lg-5 col-12">
-                            <a href="http://localhost/app1/user/login" class="me-4">Login Now!</a>
+                            <a href="/user/login" class="me-4">Login Now!</a>
 
-                            <a href="http://localhost/app1/user/register" class="custom-btn btn smoothscroll">Create an Account!</a>
+                            <a href="/user/register" class="custom-btn btn smoothscroll">Create an Account!</a>
                         </div>
 
                     </div>
@@ -404,7 +440,7 @@
                                                 </div>
                                             </div>
 
-                                            <a href="http://localhost/app1/user/register" class="custom-btn btn">Buy Plan</a>
+                                            <a href="/user/register" class="custom-btn btn">Buy Plan</a>
                                         </div>
                                     </div>
                                 </div>
@@ -436,7 +472,7 @@
                                                 </div>
                                             </div>
 
-                                            <a href="http://localhost/app1/user/register" class="custom-btn btn">Buy Plan</a>
+                                            <a href="/user/register" class="custom-btn btn">Buy Plan</a>
                                         </div>
                                     </div>
                                 </div>
@@ -841,9 +877,9 @@
 
                             <li class="footer-menu-item"><a href="#section5" class="footer-menu-link">Contact Us</a></li>
 
-                            <li class="footer-menu-item"><a href="http://localhost/app1/user/login" class="footer-menu-link">Login</a></li>
+                            <li class="footer-menu-item"><a href="/user/login" class="footer-menu-link">Login</a></li>
 
-                            <li class="footer-menu-item"><a href="http://localhost/app1/user/register" class="footer-menu-link">Sign Up</a></li>
+                            <li class="footer-menu-item"><a href="/user/register" class="footer-menu-link">Sign Up</a></li>
                         </ul>
                     </div>
 
@@ -871,7 +907,7 @@
                             Akershusstranda 20, 0150 Oslo, Norway
                         </p>
 
-                        <a href="http://localhost/app1/user/register" class="custom-btn btn mt-3">Get Started Today!</a>
+                        <a href="/user/register" class="custom-btn btn mt-3">Get Started Today!</a>
                     </div>
                 </div>
             </div>
@@ -881,7 +917,7 @@
                     <div class="row">
 
                         <div class="col-lg-6 col-md-7 col-12">
-                            <p class="copyright-text mb-0">Copyright © 2026 MonieFlex<a href="http://localhost/app1/"> monieflex.site</a></p>
+                            <p class="copyright-text mb-0">Copyright © 2026 MonieFlex<a href="/"> monieflex.site</a></p>
                         </div>
                         
                         <div class="col-lg-6 col-md-5 col-12 d-flex justify-content-center align-items-center mx-auto">
@@ -949,7 +985,7 @@
                     formMessage.className = 'alert alert-info';
                     formMessage.textContent = 'Sending your message...';
                     
-                    fetch("/app1/contact", {
+                    fetch(window.APP_BASE_URL + "/contact", {
                         method: "POST",
                         headers: {
                             "X-CSRF-TOKEN": csrfToken,
