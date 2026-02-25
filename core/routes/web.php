@@ -57,10 +57,11 @@ Route::controller('SiteController')->group(function () {
     Route::get('/{slug}', 'pages')->name('pages');
 });
 
-// Serve website index.html as root
-Route::get('/', function () {
-    return file_get_contents('website/index.html');
-})->name('home');
+// Website routes using Blade views
+Route::controller('WebsiteController')->group(function () {
+    Route::get('/', 'index')->name('home');
+    Route::get('/news/{slug}', 'newsDetail')->name('news.detail');
+});
 
 // Serve website CSS files
 Route::get('/css/{file}', function ($file) {
