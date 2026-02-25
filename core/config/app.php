@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Facade;
-require_once('timezone.php');
+$timezone = 'Africa/Lagos';
 return [
 
     /*
