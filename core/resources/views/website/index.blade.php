@@ -378,13 +378,13 @@
 
                         <div class="col-lg-5 col-md-7 col-12">
                             <div class="custom-text-block">
-                                <h2 class="mb-0">Sandy Chan</h2>
+                                <h2 class="mb-0">Michelle Zhang</h2>
 
                                 <p class="text-muted mb-lg-4 mb-md-4">Co-Founding Partner</p>
 
-                                <p>Lorem Ipsum dolor sit amet, consectetur adipsicing kengan omeg kohm tokito Professional charity theme based</p>
+                                <p>Driven by a passion for financial innovation, she leads the MonieFlex company with a vision of making smart investing simple, transparent, and accessible to everyone. With years of experience in technology and global finance, she combines strategic leadership with a people-first approach, helping individuals grow wealth confidently. </p>
 
-                                <p>You are not allowed to redistribute this template ZIP file on any other template collection website. Please contact TemplateMo for more information.</p>
+                                <p>Her work focuses on building trusted digital solutions that empower communities, encourage long-term financial stability, and create opportunities for investors across diverse backgrounds</p>
 
                                 <ul class="social-icon mt-4">
                                     <li class="social-icon-item">
