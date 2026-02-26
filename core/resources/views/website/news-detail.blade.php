@@ -7,7 +7,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>Kind Heart Charity - News Detail</title>
+        <title>MonieFlex News Detail</title>
 
         <!-- CSS FILES -->        
         <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
@@ -33,8 +33,8 @@
                         <p class="d-flex mb-0">
                             <i class="bi-envelope me-2"></i>
 
-                            <a href="mailto:info@company.com">
-                                info@company.com
+                            <a href="mailto:info@monieflex.com">
+                                info@monieflex.com
                             </a>
                         </p>
                     </div>
@@ -42,23 +42,23 @@
                     <div class="col-lg-3 col-12 ms-auto d-lg-block d-none">
                         <ul class="social-icon">
                             <li class="social-icon-item">
-                                <a href="#" class="social-icon-link bi-twitter"></a>
+                                <a href="" class="social-icon-link bi-twitter"></a>
                             </li>
 
                             <li class="social-icon-item">
-                                <a href="#" class="social-icon-link bi-facebook"></a>
+                                <a href="" class="social-icon-link bi-facebook"></a>
                             </li>
 
                             <li class="social-icon-item">
-                                <a href="#" class="social-icon-link bi-instagram"></a>
+                                <a href="" class="social-icon-link bi-instagram"></a>
                             </li>
 
                             <li class="social-icon-item">
-                                <a href="#" class="social-icon-link bi-youtube"></a>
+                                <a href="" class="social-icon-link bi-youtube"></a>
                             </li>
 
                             <li class="social-icon-item">
-                                <a href="#" class="social-icon-link bi-whatsapp"></a>
+                                <a href="" class="social-icon-link bi-whatsapp"></a>
                             </li>
                         </ul>
                     </div>
@@ -140,15 +140,15 @@
                                     <img src="{{ asset('storage/' . $post->image) }}" class="news-image img-fluid" alt="{{ $post->title }}">
 
                                     <div class="news-category-block">
-                                        <a href="#" class="category-block-link">
+                                        <a href="" class="category-block-link">
                                             Investment,
                                         </a>
 
-                                        <a href="#" class="category-block-link">
+                                        <a href="" class="category-block-link">
                                             News,
                                         </a>
 
-                                        <a href="#" class="category-block-link">
+                                        <a href="" class="category-block-link">
                                             Monieflex
                                         </a>
                                     </div>
@@ -173,7 +173,7 @@
                                         <div class="news-block-comment">
                                             <p>
                                                 <i class="bi-chat-left custom-icon me-1"></i>
-                                                {{ $post->comments->count() }} Comments
+                                                {{ $post->comments ? $post->comments->count() : 0 }} Comments
                                             </p>
                                         </div>
                                     </div>
@@ -182,105 +182,35 @@
                                         <h4>{{ $post->title }}</h4>
                                     </div>
 
-                                    <div class="news-block-body">
+                                    <div class="news-block-body" style="word-wrap: break-word; overflow-wrap: break-word;">
                                         {!! $post->data_values->description !!}
                                     </div>
 
-                                    <div class="row mt-5 mb-4">
-                                        <div class="col-lg-6 col-12 mb-4 mb-lg-0">
-                                            <img src="{{ asset('images/news/africa-humanitarian-aid-doctor.jpg') }}" class="news-detail-image img-fluid" alt="">
-                                        </div>
-
-                                        <div class="col-lg-6 col-12">
-                                            <img src="{{ asset('images/news/close-up-happy-people-working-together.jpg') }}" class="news-detail-image img-fluid" alt="">
-                                        </div>
-                                    </div>
-
-                                    <p>You are not allowed to redistribute this template ZIP file on any other template collection website. Please <a href="https://templatemo.com/contact" target="_blank">contact TemplateMo</a> for more information.</p>
-
                                     <div class="social-share border-top mt-5 py-4 d-flex flex-wrap align-items-center">
                                         <div class="tags-block me-auto">
-                                            <a href="#" class="tags-block-link">
+                                            <a href="" class="tags-block-link">
                                                 Investment
                                             </a>
 
-                                            <a href="#" class="tags-block-link">
+                                            <a href="" class="tags-block-link">
                                                 News
                                             </a>
 
-                                            <a href="#" class="tags-block-link">
+                                            <a href="" class="tags-block-link">
                                                 Monieflex
                                             </a>
                                         </div>
 
                                         <div class="d-flex">
-                                            <a href="#" class="social-icon-link bi-facebook"></a>
+                                            <a href="" class="social-icon-link bi-facebook"></a>
 
-                                            <a href="#" class="social-icon-link bi-twitter"></a>
+                                            <a href="" class="social-icon-link bi-twitter"></a>
 
-                                            <a href="#" class="social-icon-link bi-printer"></a>
+                                            <a href="" class="social-icon-link bi-printer"></a>
 
-                                            <a href="#" class="social-icon-link bi-envelope"></a>
+                                            <a href="" class="social-icon-link bi-envelope"></a>
                                         </div>
                                     </div>
-
-                                    <div class="author-comment d-flex mt-3 mb-4">
-                                        <img src="{{ asset('images/avatar/studio-portrait-emotional-happy-funny.jpg') }}" class="img-fluid avatar-image" alt="">
-
-                                        <div class="author-comment-info ms-3">
-                                            <h6 class="mb-1">Jack</h6>
-
-                                            <p class="mb-0">Kind Heart Charity is the most supportive organization. This is Bootstrap 5 HTML CSS template for everyone. Thank you.</p>
-
-                                            <div class="d-flex mt-2">
-                                                <a href="#" class="author-comment-link me-3">Like</a>
-
-                                                <a href="#" class="author-comment-link">Reply</a>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="author-comment d-flex ms-5 ps-3">
-                                        <img src="{{ asset('images/avatar/pretty-blonde-woman-wearing-white-t-shirt.jpg') }}" class="img-fluid avatar-image" alt="">
-
-                                        <div class="author-comment-info ms-3">
-                                            <h6 class="mb-1">Daisy</h6>
-
-                                            <p class="mb-0">Sed leo nisl, posuere at molestie ac, suscipit auctor mauris. Etiam quis metus elementum, tempor risus vel, condimentum orci</p>
-
-                                            <div class="d-flex mt-2">
-                                                <a href="#" class="author-comment-link me-3">Like</a>
-
-                                                <a href="#" class="author-comment-link">Reply</a>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="author-comment d-flex mt-3 mb-4">
-                                        <img src="{{ asset('images/avatar/portrait-young-redhead-bearded-male.jpg') }}" class="img-fluid avatar-image" alt="">
-
-                                        <div class="author-comment-info ms-3">
-                                            <h6 class="mb-1">Wilson</h6>
-
-                                            <p class="mb-0">Lorem Ipsum dolor sit amet, consectetur adipsicing kengan omeg kohm tokito Professional charity theme based on Bootstrap</p>
-
-                                            <div class="d-flex mt-2">
-                                                <a href="#" class="author-comment-link me-3">Like</a>
-
-                                                <a href="#" class="author-comment-link">Reply</a>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <form class="custom-form comment-form mt-4" action="#" method="post" role="form">
-                                        <h6 class="mb-3">Write a comment</h6>
-
-                                        <textarea name="comment-message" rows="4" class="form-control" id="comment-message" placeholder="Your comment here"></textarea>
-
-                                        <div class="col-lg-3 col-md-4 col-6 ms-auto">
-                                            <button type="submit" class="form-control">Comment</button>
-                                        </div>
-                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -322,52 +252,52 @@
                             <div class="category-block d-flex flex-column">
                                 <h5 class="mb-3">Categories</h5>
 
-                                <a href="#" class="category-block-link">
+                                <a href="" class="category-block-link">
                                     Investment
-                                    <span class="badge">{{ $posts->count() }}</span>
+                                    <span class="badge">{{ $recentPosts->count() }}</span>
                                 </a>
 
-                                <a href="#" class="category-block-link">
+                                <a href="" class="category-block-link">
                                     Referral System
-                                    <span class="badge">{{ $posts->where('data_values->category', 'referral')->count() }}</span>
+                                    <span class="badge">{{ $recentPosts->where('data_values->category', 'referral')->count() }}</span>
                                 </a>
 
-                                <a href="#" class="category-block-link">
+                                <a href="" class="category-block-link">
                                     Monieflex
-                                    <span class="badge">{{ $posts->where('data_values->category', 'monieflex')->count() }}</span>
+                                    <span class="badge">{{ $recentPosts->where('data_values->category', 'monieflex')->count() }}</span>
                                 </a>
 
-                                <a href="#" class="category-block-link">
+                                <a href="" class="category-block-link">
                                     Buy Plans
-                                    <span class="badge">{{ $posts->where('data_values->category', 'plans')->count() }}</span>
+                                    <span class="badge">{{ $recentPosts->where('data_values->category', 'plans')->count() }}</span>
                                 </a>
 
-                                <a href="#" class="category-block-link">
+                                <a href="" class="category-block-link">
                                     Performing Tasks
-                                    <span class="badge">{{ $posts->where('data_values->category', 'tasks')->count() }}</span>
+                                    <span class="badge">{{ $recentPosts->where('data_values->category', 'tasks')->count() }}</span>
                                 </a>
                             </div>
 
                             <div class="tags-block">
                                 <h5 class="mb-3">Tags</h5>
 
-                                <a href="#" class="tags-block-link">
+                                <a href="" class="tags-block-link">
                                     Investment
                                 </a>
 
-                                <a href="#" class="tags-block-link">
+                                <a href="" class="tags-block-link">
                                     News
                                 </a>
 
-                                <a href="#" class="tags-block-link">
+                                <a href="" class="tags-block-link">
                                     Monieflex
                                 </a>
 
-                                <a href="#" class="tags-block-link">
+                                <a href="" class="tags-block-link">
                                     Buy Plans
                                 </a>
 
-                                <a href="#" class="tags-block-link">
+                                <a href="" class="tags-block-link">
                                     Performing Tasks
                                 </a>
                             </div>
@@ -404,15 +334,15 @@
                                     </a>
 
                                     <div class="news-category-block">
-                                        <a href="#" class="category-block-link">
+                                        <a href="" class="category-block-link">
                                             Investment,
                                         </a>
 
-                                        <a href="#" class="category-block-link">
+                                        <a href="" class="category-block-link">
                                             News,
                                         </a>
 
-                                        <a href="#" class="category-block-link">
+                                        <a href="" class="category-block-link">
                                             Monieflex
                                         </a>
                                     </div>
@@ -437,7 +367,7 @@
                                         <div class="news-block-comment">
                                             <p>
                                                 <i class="bi-chat-left custom-icon me-1"></i>
-                                                {{ $relatedPost->comments->count() }} Comments
+                                                {{ $relatedPost->comments ? $relatedPost->comments->count() : 0 }} Comments
                                             </p>
                                         </div>
                                     </div>
@@ -446,7 +376,7 @@
                                         <h4><a href="{{ route('news.detail', $relatedPost->slug) }}" class="news-block-title-link">{{ $relatedPost->title }}</a></h4>
                                     </div>
 
-                                    <div class="news-block-body">
+                                    <div class="news-block-body" style="word-wrap: break-word; overflow-wrap: break-word;">
                                         <p>{{ Str::limit(strip_tags($relatedPost->data_values->description), 150) }}</p>
                                     </div>
                                 </div>
@@ -496,8 +426,8 @@
                         <p class="text-white d-flex">
                             <i class="bi-envelope me-2"></i>
 
-                            <a href="mailto:info@yourgmail.com" class="site-footer-link">
-                                donate@charity.org
+                            <a href="mailto:info@monieflex.site" class="site-footer-link">
+                                info@monieflex.site
                             </a>
                         </p>
 
@@ -516,26 +446,26 @@
                     <div class="row">
 
                         <div class="col-lg-6 col-md-7 col-12">
-                            <p class="copyright-text mb-0">Copyright © 2036 <a href="#">Kind Heart</a> Charity Org.
-                        	Design: <a href="https://templatemo.com" target="_blank">TemplateMo</a></p>
+                            <p class="copyright-text mb-0">Copyright © 2036 <a href="">Monieflex.site</a> MonieFlex
+                        	Design: <a href="">Monieflex.site</a></p>
                         </div>
                         
                         <div class="col-lg-6 col-md-5 col-12 d-flex justify-content-center align-items-center mx-auto">
                             <ul class="social-icon">
                                 <li class="social-icon-item">
-                                    <a href="#" class="social-icon-link bi-twitter"></a>
+                                    <a href="" class="social-icon-link bi-twitter"></a>
                                 </li>
 
                                 <li class="social-icon-item">
-                                    <a href="#" class="social-icon-link bi-facebook"></a>
+                                    <a href="" class="social-icon-link bi-facebook"></a>
                                 </li>
 
                                 <li class="social-icon-item">
-                                    <a href="#" class="social-icon-link bi-instagram"></a>
+                                    <a href="" class="social-icon-link bi-instagram"></a>
                                 </li>
 
                                 <li class="social-icon-item">
-                                    <a href="#" class="social-icon-link bi-linkedin"></a>
+                                    <a href="" class="social-icon-link bi-linkedin"></a>
                                 </li>
 
                                 <li class="social-icon-item">

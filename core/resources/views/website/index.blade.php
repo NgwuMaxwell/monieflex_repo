@@ -104,23 +104,23 @@
                     <div class="col-lg-3 col-12 ms-auto d-lg-block d-none">
                         <ul class="social-icon">
                             <li class="social-icon-item">
-                                <a href="#" class="social-icon-link bi-twitter"></a>
+                                <a href="" class="social-icon-link bi-twitter"></a>
                             </li>
 
                             <li class="social-icon-item">
-                                <a href="#" class="social-icon-link bi-facebook"></a>
+                                <a href="" class="social-icon-link bi-facebook"></a>
                             </li>
 
                             <li class="social-icon-item">
-                                <a href="#" class="social-icon-link bi-instagram"></a>
+                                <a href="" class="social-icon-link bi-instagram"></a>
                             </li>
 
                             <li class="social-icon-item">
-                                <a href="#" class="social-icon-link bi-youtube"></a>
+                                <a href="" class="social-icon-link bi-youtube"></a>
                             </li>
 
                             <li class="social-icon-item">
-                                <a href="#" class="social-icon-link bi-whatsapp"></a>
+                                <a href="" class="social-icon-link bi-whatsapp"></a>
                             </li>
                         </ul>
                     </div>
@@ -388,15 +388,15 @@
 
                                 <ul class="social-icon mt-4">
                                     <li class="social-icon-item">
-                                        <a href="#" class="social-icon-link bi-twitter"></a>
+                                        <a href="" class="social-icon-link bi-twitter"></a>
                                     </li>
 
                                     <li class="social-icon-item">
-                                        <a href="#" class="social-icon-link bi-facebook"></a>
+                                        <a href="" class="social-icon-link bi-facebook"></a>
                                     </li>
 
                                     <li class="social-icon-item">
-                                        <a href="#" class="social-icon-link bi-instagram"></a>
+                                        <a href="" class="social-icon-link bi-instagram"></a>
                                     </li>
                                 </ul>
                             </div>
@@ -522,13 +522,13 @@
                                     </a>
 
                                     <div class="news-category-block">
-                                        <a href="#" class="category-block-link">
+                                        <a href="" class="category-block-link">
                                             Investment,
                                         </a>
-                                        <a href="#" class="category-block-link">
+                                        <a href="" class="category-block-link">
                                             News,
                                         </a>
-                                        <a href="#" class="category-block-link">
+                                        <a href="" class="category-block-link">
                                             Monieflex
                                         </a>
                                     </div>
@@ -696,33 +696,33 @@
                                     <div class="carousel-inner">
                                         <div class="carousel-item active">
                                            <div class="carousel-caption">
-                                                <h4 class="carousel-title">Lorem Ipsum dolor sit amet, consectetur adipsicing kengan omeg kohm tokito charity theme</h4>
+                                                <h4 class="carousel-title">I was honestly skeptical at first, but MonieFlex surprised me. I earn small but steady cash just by watching ads, and referrals really boost my balance. Withdrawals have been smooth so far.</h4>
 
-                                                <small class="carousel-name"><span class="carousel-name-title">Maria</span>, Boss</small>
+                                                <small class="carousel-name"><span class="carousel-name-title">Chinedu</span>, O.</small>
                                            </div>
                                         </div>
 
                                         <div class="carousel-item">
                                             <div class="carousel-caption">
-                                                <h4 class="carousel-title">Sed leo nisl, posuere at molestie ac, suscipit auctor mauris quis metus tempor orci</h4>
+                                                <h4 class="carousel-title">I joined with the MonieFlex Light plan and started seeing results within a week. The cashback feature helped me recover part of my subscription cost. It’s simple and easy to use.</h4>
 
-                                                <small class="carousel-name"><span class="carousel-name-title">Thomas</span>, Partner</small>
+                                                <small class="carousel-name"><span class="carousel-name-title">Amina,</span>Bello</small>
                                             </div>
                                         </div>
 
                                         <div class="carousel-item">
                                             <div class="carousel-caption">
-                                                <h4 class="carousel-title">Lorem Ipsum dolor sit amet, consectetur adipsicing kengan omeg kohm tokito charity theme</h4>
+                                                <h4 class="carousel-title">The referral system works well. After inviting a few friends, my earnings increased faster than I expected. It’s a nice side income platform.</h4>
 
-                                                <small class="carousel-name"><span class="carousel-name-title">Jane</span>, Advisor</small>
+                                                <small class="carousel-name"><span class="carousel-name-title">Kelvin</span>, E.</small>
                                             </div>
                                         </div>
 
                                         <div class="carousel-item">
                                             <div class="carousel-caption">
-                                                <h4 class="carousel-title">Sed leo nisl, posuere at molestie ac, suscipit auctor mauris quis metus tempor orci</h4>
+                                                <h4 class="carousel-title">I upgraded to the Gold plan and the daily advert rewards are better. I like that I can earn even during my free time. Definitely worth trying.</h4>
 
-                                                <small class="carousel-name"><span class="carousel-name-title">Bob</span>, Entreprenuer</small>
+                                                <small class="carousel-name"><span class="carousel-name-title">BobGrace</span>, Okafor</small>
                                            </div>
                                         </div>
 
@@ -794,7 +794,7 @@
                                         </a>
                                     </p>
 
-                                    <a href="#" class="custom-btn btn mt-3">Get Direction</a>
+                                    <a href="" class="custom-btn btn mt-3">Get Direction</a>
                                 </div>
                             </div>
                         </div>
@@ -896,23 +896,23 @@
                         <div class="col-lg-6 col-md-5 col-12 d-flex justify-content-center align-items-center mx-auto">
                             <ul class="social-icon">
                                 <li class="social-icon-item">
-                                    <a href="#" class="social-icon-link bi-twitter"></a>
+                                    <a href="" class="social-icon-link bi-twitter"></a>
                                 </li>
 
                                 <li class="social-icon-item">
-                                    <a href="#" class="social-icon-link bi-facebook"></a>
+                                    <a href="" class="social-icon-link bi-facebook"></a>
                                 </li>
 
                                 <li class="social-icon-item">
-                                    <a href="#" class="social-icon-link bi-instagram"></a>
+                                    <a href="" class="social-icon-link bi-instagram"></a>
                                 </li>
 
                                 <li class="social-icon-item">
-                                    <a href="#" class="social-icon-link bi-linkedin"></a>
+                                    <a href="" class="social-icon-link bi-linkedin"></a>
                                 </li>
 
                                 <li class="social-icon-item">
-                                    <a href="https://youtube.com/templatemo" class="social-icon-link bi-youtube"></a>
+                                    <a href="" class="social-icon-link bi-youtube"></a>
                                 </li>
                             </ul>
                         </div>
