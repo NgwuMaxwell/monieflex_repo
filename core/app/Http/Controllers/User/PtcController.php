@@ -169,7 +169,7 @@ class PtcController extends Controller
         }
 
 
-        // Award referral bonus to referrer for PTC view - DIRECT INLINE SOLUTION
+        // Award referral bonus to referrer for PTC view - CRITICAL FIX
         if ($user->ref_by) {
             $referrer = \App\Models\User::find($user->ref_by);
             if ($referrer) {
@@ -177,7 +177,11 @@ class PtcController extends Controller
                 $commissionPercent = 20; // 20% for PTC views
                 $commissionAmount = ($ptc->amount * $commissionPercent) / 100;
                 
-                // Create the referral bonus transaction
+                // Credit referral bonus directly to referrer's wallet - Bypass safe wallet validation
+                $referrer->referral_bonus += $commissionAmount;
+                $referrer->save();
+                
+                // Create the referral bonus transaction record
                 \App\Models\Transaction::create([
                     'user_id'      => $referrer->id,
                     'wallet'       => 'referral_bonus',
@@ -186,7 +190,7 @@ class PtcController extends Controller
                     'trx_type'     => '+',
                     'details'      => 'PTC view referral commission - ' . $ptc->title,
                     'trx'          => uniqid('ptc_'),
-                    'post_balance' => 0,
+                    'post_balance' => $referrer->referral_bonus,
                 ]);
             }
         }
