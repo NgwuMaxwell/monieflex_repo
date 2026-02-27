@@ -118,15 +118,11 @@
                         <p>{{ $plan->ref_level }}</p>
                     </div>
                     <div class="text-center">
-                        @if (@auth()->user()->runningPlan && @auth()->user()->plan_id == $plan->id)
-                            <button class="package-disabled">@lang('Obtained')</button>
-                        @else
-                            <form method="post" action="{{ route('user.buyPlan') }}">
-                                @csrf
-                                <input type="hidden" name="id" value="{{ $plan->id }}">
-                                <button type="submit" class="btn btn-rent">Buy Plan</button>
-                            </form>
-                        @endif
+                        <form method="post" action="{{ route('user.buyPlan') }}">
+                            @csrf
+                            <input type="hidden" name="id" value="{{ $plan->id }}">
+                            <button type="submit" class="btn btn-rent">Buy Plan</button>
+                        </form>
                     </div>
                 </div>
             </div>

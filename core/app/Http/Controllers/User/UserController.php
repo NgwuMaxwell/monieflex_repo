@@ -265,10 +265,6 @@ class UserController extends Controller
             return back()->withNotify($notify);
         }
 
-        if ($user->runningPlan && $user->plan_id == $plan->id) {
-            $notify[] = ['error', 'You couldn\'t subscribe to the current package until it expires'];
-            return back()->withNotify($notify);
-        }
 
         // Use database transaction for atomic operations
         DB::beginTransaction();
