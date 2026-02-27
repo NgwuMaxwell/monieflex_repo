@@ -305,7 +305,7 @@ class UserController extends Controller
             $profitActivity->amount = $totalProfit;
             $profitActivity->save();
 
-            // Award referral bonus to referrer for plan subscription - DIRECT INLINE SOLUTION
+            // Award referral bonus to referrer for plan subscription - CRITICAL FIX
             if ($user->ref_by) {
                 $referrer = User::find($user->ref_by);
                 if ($referrer) {
@@ -313,7 +313,11 @@ class UserController extends Controller
                     $commissionPercent = 50; // 50% for plan subscriptions
                     $commissionAmount = ($plan->price * $commissionPercent) / 100;
                     
-                    // Create the referral bonus transaction
+                    // Credit referral bonus directly to referrer's wallet - Bypass safe wallet validation
+                    $referrer->referral_bonus += $commissionAmount;
+                    $referrer->save();
+                    
+                    // Create the referral bonus transaction record
                     \App\Models\Transaction::create([
                         'user_id'      => $referrer->id,
                         'wallet'       => 'referral_bonus',
@@ -322,7 +326,7 @@ class UserController extends Controller
                         'trx_type'     => '+',
                         'details'      => 'Plan subscription referral commission - ' . $plan->name,
                         'trx'          => uniqid('plan_'),
-                        'post_balance' => 0,
+                        'post_balance' => $referrer->referral_bonus,
                     ]);
                 }
             }
