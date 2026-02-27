@@ -128,10 +128,8 @@ class PtcController extends Controller
             $ptc->decrement('remain');
             $ptc->save();
 
-            // Credit both Task Earning (display) and Profit Wallet
-            // Task Earning is just a display tracker, Profit Wallet is the actual wallet
-            $user->profit_wallet += $ptc->amount;
-            $user->save();
+            // Credit Profit Wallet using safe method
+            $user->creditProfit($ptc->amount);
 
             $trx = getTrx();
             $transaction = new Transaction();

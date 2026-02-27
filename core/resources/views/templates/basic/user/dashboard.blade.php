@@ -1,4 +1,4 @@
-
+that 
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title> {{ $general->siteName(__($pageTitle)) }}</title>
     @include('partials.seo')
@@ -246,24 +246,47 @@
                 </div>
             </div>
 
-            <!-- Wallet Balances Section -->
+            <!-- Asset Details Section -->
             <div class="headings">
-                <div class="title">Wallet Balances</div>
+                <div class="title">Asset Details</div>
             </div>
             
             <div class="news-block" style="margin-bottom: 25px;">
                 <div class="right" style="width: 100%;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <div>
-                            <p style="margin-bottom: 2px; font-size: 14px; color: #666;">Profit Wallet</p>
+                            <p style="margin-bottom: 2px; font-size: 14px; color: #666;">Wallet Balance</p>
                             <h6 style="margin-bottom: 0; font-size: 18px; font-weight: 700; color: #151515;">
-                                {{ $general->cur_text }} {{ number_format($profitWallet, 2) }}
+                                {{ $general->cur_text }} {{ number_format($user->balance, 2) }}
                             </h6>
                         </div>
                         <div style="text-align: right;">
+                            <p style="margin-bottom: 2px; font-size: 14px; color: #666;">Task Earning</p>
+                            <h6 style="margin-bottom: 0; font-size: 18px; font-weight: 700; color: #151515;">
+                                {{ $general->cur_text }} {{ number_format($user->profit_wallet, 2) }}
+                            </h6>
+                        </div>
+                    </div>
+                    <div style="text-align: center;">
+                        <button class="btn btn-primary" onclick="window.location.href='{{route ('user.withdraw')}}'" style="background: linear-gradient(90deg,#3244a8,#7843f5); border: none; border-radius: 20px; padding: 8px 20px; color: white; font-size: 14px;">
+                            Request Withdrawal
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Profit Wallet Section -->
+            <div class="headings">
+                <div class="title">Profit Wallet</div>
+            </div>
+            
+            <div class="news-block" style="margin-bottom: 25px;">
+                <div class="right" style="width: 100%;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <div>
                             <p style="margin-bottom: 2px; font-size: 14px; color: #666;">Referral Bonus</p>
                             <h6 style="margin-bottom: 0; font-size: 18px; font-weight: 700; color: #151515;">
-                                {{ $general->cur_text }} {{ number_format($referralWallet, 2) }}
+                                {{ $general->cur_text }} {{ number_format($user->referral_bonus, 2) }}
                             </h6>
                         </div>
                     </div>

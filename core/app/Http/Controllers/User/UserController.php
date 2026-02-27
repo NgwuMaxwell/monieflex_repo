@@ -33,18 +33,9 @@ class UserController extends Controller
 
         $user = auth()->user();
         
-        // Calculate wallet balances from transactions ledger
-        $profitWallet = \App\Models\Transaction::where('user_id', $user->id)
-            ->where('wallet', 'main_balance')
-            ->sum(DB::raw("
-                CASE 
-                    WHEN trx_type = '+' THEN amount
-                    WHEN trx_type = '-' THEN -amount
-                END
-            "));
-        
-        // Use the User model's referral bonus attribute for consistency
-        $referralWallet = $user->referralBonus;
+        // Use direct database values - no more transaction calculations
+        $profitWallet = $user->profit_wallet;
+        $referralWallet = $user->referral_bonus;
 
         return view($this->activeTemplate . 'user.dashboard', compact('pageTitle', 'chart', 'user', 'profitWallet', 'referralWallet'));
     }

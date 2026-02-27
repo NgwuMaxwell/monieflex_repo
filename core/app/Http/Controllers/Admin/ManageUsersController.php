@@ -230,63 +230,45 @@ class ManageUsersController extends Controller
         $walletName = $walletType === 'balance' ? 'Wallet Balance' : ($walletType === 'profit_wallet' ? 'Profit Wallet' : 'Referral Bonus Wallet');
 
         if ($request->act == 'add') {
-            // For referral_wallet, create transaction with wallet='referral_bonus'
+            // Use safe wallet methods for all wallet types
             if ($walletType === 'referral_wallet') {
+                $user->creditReferralBonus($amount);
                 $transaction->wallet = 'referral_bonus';
-                $transaction->trx_type = '+';
-                $transaction->remark = 'admin_add';
-                $transaction->details = $request->remark;
-                $transaction->user_id = $user->id;
-                $transaction->amount = $amount;
-                $transaction->charge = 0;
-                $transaction->trx = $trx;
-                $transaction->post_balance = 0; // Not used for referral bonus
-                $transaction->save();
-                
-                $notifyTemplate = 'BAL_ADD';
-                $notify[] = ['success', $general->cur_sym . $amount . ' added to ' . $walletName . ' successfully'];
+            } elseif ($walletType === 'profit_wallet') {
+                $user->creditProfit($amount);
+                $transaction->wallet = 'main_balance';
             } else {
-                // For balance and profit_wallet, use transaction-based approach
-                if ($walletType === 'profit_wallet') {
-                    $transaction->wallet = 'main_balance'; // Profit wallet uses main_balance
-                } else {
-                    $transaction->wallet = 'wallet_balance'; // Wallet Balance uses wallet_balance
-                    
-                    // ⭐ CRITICAL: Update user balance column for Wallet Balance
-                    if ($walletType === 'balance') {
-                        $user->balance += $amount;
-                    }
-                }
-                
-                $transaction->trx_type = '+';
-                $transaction->remark = $walletType . '_add';
-                $transaction->user_id = $user->id;
-                $transaction->amount = $amount;
-                $transaction->charge = 0;
-                $transaction->trx = $trx;
-                $transaction->details = $request->remark;
-                $transaction->post_balance = 0; // Not used for dynamic calculation
-                $transaction->save();
-                
-                $notifyTemplate = 'BAL_ADD';
-                $notify[] = ['success', $general->cur_sym . $amount . ' added to ' . $walletName . ' successfully'];
+                // For balance wallet
+                $user->creditWallet($amount);
+                $transaction->wallet = 'wallet_balance';
             }
+            
+            $transaction->trx_type = '+';
+            $transaction->remark = $walletType . '_add';
+            $transaction->user_id = $user->id;
+            $transaction->amount = $amount;
+            $transaction->charge = 0;
+            $transaction->trx = $trx;
+            $transaction->details = $request->remark;
+            $transaction->post_balance = 0;
+            $transaction->save();
+            
+            $notifyTemplate = 'BAL_ADD';
+            $notify[] = ['success', $general->cur_sym . $amount . ' added to ' . $walletName . ' successfully'];
 
         } else {
-            // For -balance operation
+            // For subtraction operation
             if ($walletType === 'referral_wallet') {
                 // Check if user has sufficient referral bonus
-                $currentReferralBonus = $user->transactions()
-                    ->where('wallet', 'referral_bonus')
-                    ->where('trx_type', '+')
-                    ->sum('amount');
-                
-                if ($amount > $currentReferralBonus) {
+                if ($amount > $user->referral_bonus) {
                     $notify[] = ['error', $user->username . ' doesn\'t have sufficient balance in ' . $walletName . '.'];
                     return back()->withNotify($notify);
                 }
 
                 // Create negative transaction for referral bonus
+                $user->referral_bonus -= $amount;
+                $user->save();
+                
                 $transaction->wallet = 'referral_bonus';
                 $transaction->trx_type = '-';
                 $transaction->remark = 'admin_subtract';
@@ -295,41 +277,34 @@ class ManageUsersController extends Controller
                 $transaction->amount = $amount;
                 $transaction->charge = 0;
                 $transaction->trx = $trx;
-                $transaction->post_balance = 0; // Not used for referral bonus
+                $transaction->post_balance = 0;
                 $transaction->save();
                 
                 $notifyTemplate = 'BAL_SUB';
                 $notify[] = ['success', $general->cur_sym . $amount . ' subtracted from ' . $walletName . ' successfully'];
             } else {
-                // For balance and profit_wallet, use transaction-based approach
+                // For balance and profit_wallet, use safe methods
                 if ($walletType === 'profit_wallet') {
                     // Check if user has sufficient profit wallet balance
-                    $currentProfitBalance = $user->transactions()
-                        ->where('wallet', 'main_balance')
-                        ->sum(\Illuminate\Support\Facades\DB::raw("
-                            CASE 
-                                WHEN trx_type = '+' THEN amount
-                                WHEN trx_type = '-' THEN -amount
-                            END
-                        "));
-                    
-                    if ($amount > $currentProfitBalance) {
+                    if ($amount > $user->profit_wallet) {
                         $notify[] = ['error', $user->username . ' doesn\'t have sufficient balance in ' . $walletName . '.'];
                         return back()->withNotify($notify);
                     }
 
-                    // Create negative transaction for profit wallet
+                    // Use safe method to deduct from profit wallet
+                    $user->profit_wallet -= $amount;
+                    $user->save();
+                    
                     $transaction->wallet = 'main_balance';
                 } else {
-                    // For regular balance, check current balance
-                    if ($amount > $user->{$walletType}) {
+                    // For regular balance, use safe method
+                    try {
+                        $user->deductWallet($amount);
+                    } catch (\Exception $e) {
                         $notify[] = ['error', $user->username . ' doesn\'t have sufficient balance in ' . $walletName . '.'];
                         return back()->withNotify($notify);
                     }
-
-                    $user->{$walletType} -= $amount;
-
-                    // ⭐ FIX: Use correct wallet type for Wallet Balance
+                    
                     $transaction->wallet = 'wallet_balance';
                 }
                 
@@ -340,17 +315,12 @@ class ManageUsersController extends Controller
                 $transaction->charge = 0;
                 $transaction->trx = $trx;
                 $transaction->details = $request->remark;
-                $transaction->post_balance = 0; // Not used for dynamic calculation
+                $transaction->post_balance = 0;
                 $transaction->save();
                 
                 $notifyTemplate = 'BAL_SUB';
                 $notify[] = ['success', $general->cur_sym . $amount . ' subtracted from ' . $walletName . ' successfully'];
             }
-        }
-
-        // Save user only if we modified the regular balance column
-        if ($walletType === 'balance') {
-            $user->save();
         }
 
         notify($user, $notifyTemplate, [

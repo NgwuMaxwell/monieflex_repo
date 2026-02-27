@@ -67,7 +67,7 @@
 @php
   $authUser = Auth::user();
   // Default to referral bonus since it's the default selection
-  $balance = number_format($authUser->referralBonus, 0, '.', '');
+  $balance = number_format($authUser->referral_bonus, 0, '.', '');
   $walletType = 'referral_bonus';
   $walletName = 'Referral Bonus';
 @endphp
@@ -341,8 +341,8 @@
 <script>
     // Gold Standard Solution: Expose balances to JavaScript
     const walletBalances = {
-        referral_bonus: {{ auth()->user()->referralBonus ?? 0 }},
-        profit_wallet: {{ auth()->user()->profitWallet ?? 0 }}
+        referral_bonus: {{ auth()->user()->referral_bonus ?? 0 }},
+        profit_wallet: {{ auth()->user()->profit_wallet ?? 0 }}
     };
 </script>
 

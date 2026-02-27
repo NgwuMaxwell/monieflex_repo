@@ -65,13 +65,13 @@
 
             <div class="d-flex flex-wrap gap-3 mt-4">
                 <div class="flex-fill">
-                    <button data-bs-toggle="modal" data-bs-target="#addSubModal" class="btn btn--success btn--shadow w-100 btn-lg bal-btn" data-act="add" data-wallet="referral_wallet">
+                    <button data-bs-toggle="modal" data-bs-target="#addSubModal" class="btn btn--success btn--shadow w-100 btn-lg bal-btn" data-act="add" data-wallet="balance">
                         <i class="las la-plus-circle"></i> @lang('Balance')
                     </button>
                 </div>
 
                 <div class="flex-fill">
-                    <button data-bs-toggle="modal" data-bs-target="#addSubModal" class="btn btn--danger btn--shadow w-100 btn-lg bal-btn" data-act="sub" data-wallet="referral_wallet">
+                    <button data-bs-toggle="modal" data-bs-target="#addSubModal" class="btn btn--danger btn--shadow w-100 btn-lg bal-btn" data-act="sub" data-wallet="balance">
                         <i class="las la-minus-circle"></i> @lang('Balance')
                     </button>
                 </div>

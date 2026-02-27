@@ -107,37 +107,99 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the user's profit wallet balance from transactions
+     * Deduct amount from wallet balance with safety checks
+     * 
+     * @param float $amount
+     * @return void
+     * @throws \Exception
+     */
+    public function deductWallet($amount)
+    {
+        if ($amount <= 0) return;
+
+        if ($this->balance < $amount) {
+            throw new \Exception('Insufficient wallet balance');
+        }
+
+        $this->balance -= $amount;
+        $this->balance = max(0, $this->balance);
+        $this->save();
+    }
+
+    /**
+     * Credit amount to wallet balance
+     * 
+     * @param float $amount
+     * @return void
+     */
+    public function creditWallet($amount)
+    {
+        if ($amount <= 0) return;
+
+        $this->balance += $amount;
+        $this->save();
+    }
+
+    /**
+     * Credit amount to profit wallet
+     * 
+     * @param float $amount
+     * @return void
+     */
+    public function creditProfit($amount)
+    {
+        if ($amount <= 0) return;
+
+        $this->profit_wallet += $amount;
+        $this->save();
+    }
+
+    /**
+     * Credit amount to referral bonus wallet
+     * 
+     * @param float $amount
+     * @return void
+     */
+    public function creditReferralBonus($amount)
+    {
+        if ($amount <= 0) return;
+
+        $this->referral_bonus += $amount;
+        $this->save();
+    }
+
+    /**
+     * Hard protection against negative wallet values
+     * 
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::saving(function ($user) {
+            $user->balance = max(0, $user->balance);
+            $user->profit_wallet = max(0, $user->profit_wallet);
+            $user->referral_bonus = max(0, $user->referral_bonus);
+        });
+    }
+
+    /**
+     * Get the user's profit wallet balance from database column
      * 
      * @return float
      */
     public function getProfitWalletAttribute()
     {
-        return \App\Models\Transaction::where('user_id', $this->id)
-            ->where('wallet', 'main_balance')
-            ->sum(\Illuminate\Support\Facades\DB::raw("
-                CASE 
-                    WHEN trx_type = '+' THEN amount
-                    WHEN trx_type = '-' THEN -amount
-                END
-            "));
+        return $this->attributes['profit_wallet'] ?? 0;
     }
 
     /**
-     * Get the user's referral bonus balance from transactions
+     * Get the user's referral bonus balance from database column
      * 
      * @return float
      */
     public function getReferralBonusAttribute()
     {
-        return \App\Models\Transaction::where('user_id', $this->id)
-            ->where('wallet', 'referral_bonus')
-            ->sum(\Illuminate\Support\Facades\DB::raw("
-                CASE 
-                    WHEN trx_type = '+' THEN amount
-                    WHEN trx_type = '-' THEN -amount
-                END
-            "));
+        return $this->attributes['referral_bonus'] ?? 0;
     }
 
 
