@@ -248,9 +248,14 @@ class ManageUsersController extends Controller
             } else {
                 // For balance and profit_wallet, use transaction-based approach
                 if ($walletType === 'profit_wallet') {
-                    $transaction->wallet = 'main_balance';
+                    $transaction->wallet = 'main_balance'; // Profit wallet uses main_balance
                 } else {
-                    $transaction->wallet = 'main_balance'; // For regular balance
+                    $transaction->wallet = 'wallet_balance'; // Wallet Balance uses wallet_balance
+                    
+                    // ⭐ CRITICAL: Update user balance column for Wallet Balance
+                    if ($walletType === 'balance') {
+                        $user->balance += $amount;
+                    }
                 }
                 
                 $transaction->trx_type = '+';
@@ -323,7 +328,9 @@ class ManageUsersController extends Controller
                     }
 
                     $user->{$walletType} -= $amount;
-                    $transaction->wallet = 'main_balance';
+
+                    // ⭐ FIX: Use correct wallet type for Wallet Balance
+                    $transaction->wallet = 'wallet_balance';
                 }
                 
                 $transaction->trx_type = '-';
