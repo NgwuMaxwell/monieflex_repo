@@ -60,7 +60,7 @@
                         </div>
                         <div class="form-group col-md-8" id="youtube">
                             <label>@lang('Youtube Embeded Link')</label>
-                            <input type="text" name="youtube" class="form-control" value="{{ old('youtube') }}" placeholder="@lang('{{ asset('assets/pub/www.youtube.com/embed/') }}your_code')">
+                            <input type="text" name="youtube" class="form-control" value="{{ old('youtube') }}" placeholder="@lang('https://www.youtube.com/embed/your_code')">
                         </div>
                         <div class="form-group col-md-8 d-none" id="bannerImage">
                             <label>@lang('Banner')</label>
