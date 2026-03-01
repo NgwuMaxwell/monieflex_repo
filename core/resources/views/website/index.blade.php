@@ -514,7 +514,8 @@
                         </div>
 
                         <div class="col-lg-7 col-12">
-                            @foreach($posts as $post)
+                            @foreach($latestBlogs as $post)
+
                             <div class="news-block">
                                 <div class="news-block-top">
                                     <a href="{{ route('news.detail', $post->slug) }}">
@@ -572,7 +573,7 @@
                             @endif
                             @endforeach
 
-                            @if($posts->isEmpty())
+                            @if($latestBlogs->isEmpty())
                             <div class="text-center">
                                 <p>No news posts available at the moment.</p>
                                 <a href="/user/register" class="btn btn-primary">Create an Account to Stay Updated</a>
@@ -619,27 +620,27 @@
 
                                 <a href="" class="category-block-link">
                                     Investment
-                                    <span class="badge">{{ $posts ? $posts->count() : 0 }}</span>
+                                    <span class="badge">{{ $latestBlogs ? $latestBlogs->count() : 0 }}</span>
                                 </a>
 
                                 <a href="" class="category-block-link">
                                     Referral System
-                                    <span class="badge">{{ $posts ? $posts->where('data_values->category', 'referral')->count() : 0 }}</span>
+                                    <span class="badge">{{ $latestBlogs ? $latestBlogs->where('data_values->category', 'referral')->count() : 0 }}</span>
                                 </a>
 
                                 <a href="" class="category-block-link">
                                     Monieflex
-                                    <span class="badge">{{ $posts ? $posts->where('data_values->category', 'monieflex')->count() : 0 }}</span>
+                                    <span class="badge">{{ $latestBlogs ? $latestBlogs->where('data_values->category', 'monieflex')->count() : 0 }}</span>
                                 </a>
 
                                 <a href="" class="category-block-link">
                                     Buy Plans
-                                    <span class="badge">{{ $posts ? $posts->where('data_values->category', 'plans')->count() : 0 }}</span>
+                                    <span class="badge">{{ $latestBlogs ? $latestBlogs->where('data_values->category', 'plans')->count() : 0 }}</span>
                                 </a>
 
                                 <a href="" class="category-block-link">
                                     Performing Tasks
-                                    <span class="badge">{{ $posts ? $posts->where('data_values->category', 'tasks')->count() : 0 }}</span>
+                                    <span class="badge">{{ $latestBlogs ? $latestBlogs->where('data_values->category', 'tasks')->count() : 0 }}</span>
                                 </a>
                             </div>
 

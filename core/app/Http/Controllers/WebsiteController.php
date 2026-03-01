@@ -16,19 +16,20 @@ class WebsiteController extends Controller
      */
     public function index()
     {
-        // Get blog posts (using Frontend model for blog content)
-        $posts = Frontend::where('data_keys', 'blog.element')
+        // Get latest blog posts for homepage (3 posts)
+        $latestBlogs = Frontend::where('data_keys', 'blog.element')
+            ->whereNotNull('slug')
             ->latest()
-            ->take(5)
+            ->take(3)
             ->get();
 
-        // Ensure $posts is always a collection, even if empty
-        if (!$posts || !is_a($posts, 'Illuminate\Support\Collection')) {
-            $posts = collect();
+        // Ensure $latestBlogs is always a collection, even if empty
+        if (!$latestBlogs || !is_a($latestBlogs, 'Illuminate\Support\Collection')) {
+            $latestBlogs = collect();
         }
 
         // Generate slugs for posts that don't have them
-        foreach ($posts as $post) {
+        foreach ($latestBlogs as $post) {
             if (empty($post->slug)) {
                 $title = $post->data_values->title ?? 'blog-post-' . $post->id;
                 $post->slug = $this->generateSlug($title);
@@ -36,7 +37,7 @@ class WebsiteController extends Controller
             }
         }
 
-        // Get recent posts for sidebar (excluding current ones)
+        // Get recent posts for sidebar (3 posts)
         $recentPosts = Frontend::where('data_keys', 'blog.element')
             ->whereNotNull('slug')
             ->latest()
@@ -48,7 +49,7 @@ class WebsiteController extends Controller
             $recentPosts = collect();
         }
 
-        return view('website.index', compact('posts', 'recentPosts'));
+        return view('website.index', compact('latestBlogs', 'recentPosts'));
     }
 
     /**
@@ -68,16 +69,18 @@ class WebsiteController extends Controller
             abort(404, 'Blog post not found');
         }
 
-        // Get recent posts for sidebar
+        // Get recent posts for sidebar (excluding current post)
         $recentPosts = Frontend::where('data_keys', 'blog.element')
             ->where('id', '!=', $post->id)
+            ->whereNotNull('slug')
             ->latest()
             ->take(3)
             ->get();
 
-        // Get related posts (same category or similar tags)
+        // Get related posts (latest posts excluding current)
         $relatedPosts = Frontend::where('data_keys', 'blog.element')
             ->where('id', '!=', $post->id)
+            ->whereNotNull('slug')
             ->latest()
             ->take(2)
             ->get();

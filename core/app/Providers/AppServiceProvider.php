@@ -93,6 +93,8 @@ class AppServiceProvider extends ServiceProvider
             \URL::forceScheme('https');
         }
 
+        // Force root URL to respect subfolder configuration
+        \URL::forceRootUrl(config('app.url'));
 
         Paginator::useBootstrapFour();
     }

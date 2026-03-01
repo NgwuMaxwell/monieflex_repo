@@ -123,7 +123,7 @@
                     <div class="row">
 
                         <div class="col-lg-12 col-12">
-                            <h1 class="text-white">{{ $post->title }}</h1>
+                            <h1 class="text-white">{{ $post->data_values->title ?? 'Blog Post' }}</h1>
                         </div>
 
                     </div>
@@ -137,7 +137,7 @@
                         <div class="col-lg-7 col-12">
                             <div class="news-block">
                                 <div class="news-block-top">
-                                    <img src="{{ asset('storage/' . $post->image) }}" class="news-image img-fluid" alt="{{ $post->title }}">
+                                    <img src="{{ asset('storage/' . ($post->data_values->image ?? 'images/default.png')) }}" class="news-image img-fluid" alt="{{ $post->data_values->title ?? 'Blog Post' }}">
 
                                     <div class="news-category-block">
                                         <a href="" class="category-block-link">
@@ -179,11 +179,11 @@
                                     </div>
 
                                     <div class="news-block-title mb-2">
-                                        <h4>{{ $post->title }}</h4>
+                                        <h4>{{ $post->data_values->title ?? 'Untitled Post' }}</h4>
                                     </div>
 
                                     <div class="news-block-body" style="word-wrap: break-word; overflow-wrap: break-word;">
-                                        {!! $post->data_values->description !!}
+                                        {!! $post->data_values->description ?? 'No description available.' !!}
                                     </div>
 
                                     <div class="social-share border-top mt-5 py-4 d-flex flex-wrap align-items-center">
@@ -230,13 +230,13 @@
                             <div class="news-block news-block-two-col d-flex mt-4">
                                 <div class="news-block-two-col-image-wrap">
                                     <a href="{{ route('news.detail', $recentPost->slug) }}">
-                                        <img src="{{ asset('storage/' . $recentPost->image) }}" class="news-image img-fluid" alt="{{ $recentPost->title }}">
+                                        <img src="{{ asset('storage/' . ($recentPost->data_values->image ?? 'images/default.png')) }}" class="news-image img-fluid" alt="{{ $recentPost->data_values->title ?? 'Blog Post' }}">
                                     </a>
                                 </div>
 
                                 <div class="news-block-two-col-info">
                                     <div class="news-block-title mb-2">
-                                        <h6><a href="{{ route('news.detail', $recentPost->slug) }}" class="news-block-title-link">{{ $recentPost->title }}</a></h6>
+                                        <h6><a href="{{ route('news.detail', $recentPost->slug) }}" class="news-block-title-link">{{ $recentPost->data_values->title ?? 'Untitled Post' }}</a></h6>
                                     </div>
 
                                     <div class="news-block-date">
@@ -254,27 +254,27 @@
 
                                 <a href="" class="category-block-link">
                                     Investment
-                                    <span class="badge">{{ $recentPosts->count() }}</span>
+                                    <span class="badge">{{ $recentPosts ? $recentPosts->count() : 0 }}</span>
                                 </a>
 
                                 <a href="" class="category-block-link">
                                     Referral System
-                                    <span class="badge">{{ $recentPosts->where('data_values->category', 'referral')->count() }}</span>
+                                    <span class="badge">{{ $recentPosts ? $recentPosts->where('data_values->category', 'referral')->count() : 0 }}</span>
                                 </a>
 
                                 <a href="" class="category-block-link">
                                     Monieflex
-                                    <span class="badge">{{ $recentPosts->where('data_values->category', 'monieflex')->count() }}</span>
+                                    <span class="badge">{{ $recentPosts ? $recentPosts->where('data_values->category', 'monieflex')->count() : 0 }}</span>
                                 </a>
 
                                 <a href="" class="category-block-link">
                                     Buy Plans
-                                    <span class="badge">{{ $recentPosts->where('data_values->category', 'plans')->count() }}</span>
+                                    <span class="badge">{{ $recentPosts ? $recentPosts->where('data_values->category', 'plans')->count() : 0 }}</span>
                                 </a>
 
                                 <a href="" class="category-block-link">
                                     Performing Tasks
-                                    <span class="badge">{{ $recentPosts->where('data_values->category', 'tasks')->count() }}</span>
+                                    <span class="badge">{{ $recentPosts ? $recentPosts->where('data_values->category', 'tasks')->count() : 0 }}</span>
                                 </a>
                             </div>
 
@@ -325,12 +325,12 @@
                             <h2>Related news</h2>
                         </div>
 
-                        @foreach($relatedPosts as $relatedPost)
+                            @foreach($relatedPosts as $relatedPost)
                         <div class="col-lg-6 col-12">
                             <div class="news-block">
                                 <div class="news-block-top">
                                     <a href="{{ route('news.detail', $relatedPost->slug) }}">
-                                        <img src="{{ asset('storage/' . $relatedPost->image) }}" class="news-image img-fluid" alt="{{ $relatedPost->title }}">
+                                        <img src="{{ asset('storage/' . ($relatedPost->data_values->image ?? 'images/default.png')) }}" class="news-image img-fluid" alt="{{ $relatedPost->data_values->title ?? 'Blog Post' }}">
                                     </a>
 
                                     <div class="news-category-block">
@@ -373,11 +373,11 @@
                                     </div>
 
                                     <div class="news-block-title mb-2">
-                                        <h4><a href="{{ route('news.detail', $relatedPost->slug) }}" class="news-block-title-link">{{ $relatedPost->title }}</a></h4>
+                                        <h4><a href="{{ route('news.detail', $relatedPost->slug) }}" class="news-block-title-link">{{ $relatedPost->data_values->title ?? 'Untitled Post' }}</a></h4>
                                     </div>
 
                                     <div class="news-block-body" style="word-wrap: break-word; overflow-wrap: break-word;">
-                                        <p>{{ Str::limit(strip_tags($relatedPost->data_values->description), 150) }}</p>
+                                        <p>{{ Str::limit(strip_tags($relatedPost->data_values->description ?? ''), 150) }}</p>
                                     </div>
                                 </div>
                             </div>
